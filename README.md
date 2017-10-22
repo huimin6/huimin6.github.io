@@ -1,8 +1,4 @@
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/huimin6/huimin6.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## 科学计算库numpy
 
 ### Markdown
 
@@ -11,9 +7,14 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 ```markdown
 Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+# numpy中的常见函数
+## 矩阵的常见运算符
+|运算符|说明|
+|:-:|-|
+|+|矩阵对应元素相加|
+|-|矩阵对应元素相减|
+
+### k-近邻算法
 
 - Bulleted
 - List
