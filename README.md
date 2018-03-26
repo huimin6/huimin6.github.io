@@ -1,12 +1,5 @@
 ## 科学计算库numpy
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
 # numpy中的常见函数
 ## 矩阵的常见运算符
 |运算符|说明|
