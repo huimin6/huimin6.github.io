@@ -16,3 +16,13 @@ Linux系统安装Ruby2.5.1最新版
 
 连接集群：./redis-cli -h 127.0.0.1 -p 6379 -c
 
+
+设置redis开机自动启动：
+
+1.赋予脚本可执行权限（/usr/local/start-all.sh是你的脚本路径）
+chmod +x /usr/local/start-all.sh
+
+2.输入命令：vim /etc/rc.d/rc.local ，在末尾增加如下内容: /usr/local/start-all.sh
+
+3.在centos7中，/etc/rc.d/rc.local的权限被降低了，所以需要执行如下命令赋予其可执行权限: chmod +x /etc/rc.d/rc.local
+
