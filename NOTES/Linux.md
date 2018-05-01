@@ -1,6 +1,6 @@
 <!-- GFM-TOC -->
 * [Linux](#Linux)
-    * [1.防火墙firewall](#1防火墙firewall)
+    * [1.防火墙firewall](#1防火墙firewall)
     * [2.重启与关机](#2重启与关机)
 <!-- GFM-TOC -->
 
