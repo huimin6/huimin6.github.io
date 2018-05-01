@@ -2,6 +2,7 @@
 * [Linux](#Linux)
     * [1.防火墙firewall](#1.防火墙firewall)
     * [2.重启与关机](#2.重启与关机)
+    * [3.软件安装](#3.软件安装)
 <!-- GFM-TOC -->
 # Linux
 
@@ -38,3 +39,4 @@
 　　4.shutdown -h 10 10分钟后自动关机
   
 　　如果是通过shutdown命令设置关机的话，可以用shutdown -c命令取消重启
+## 3. 软件安装
