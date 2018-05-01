@@ -3,6 +3,7 @@
     * [1.防火墙firewall](#1防火墙firewall)
     * [2.重启与关机](#2重启与关机)
     * [3.vi/vim命令](#3vi和vim命令)
+        * [1.复制](#1复制)
 <!-- GFM-TOC -->
 
 # Linux
