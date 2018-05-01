@@ -1,9 +1,10 @@
 <!-- GFM-TOC -->
 * [Linux](#Linux)
-    * [1.防火墙firewall](#防火墙firewall)
-    * [2.重启与关机](#重启与关机)
-    * [3.软件安装](#软件安装)
+    * [1.防火墙firewall](#1防火墙firewall)
+    * [2.重启与关机](#2重启与关机)
+    * [3.软件安装](#3软件安装)
 <!-- GFM-TOC -->
+
 # Linux
 
 ## 1.防火墙firewall
