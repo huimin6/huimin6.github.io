@@ -7,15 +7,15 @@
 
 ## 1.防火墙firewall
 
-(1)centos7查看防火墙状态：firewall-cmd --state
+(1) centos7查看防火墙状态：firewall-cmd --state
 
-(2)systemctl stop firewalld.service  停止firewall
+(2) systemctl stop firewalld.service  停止firewall
 
-(3)systemctl disable firewalld.service  禁止firewall开机启动
+(3) systemctl disable firewalld.service  禁止firewall开机启动
 
 ## 2.重启与关机
 
-(1)centos重启命令：
+(1) centos重启命令：
 
 　　1.reboot
   
@@ -27,7 +27,7 @@
   
 　　如果是通过shutdown命令设置重启的话，可以用shutdown -c命令取消重启
 
-(2)centos关机命令：
+(2) centos关机命令：
 
 　　1.halt 立刻关机
   
