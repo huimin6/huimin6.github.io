@@ -1,13 +1,13 @@
 <!-- GFM-TOC -->
 * [Linux](#Linux)
-    * [1.防火墙firewall](#1防火墙firewall)
-    * [2.重启与关机](#2重启与关机)
-    * [3.软件安装](#3软件安装)
+    * [1. 防火墙firewall](#1防火墙firewall)
+    * [2. 重启与关机](#2重启与关机)
+    
 <!-- GFM-TOC -->
 
 # Linux
 
-## 1.防火墙firewall
+## 1. 防火墙firewall
 
 (1) centos7查看防火墙状态：firewall-cmd --state
 
@@ -15,7 +15,7 @@
 
 (3) systemctl disable firewalld.service  禁止firewall开机启动
 
-## 2.重启与关机
+## 2. 重启与关机
 
 (1) centos重启命令：
 
