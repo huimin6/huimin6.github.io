@@ -1,7 +1,5 @@
 <!-- GFM-TOC -->
-
-* [1. 防火墙firewall](## 1.防火墙firewall)
-
+* [Linux](#Linux)
 <!-- GFM-TOC -->
 # Linux
 
