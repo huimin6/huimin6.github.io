@@ -2,7 +2,7 @@
 * [Linux](#Linux)
     * [1.防火墙firewall](#1防火墙firewall)
     * [2.重启与关机](#2重启与关机)
-    * [3.vi/vim命令](#3vi/vim命令)
+    * [3.vi/vim命令](#3vi和vim命令)
 <!-- GFM-TOC -->
 
 # Linux
@@ -41,7 +41,7 @@
   
 　　如果是通过shutdown命令设置关机的话，可以用shutdown -c命令取消重启
   
-## 3.vi/vim命令
+## 3.vi和vim命令
 
 1.复制
 复制一行则：yy 
