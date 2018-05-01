@@ -1,5 +1,3 @@
-[TOC]
-
 # Linux
 
 ## 1.防火墙firewall：
@@ -10,7 +8,7 @@
 
 (3)systemctl disable firewalld.service  禁止firewall开机启动
 
-### 2.重启与关机
+## 2.重启与关机
 
 (1)centos重启命令：
 
