@@ -1,4 +1,4 @@
-<div align="center"> <img src="../pics//c23957e9-a572-44f8-be15-f306c8b92722.jpg"/> </div><br>
+<div align="center"> <img src="../pictures//maven-logo-black-on-white.png"/> </div><br>
 
 # Maven
 
