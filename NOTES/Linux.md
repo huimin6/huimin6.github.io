@@ -1,9 +1,10 @@
 <!-- GFM-TOC -->
 * [Linux](#Linux)
+* [1.防火墙firewall](#1.防火墙firewall)
 <!-- GFM-TOC -->
 # Linux
 
-## 1.防火墙firewall：
+# 1.防火墙firewall
 
 (1)centos7查看防火墙状态：firewall-cmd --state
 
