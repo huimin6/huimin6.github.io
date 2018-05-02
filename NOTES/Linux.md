@@ -16,26 +16,24 @@
 # Linux
 
 ## 1.防火墙firewall
-
-(1) centos7查看防火墙状态：firewall-cmd --state
-
-(2) systemctl stop firewalld.service  停止firewall
-
-(3) systemctl disable firewalld.service  禁止firewall开机启动
+|命令|功能|
+|-|-|
+| firewall-cmd --state | centos7查看防火墙状态 |
+| systemctl stop firewalld.service | 停止firewall |
+| systemctl disable firewalld.service | 禁止firewall开机启动 |
 
 ## 2.重启与关机
 
 (1) centos重启命令：
 
-　　1.reboot
-  
-　　2.shutdown -r now 立刻重启(root用户使用)
-  
-　　3.shutdown -r 10 过10分钟自动重启(root用户使用)
-  
-　　4.shutdown -r 20:35 在时间为20:35时候重启(root用户使用)
-  
-　　如果是通过shutdown命令设置重启的话，可以用shutdown -c命令取消重启
+|命令|功能|
+|-|-|
+| reboot | 重启 |
+| shutdown -r now | 立刻重启(root用户使用) |
+| shutdown -r 10 | 过10分钟自动重启(root用户使用) |
+| shutdown -r 20:35 | 在时间为20:35时候重启(root用户使用) |
+
+如果是通过shutdown命令设置重启的话，可以用shutdown -c命令取消重启
 
 (2) centos关机命令：
 
@@ -147,13 +145,11 @@ d$: 删至行尾
 
 退出输入模式，先按一下[ESC]键（有时要多按两下），然后执行： 
 
-:w! 
+| 命令 | 作用 |
+| :-: | - |
+| :w! | 执行强制存盘操作|
+| :w | 执行存盘操作|
+| :wq | 存盘退出(与指令 :x 功能相同)|
+| :q | 直接退出，如已修改会提示是否保存|
+| :q! | 不保存直接退出|
 
-:w ——保存当前文件 
-
-:wq —— 存盘退出(与指令 :x 功能相同) 
-
-:q —— 直接退出，如已修改会提示是否保存 
-
-:q! ——不保存直接退出
- 
