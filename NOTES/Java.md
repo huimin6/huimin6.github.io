@@ -12,6 +12,7 @@
 ### 线程的生命周期
 线程的生命周期：新建(New)、就绪(Runnable)、运行(Running)、阻塞(Blocker)、死亡(Dead)
 <div align="center"> <img src="../pictures//thread.jpg"/> </div><br>
+
 ### sleep和wait
 
 sleep是线程类(Thread)的方法，wait是Object类的方法；
