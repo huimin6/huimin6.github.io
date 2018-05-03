@@ -1,11 +1,14 @@
 <!-- MarkdownTOC -->
 
 1. [Java](#java)
-    1. [多线程](#%E5%A4%9A%E7%BA%BF%E7%A8%8B)
-        1. [线程安全](#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8)
+    1. [多线程](#多线程)
+        1. [线程安全](#线程安全)
 
 <!-- /MarkdownTOC -->
+
 
 # Java
 ## 多线程
 ### 线程安全
+线程的生命周期：新建(New)、就绪(Runnable)、运行(Running)、阻塞(Blocker)、死亡(Dead)
+
