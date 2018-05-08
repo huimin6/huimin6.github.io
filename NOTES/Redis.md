@@ -1,3 +1,16 @@
+<!-- MarkdownTOC -->
+
+- [Redis](#redis)
+- [Redis安装](#redis安装)
+    + [Redis介绍](#redis介绍)
+    + [Redis中的五种数据类型](#redis中的五种数据类型)
+        * [字符串（string）](#字符串（string）)
+
+<!-- /MarkdownTOC -->
+
+# Redis
+
+# Redis安装
 设置Redis开机自启动
 
 创建start-all.sh文件，文件内容如下：
