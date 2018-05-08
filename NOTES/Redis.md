@@ -30,7 +30,21 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，是一种内存�
 
 ## Redis中的五种数据类型
 
-字符串（string）
+### 字符串（string）
+
+(key, value)
+
+字符串类型是Redis中最基础的数据类型，其中value的类型可以是字符串（JSON, XML也可以）、数字、二进制（图片、视频等）类型，但是value最大不能超过512MB。
+
+典型的应用场景：
+
+1.缓存：使用Redis作为缓存层，MySQL作为数据存储层，降低数据库的访问压力
+
+2.共享session：将session全部存储在Redis中集中管理
+
+3.限速（验证码获取次数）
+
+4.计数（视频点击次数）
 
 列表（list）
 
