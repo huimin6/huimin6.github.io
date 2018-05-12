@@ -142,54 +142,54 @@ centos7系统
 
 (1)查询jdk版本：java -version
 
-'''
+```
 openjdk version "1.8.0_161"
 OpenJDK Runtime Environment (build 1.8.0_161-b14)
 OpenJDK 64-Bit Server VM (build 25.161-b14, mixed mode)
-'''
+```
 
 上面的内容说明Linux系统已经自动安装openJDK，我们将其卸载掉然后安装SUN公司的JDK,如果显示的是
 
-'''
+```
 -bash: /usr/bin/java: No such file or directory
-'''
+```
 就说明，系统中没有安装JDK需要我们自己安装
 
 (2)卸载已经安装的JDK
 
-'''
+```
 rpm -e --nodeps java-1.7.0-openjdk
 rpm -e --nodeps java-1.8.0-openjdk
 rpm -e --nodeps java-1.7.0-openjdk-headless 
 rpm -e --nodeps java-1.8.0-openjdk-headless 
-'''
+```
 (3)下载SUN公司的JDK并安装
 
 1)进入到/usr/local目录，并创建java目录：
 
-'''
+```
 cd /usr/local
 mkdir java
-'''
+```
 
 2)解压jdk-8u172-linux-x64.tar.gz文件，并复制到java目录中：
 
-'''
+```
 tar -zxf jdk-8u172-linux-x64.tar.gz
 cp -r jdk1.8.0_172/ /usr/local/java
-'''
+```
 
 3)打开/etc/profile文件，配置环境变量
 
-'''
+```
  vim  /etc/profile
  在文件末尾加入如下内容：
  export JAVA_HOME=/usr/local/java/jdk1.8.0_172
  export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
  export PATH=$PATH:$JAVA_HOME/bin
-'''
+```
 4)修改完成之后退出，输入如下命令使修改生效：
 
-'''
+```
 source /etc/profile
-'''
+```
