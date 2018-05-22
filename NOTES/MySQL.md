@@ -45,7 +45,7 @@
 MyISAM主码索引的原理图：
 <div align="center"> <img src="../pictures//index3.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中数据表中的第一列是数据表的主键，B+树中的叶子节点中存储的是该主键对应的数据表中的一条记录的存储地址，根据这个存储地址就可以从磁盘中找到该记录，将其读入内存
-
+<br></br>
 MyISAM的辅码索引原理图：
 <div align="center"> <img src="../pictures//index4.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中是对数据表的第二列建立索引，其索引结构与主码索引完全相同，叶子节点存储的是该辅码对于的数据表中某一条记录的存储地址，辅码索引中的key是可以重复的
