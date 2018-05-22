@@ -3,9 +3,9 @@
 - [MySQL](#mysql)
 - [索引](#索引)
     + [B-Tree索引](#b-tree索引)
-- [MyISAM与InnoDB存储引擎的区别](#myisam与innodb存储引擎的区别)
-    + [MyISAM索引](#myisam索引)
-    + [InnoDB索引](#innodb索引)
+    + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)
+        * [MyISAM索引](#myisam索引)
+        * [InnoDB索引](#innodb索引)
 - [红黑树](#红黑树)
 
 <!-- /MarkdownTOC -->
@@ -42,7 +42,7 @@
 
 **B+树与B树的区别**是，B+树的非叶子节点中不保存磁盘数据的pointer信息，所有的信息都保存在叶子节点中。B树中的一个节点除了要保存孩子节点的pointer之外，还需要保存当前节点的key所对应的数据库中的某一条记录的pointer
 
-# MyISAM与InnoDB存储引擎的区别
+## MyISAM与InnoDB存储引擎
 
 |MyISAM|InnoDB|
 |:-:|:-:|
@@ -52,7 +52,7 @@
 | 主码索引与辅码索引都是具有相同的结构 | 主码索引与辅码索引差别较大 |
 | 主码和辅码索引的叶子节点中存储的都是存储该条数据记录的地址 | 主码索引叶子节点中存储的就是该条数据记录，辅码索引叶子节点中存储的是该条数据记录对于的主码|
 
-## MyISAM索引
+### MyISAM索引
 
 MyISAM主码索引的原理图：
 <div align="center"> <img src="../pictures//index3.png"/> </div><br>
@@ -62,7 +62,7 @@ MyISAM的辅码索引原理图：
 <div align="center"> <img src="../pictures//index4.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中是对数据表的第二列建立索引，其索引结构与主码索引完全相同，叶子节点存储的是该辅码对于的数据表中某一条记录的存储地址，辅码索引中的key是可以重复的
 
-## InnoDB索引
+### InnoDB索引
 
 InnoDB的主码索引原理图：
 <div align="center"> <img src="../pictures//index5.png"/> </div><br>
