@@ -56,7 +56,7 @@ InnoDB的主码索引原理图：
 <div align="center"> <img src="../pictures//index5.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中的数据表就是按照B+树的结构来存储的，所以数据表本身就是主码索引，索引的叶子节点中直接存储的是该主键对应的数据表中的一条记录，而不是这条记录的存储地址。
 
-<br/>
+&npsp;<br/>
 InnoDB的辅码索引的原理图：
 <div align="center"> <img src="../pictures//index6.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中索引的叶子节点中存储的既不是一条数据记录，也不是数据记录的地址，而是主码，也就是说InnoDB的辅码索引是建立在主码索引之上的，在数据查询过程中需要先根据辅码索引找到目标记录对应的主码，然后再根据主码查找到目标记录。所以，InnoDB的主码索引效率非常高，辅码索引的效率比较低。
