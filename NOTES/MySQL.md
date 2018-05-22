@@ -74,4 +74,4 @@ InnoDB的辅码索引的原理图：
  
  5.最长路径（root->最远的nil）的距离不能超过最短路径（root->最近的nil）的两倍
  
- <div align="center"> <img src="../pictures//red-black tree1.png"/> </div><br>
+ <div align="center"> <img src="../pictures//red-black tree1.jpg"/> </div><br>
