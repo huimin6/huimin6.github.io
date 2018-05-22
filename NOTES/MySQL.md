@@ -1,3 +1,15 @@
+<!-- MarkdownTOC -->
+
+- [MySQL](#mysql)
+- [索引](#索引)
+    + [B-Tree索引](#b-tree索引)
+- [MyISAM与InnoDB存储引擎的区别](#myisam与innodb存储引擎的区别)
+    + [MyISAM索引](#myisam索引)
+    + [InnoDB索引](#innodb索引)
+- [红黑树](#红黑树)
+
+<!-- /MarkdownTOC -->
+
 # MySQL
 
 # 索引
