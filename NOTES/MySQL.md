@@ -55,6 +55,7 @@ MyISAM的辅码索引原理图：
 InnoDB的主码索引原理图：
 <div align="center"> <img src="../pictures//index5.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中的数据表就是按照B+树的结构来存储的，所以数据表本身就是主码索引，索引的叶子节点中直接存储的是该主键对应的数据表中的一条记录，而不是这条记录的存储地址。
+
 <br/>
 InnoDB的辅码索引的原理图：
 <div align="center"> <img src="../pictures//index6.png"/> </div><br>
