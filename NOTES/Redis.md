@@ -86,3 +86,10 @@ redis-benchmark -h 127.0.0.1 -p 6379 -c 100 -n 100000
 redis-benchmark -h 127.0.0.1 -p 6379 -q -d 100
 ```
 
+命令3：
+
+指定测试的命令为set和lpush
+
+```
+redis-benchmark -t set,lpush -q -n 100000
+```
