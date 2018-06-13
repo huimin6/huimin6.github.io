@@ -93,3 +93,10 @@ redis-benchmark -h 127.0.0.1 -p 6379 -q -d 100
 ```
 redis-benchmark -t set,lpush -q -n 100000
 ```
+命令4：
+
+执行命令（'set', 'foo', 'bar'）进行测试
+
+```
+redis-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
+```
