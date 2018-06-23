@@ -2,6 +2,7 @@
 
 - [Java](#java)
     + [多线程](#多线程)
+        * [创建线程的三种方式](#创建线程的三种方式)
         * [线程的生命周期](#线程的生命周期)
         * [sleep、wait和yield](#sleep、wait和yield)
     + [动态代理](#动态代理)
@@ -12,6 +13,106 @@
 
 # Java
 ## 多线程
+### 创建线程的三种方式
+1.继承Thread类
+```
+package com.atguigu.java;
+
+public class FirstThread extends Thread{
+    private int i;
+    public void run() {
+        for(; i < 100; i++) {
+            System.out.println(getName() + " " + i);
+        }
+    }
+    public static void main(String[] args) {
+        for(int i = 0; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " " + i);
+            if(i == 20) {
+                new FirstThread().start();
+                new FirstThread().start();
+            }
+        }
+    }
+}
+```
+2.实现Runnable接口
+```
+package com.atguigu.java;
+
+public class SecondThread implements Runnable{
+    private int i;
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        for(; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " " + i);
+        }
+    }
+    public static void main(String[] args) {
+        for(int i = 0; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " " + i);
+            if(i == 20) {
+                SecondThread st = new SecondThread();
+                new Thread(st, "Thread-1").start();
+                new Thread(st, "Thread-2").start();
+            }
+        }
+    }
+     
+}
+```
+3.实现Callable接口
+```
+package com.atguigu.java;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+//实现多线程的方法三：使用Callable和Future创建线程
+//创建Callable接口的实现类
+public class ThirdThread implements Callable<Integer>{
+    //实现Callable接口中的run()方法
+    @Override
+    public Integer call() throws Exception {
+        // TODO Auto-generated method stub
+        int i = 0;
+        for(; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " " + i);
+        }
+        return i;
+    }
+    public static void main(String[] args) {
+        //创建Callable接口的实现类的实例对象
+        ThirdThread tt = new ThirdThread();
+        //使用FutureTask对象来包装Callable对象
+        FutureTask<Integer> ft = new FutureTask<Integer>(tt);
+        for(int i = 0; i < 100; i++) {
+            System.out.println(Thread.currentThread().getName() + " " + i);
+            if(i == 20) {
+//              Thread th = new Thread(ft, "测试线程");
+//              th.run();
+                //直接调用run()方法后，th.start()不再执行
+//              th.start();
+//              new Thread(ft, "测试线程").run();
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                new Thread(ft, "有返回值的线程").start();
+            }
+        }
+        try {
+            System.out.println("子线程的返回值：" + ft.get() );
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+```
 ### 线程的生命周期
 线程的生命周期：新建(New)、就绪(Runnable)、运行(Running)、阻塞(Blocker)、死亡(Dead)
 <div align="center"> <img src="../pictures//thread.jpg"/> </div><br>
