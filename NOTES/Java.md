@@ -16,8 +16,6 @@
 ### 创建线程的三种方式
 1.继承Thread类
 ```
-package com.atguigu.java;
-
 public class FirstThread extends Thread{
     private int i;
     public void run() {
@@ -38,8 +36,6 @@ public class FirstThread extends Thread{
 ```
 2.实现Runnable接口
 ```
-package com.atguigu.java;
-
 public class SecondThread implements Runnable{
     private int i;
     @Override
@@ -64,8 +60,6 @@ public class SecondThread implements Runnable{
 ```
 3.实现Callable接口
 ```
-package com.atguigu.java;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
