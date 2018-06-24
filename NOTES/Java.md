@@ -132,7 +132,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, 
         ThreadFactory threadFactory, RejectedExecutionHandler handler);
 ```
-其中：
+参数含义:
 
 corePoolSize：核心池的大小，这个参数跟后面讲述的线程池的实现原理有非常大的关系。在创建了线程池后，默认情况下，线程池中并没有任何线程，而是等待有任务到来才创建线程去执行任务，除非调用了prestartAllCoreThreads()或者prestartCoreThread()方法，从这2个方法的名字就可以看出，是预创建线程的意思，即在没有任务到来之前就创建corePoolSize个线程或者一个线程。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中；
 
