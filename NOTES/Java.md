@@ -15,7 +15,7 @@
 # Java
 ## 多线程
 ### 创建线程的三种方式
-1. 继承Thread类
+1.继承Thread类
 ```
 public class FirstThread extends Thread{
     private int i;
