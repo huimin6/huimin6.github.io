@@ -123,12 +123,14 @@ public class ThirdThread implements Callable<Integer>{
 | wait()和notify()会对对象的"锁标志"进行操作，所以它们必须在synchronized函数或synchronized代码块中进行调用。如果在non- synchronized函数或non-synchronized代码块中进行调用，虽然能编译通过，但在**运行时**会发生IllegalMonitorStateException的异常。
 
 ### 线程池
-1.线程池的创建都是通过ThreadPoolExecutor类来完成，该类的一个最核心的构造方法就是:
+1.线程池的创建
+创建线程池由ThreadPoolExecutor类来完成，该类的一个最核心的构造方法就是:
 ```
 public class ThreadPoolExecutor extends AbstractExecutorService {
     
     public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, 
-        long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler);
+        long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, 
+        ThreadFactory threadFactory, RejectedExecutionHandler handler);
 ```
 其中：
 
