@@ -35,7 +35,7 @@ public class FirstThread extends Thread{
     }
 }
 ```
-2.实现Runnable接口
+2. 实现Runnable接口
 ```
 public class SecondThread implements Runnable{
     private int i;
@@ -59,7 +59,7 @@ public class SecondThread implements Runnable{
      
 }
 ```
-3.实现Callable接口
+3. 实现Callable接口
 ```
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -123,7 +123,7 @@ public class ThirdThread implements Callable<Integer>{
 | wait()和notify()会对对象的"锁标志"进行操作，所以它们必须在synchronized函数或synchronized代码块中进行调用。如果在non- synchronized函数或non-synchronized代码块中进行调用，虽然能编译通过，但在**运行时**会发生IllegalMonitorStateException的异常。
 
 ### 线程池
-1.线程池的创建
+1. 线程池的创建
 创建线程池由ThreadPoolExecutor类来完成，该类的一个最核心的构造方法就是:
 ```
 public class ThreadPoolExecutor extends AbstractExecutorService {
@@ -144,7 +144,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 | threadFactory | 线程工厂，主要用来创建线程 |
 | handler | 表示当拒绝处理任务时的策略，有以下四种取值：<br>ThreadPoolExecutor.AbortPolicy：丢弃任务并抛出RejectedExecutionException异常<br>ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常 <br>ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）<br>ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务 |
 
-2.线程池中的几个核心问题的实现
+2. 线程池中的几个核心问题的实现
 
 (1)如何实现线程的复用
 
@@ -155,9 +155,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 ## 动态代理
 与静态代理相比，动态代理的好处就是不需要为每个类都生成代理类，可以在运行过程中动态生成代码
 
-1.静态代理
+1. 静态代理
 
-(1)定义抽象主题接口
+(1) 定义抽象主题接口
 ```
 package com.atguigu.java;
 
@@ -180,7 +180,7 @@ public interface IMath {
 
 }
 ```
-(2)主题类，算术类，实现抽象接口
+(2) 主题类，算术类，实现抽象接口
 ```
 package com.atguigu.java;
 
@@ -218,7 +218,7 @@ public class Math implements IMath {
     }
 }
 ```
-(3)代理类
+(3) 代理类
 ```
 package com.atguigu.java;
 
@@ -288,7 +288,7 @@ public class MathProxy implements IMath {
     }
 }
 ```
-(4)运行测试
+(4) 运行测试
 ```
 package com.atguigu.java;
 
@@ -306,7 +306,7 @@ public class Test {
     }
 }
 ```
-(5)**小结**
+(5) **小结**
 
 通过静态代理，是否完全解决了上述的4个问题：
 
@@ -324,7 +324,7 @@ public class Test {
 
 如果要解决上面的问题，可以使用动态代理。
 
-2.JDK动态代理
+2. JDK动态代理
 
 使用JDK内置的Proxy实现，只需要一个代理类，而不是针对每个类编写代理类。
 
@@ -428,15 +428,15 @@ JDK内置的Proxy动态代理可以在运行时动态生成字节码，而没必
 
 使用内置的Proxy实现动态代理有一个问题：被代理的类必须实现接口，未实现接口则没办法完成动态代理。
 
-3.CGLIB动态代理
+3. CGLIB动态代理
 
 CGLIB(Code Generation Library)是一个开源项目,是一个强大的，高性能，高质量的Code生成类库，它可以在运行期扩展Java类与实现Java接口，通俗说cglib可以在运行时动态生成字节码。
 
-(1)引用cglib，通过maven
+(1) 引用cglib，通过maven
 
 <div align="center"> <img src="../pictures//cglib.png"/> </div><br>
 
-(2)使用cglib完成动态代理，大概的原理是：cglib继承被代理的类，重写方法，织入通知，动态生成字节码并运行，因为是继承所以final类是没有办法动态代理的。具体实现如下：
+(2) 使用cglib完成动态代理，大概的原理是：cglib继承被代理的类，重写方法，织入通知，动态生成字节码并运行，因为是继承所以final类是没有办法动态代理的。具体实现如下：
 ```
 package com.atguigu.java2;
 
@@ -499,7 +499,7 @@ public class DynamicProxy implements MethodInterceptor {
 
 }
 ```
-(3)测试运行：
+(3) 测试运行：
 ```
 package com.atguigu.java2;
 
@@ -525,7 +525,7 @@ public class Test {
     }
 }
 ```
-(4)**小结**
+(4) **小结**
 
 使用cglib可以实现动态代理，即使被代理的类没有实现接口，但被代理的类必须不是final类。
 
