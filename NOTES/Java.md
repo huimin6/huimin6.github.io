@@ -61,7 +61,6 @@ public class SecondThread implements Runnable{
     private int i;
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         for(; i < 100; i++) {
             System.out.println(Thread.currentThread().getName() + " " + i);
         }
@@ -168,7 +167,145 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
 
 (1)如何实现线程的复用
 
-(2)如何管理线程池中的线程
+线程的生命周期中需要经过新建(new)、就绪(Runnable)、运行(Running)、阻塞(Blocked)、死亡(Dead) 5种状态
+<div align="center"> <img src="../pictures//Thread life cycle.jpg"/> </div><br>
+Thread通过new关键字来创建一个线程，线程创建后调用start()方法启动线程，Java虚拟机会为其创建方法调用栈和程序计数器，同时将hasBeenStarted为true，之后调用start方法就会有异常。此时线程处于就绪状态，并没有开始运行，线程何时开始运行，取决于Java虚拟机中线程调度器的调度。线程获取cpu后，run()方法会被执行，不要直接调用run()方法。之后线程的状态在就绪————运行————阻塞之间切换，直到run()方法执行结束或者其他方式停止线程，线程才会进入dead状态。
+
+因此，要想实现线程的复用，就需要让线程一直存活(就绪、运行或阻塞)，不能进入dead状态。
+
+ThreadPoolExecutor类通过Worker类来实现线程的复用，看看worker类的简化后的代码更容易理解：
+```
+private final class Worker implements Runnable {
+ 
+    final Thread thread;
+    Runnable firstTask;
+    
+    Worker(Runnable firstTask) {
+        this.firstTask = firstTask;
+        this.thread = getThreadFactory().newThread(this);
+    }
+    
+    public void run() {
+        runWorker(this);
+    }
+    
+    final void runWorker(Worker w) {
+        Runnable task = w.firstTask;
+        w.firstTask = null;
+        while (task != null || (task = getTask()) != null){
+        task.run();
+    }
+}
+```
+Worker类实现了Runnable接口，拥有Thread成员变量，这个thread就是要开启的线程。在创建Worker对象时，会创建一个新的线程，同时Worker对象自己会作为参数传入。这样当调用Thread的start()时，实际上就是调用Worker对象的run()方法，接着调用runWorker()方法。在runWorker()方法中，有一个while循环，它会从不断通过getTast()获取Runnable对象去执行。getTask()方法的简化代码如下：
+```
+private Runnable getTask() {
+    if(一些特殊情况) {
+        return null;
+    }
+
+    Runnable r = workQueue.take();
+
+    return r;
+}
+```
+这个workQueue就是初始化ThreadPoolExecutor时存放任务的BlockingQueue队列，这个队列里的存放的都是将要执行的Runnable任务。因为BlockingQueue是个阻塞队列，BlockingQueue.take()得到如果是空，则进入等待状态直到BlockingQueue有新的对象被加入时唤醒阻塞的线程。所以一般情况Thread的run()方法就不会结束，而是不断执行从workQueue里的Runnable任务，这就达到了线程复用的作用了。
+
+(2)控制线程最大并发数
+
+那Runnable对象是什么时候放入workQueue？Worker对象又是什么时候创建，Worker里的Thread的又是什么时候调用start()方法来执行Worker的run()方法的呢？有上面的分析看出Worker里的runWorker()执行任务时是一个接一个，串行进行的，那并发是怎么体现的呢？
+
+很容易想到是在execute(Runnable runnable)时会做上面的一些任务。看下execute方法里是怎么做的。execute()方法简化后的代码：
+```
+public void execute(Runnable command) {
+    if (command == null)
+        throw new NullPointerException();
+
+     int c = ctl.get();
+    // 当前线程数 < corePoolSize
+    if (workerCountOf(c) < corePoolSize) {
+        // 直接启动新的线程。
+        if (addWorker(command, true))
+            return;
+        c = ctl.get();
+    }
+
+    // 活动线程数 >= corePoolSize
+    // runState为RUNNING && 队列未满
+    // workQueue.offer(command)表示添加到队列，如果添加成功返回true，否则返回false
+    if (isRunning(c) && workQueue.offer(command)) {
+        int recheck = ctl.get();
+        // 再次检验是否为RUNNING状态
+        // 非RUNNING状态 则从workQueue中移除任务并拒绝
+        if (!isRunning(recheck) && remove(command))
+            reject(command);// 采用线程池指定的策略拒绝任务
+        // 两种情况：
+        // 1.非RUNNING状态拒绝新的任务
+        // 2.队列满了启动新的线程失败（workCount > maximumPoolSize）
+    } else if (!addWorker(command, false))
+        reject(command);
+}
+```
+addWorker()方法的简化代码：
+```
+private boolean addWorker(Runnable firstTask, boolean core) {
+
+    int wc = workerCountOf(c);
+    if (wc >= (core ? corePoolSize : maximumPoolSize)) {
+        return false;
+    }
+
+    w = new Worker(firstTask);
+    final Thread t = w.thread;
+    t.start();
+}
+```
+根据代码再来看上面提到的线程池工作过程中的添加任务的情况：
+
+(1)如果正在运行的线程数量小于 corePoolSize，那么马上创建线程运行这个任务；<br>
+(2)如果正在运行的线程数量大于或等于 corePoolSize，那么将这个任务放入队列；<br>
+(3)如果这时候队列满了，而且正在运行的线程数量小于 maximumPoolSize，那么还是要创建非核心线程立刻运行这个任务；<br>
+(4)如果队列满了，而且正在运行的线程数量大于或等于 maximumPoolSize，那么线程池会抛出异常RejectExecutionException。
+
+通过addWorker如果成功创建新的线程成功，则通过start()开启新线程，同时将firstTask作为这个Worker里的run()中执行的第一个任务。
+
+虽然每个Worker的任务是串行处理，但如果创建了多个Worker，因为共用一个workQueue，所以就会并行处理了。
+
+(3)线程管理
+
+通过线程池可以很好的管理线程的复用，控制并发数，以及销毁等过程,线程的复用和控制并发上面已经讲了，而线程的管理过程已经穿插在其中了，也很好理解。
+
+在ThreadPoolExecutor有个ctl的AtomicInteger变量。通过这一个变量保存了两个内容：
+
+(1)所有线程的数量<br>
+(2)每个线程所处的状态<br>
+其中低29位存线程数，高3位存runState，通过位运算来得到不同的值。
+```
+private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
+
+//得到线程的状态
+private static int runStateOf(int c) {
+    return c & ~CAPACITY;
+}
+
+
+//得到Worker的的数量
+private static int workerCountOf(int c) {
+    return c & CAPACITY;
+}
+
+
+// 判断线程是否在运行
+private static boolean isRunning(int c) {
+    return c < SHUTDOWN;
+}
+```
+这里主要通过shutdown和shutdownNow()来分析线程池的关闭过程。首先线程池有五种状态来控制任务添加与执行。主要介绍以下三种：
+
+(1)RUNNING状态：线程池正常运行，可以接受新的任务并处理队列中的任务；<br>
+(2)SHUTDOWN状态：不再接受新的任务，但是会执行队列中的任务；<br>
+(3)STOP状态：不再接受新任务，不处理队列中的任务<br>
+shutdown这个方法会将runState置为SHUTDOWN，会终止所有空闲的线程，而仍在工作的线程不受影响，所以队列中的任务人会被执行。shutdownNow方法将runState置为STOP。和shutdown方法的区别，这个方法会终止所有的线程，所以队列中的任务也不会被执行了。
 
 这篇博客写的很好：http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/
 
@@ -553,7 +690,7 @@ public class Test {
 ## NIO与IO
 1.区别
 
-(1)IO是面向流的，NIO是面向缓冲区的；
+(1)IO是面向流(stream)的，NIO是面向缓冲区(channel和buffer)的；
 
 (2)IO只能一次从流中读取或者写入1个字节或者几个字节，没有缓冲，NIO是先读入或者写入缓冲区，然后再处理，相对来说更灵活一些；
 
