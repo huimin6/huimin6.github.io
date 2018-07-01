@@ -366,8 +366,8 @@ public final boolean compareAndSet(int expect, int update) {
     return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
 }
 ```
-其中,unsafe.compareAndSwapInt()是一个native方法，正是调用CAS原语完成该操作。首先假设有一个变量i，i的初始值为0。每个线程都对i进行+1操作。CAS是这样保证同步的：假设有两个线程，线程1读取内存中的值为0，current = 0，next = 1，然后挂起，然后线程2对i进行操作，将i的值变成了1。线程2执行完，回到线程1，进入if里的compareAndSet方法，该方法进行的操作的逻辑是:<br>
-(1)如果操作数的值在内存中没有被修改，返回true，然后compareAndSet方法 返回next的值<br>
+其中，unsafe.compareAndSwapInt()是一个native方法，正是调用CAS原语完成该操作。首先假设有一个变量i，i的初始值为0。每个线程都对i进行+1操作。CAS是这样保证同步的：假设有两个线程，线程1读取内存中的值为0，current = 0，next = 1，然后挂起，然后线程2对i进行操作，将i的值变成了1。线程2执行完，回到线程1，进入if里的compareAndSet方法，该方法进行的操作的逻辑是:<br>
+(1)如果操作数的值在内存中没有被修改，返回true，然后compareAndSet方法返回next的值<br>
 (2)如果操作数的值在内存中被修改了，则返回false，重新进入下一次循环，重新得到 current的值为1，next的值为2，然后再比较，由于这次没有被修改，所以直接返回2。
 那么，为什么自增操作要通过CAS来完成呢？仔细观察incrementAndGet()方法，发现自增操作其实拆成了两步完成的：<br>
 int current = get();<br>
