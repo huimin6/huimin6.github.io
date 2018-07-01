@@ -7,6 +7,8 @@
         * [线程的生命周期](#线程的生命周期)
         * [sleep、wait和yield](#sleep、wait和yield)
         * [线程池](#线程池)
+    + [volatile关键字](#volatile关键字)
+    + [CAS\(compare and swap\)](#cascompare-and-swap)
     + [动态代理](#动态代理)
     + [NIO与IO](#nio与io)
 - [Java虚拟机](#java虚拟机)
@@ -309,6 +311,100 @@ shutdown这个方法会将runState置为SHUTDOWN，会终止所有空闲的线�
 
 这篇博客写的很好：http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/
 
+## volatile关键字
+## CAS(compare and swap)
+1.什么是CAS？
+
+CAS，compare and swap，中文就是比较并交换
+
+2.为什么要用CAS?
+
+在JDK1.5之前，主要是通过synchronize关键字来保证线程的同步，这将会导致有锁。
+
+锁机制存在如下的问题：
+
+(1)在多线程竞争下，加锁、释放锁会导致比较多的上下文切换和调度延时，会引起性能问题<br>
+(2)一个线程持有锁会导致其它所有需要此锁的线程挂起。<br>
+(3)如果一个优先级高的线程等待一个优先级低的线程释放锁会导致优先级倒置，引起性能风险。<br>
+volatile是不错的机制，但是volatile不能保证原子性。因此对于同步最终还是要回到锁机制上来。
+
+独占锁是一种悲观锁，synchronized就是一种独占锁，会导致其它所有需要锁的线程挂起，等待持有锁的线程释放锁。而另一个更加有效的锁就是乐观锁。所谓乐观锁就是，每次不加锁而是假设没有冲突而去完成某项操作，如果因为冲突失败就重试，直到成功为止。乐观锁用到的机制就是CAS，Compare and Swap。其实CAS也算是有锁操作，只不过是由CPU来触发，比synchronized性能好的多。CAS的关键点在于，系统在硬件层面保证了比较并交换操作的原子性，处理器使用基于对缓存加锁或总线加锁的方式来实现多处理器之间的原子操作。
+
+CAS是非阻塞算法的一种常见实现。
+
+3.CAS的机制
+
+CAS有3个操作数，内存值V，旧的预期值A，要修改的新值B。当且仅当预期值A和内存值V相同时，将内存值V修改为B，否则什么都不做。
+
+CAS 实现了区别于 sychronized 同步锁的一种乐观锁，当多个线程尝试使用CAS同时更新同一个变量时，只有其中一个线程能更新变量的值，而其它线程都失败，失败的线程并不会被挂起，而是被告知这次竞争中失败，并可以再次尝试。
+
+一个线程间共享的变量，首先在主存中会保留一份，然后每个线程的工作内存也会保留一份副本。这里说的预期值，就是线程保留的副本。当该线程从主存中获取该变量的值后，主存中该变量可能已经被其他线程刷新了，但是该线程工作内存中该变量却还是原来的值，这就是所谓的预期值了。当你要用CAS刷新该值的时候，如果发现线程工作内存和主存中不一致了，就会失败，如果一致，就可以更新成功。
+
+Atomic包提供了一系列原子类。这些类可以保证多线程环境下，当某个线程在执行atomic的方法时，不会被其他线程打断，而别的线程就像自旋锁一样，一直等到该方法执行完成，才由JVM从等待队列中选择一个线程执行。Atomic类在软件层面上是非阻塞的，它的原子性其实是在硬件层面上借助相关的指令来保证的。AtomicInteger是一个支持原子操作的  Integer类，就是保证对AtomicInteger类型变量的增加和减少操作是原子性的，不会出现多个线程下的数据不一致问题。如果不使用AtomicInteger，要实现一个按顺序获取的ID，就必须在每次获取时进行加锁操作，以避免出现并发时获取到同样的ID的现象。
+
+用AtomicInteger来研究在没有锁的情况下是如何做到数据正确性的。
+```
+//借助volatile原语，保证线程间的数据是可见的
+private volatile int value;
+
+public final int get() {
+        return value;
+}
+//++i的CAS实现代码
+public final int incrementAndGet() {
+    for (;;) {
+        int current = get();
+        int next = current + 1;
+        if (compareAndSet(current, next))
+            return next;
+    }
+}
+```
+在这里采用了CAS操作，每次从内存中读取数据然后将此数据和+1后的结果进行CAS操作，如果成功就返回结果，否则重试直到成功为止。而compareAndSet利用JNI来完成CPU指令的操作。
+```
+public final boolean compareAndSet(int expect, int update) {   
+    return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
+}
+```
+其中,unsafe.compareAndSwapInt()是一个native方法，正是调用CAS原语完成该操作。首先假设有一个变量i，i的初始值为0。每个线程都对i进行+1操作。CAS是这样保证同步的：假设有两个线程，线程1读取内存中的值为0，current = 0，next = 1，然后挂起，然后线程2对i进行操作，将i的值变成了1。线程2执行完，回到线程1，进入if里的compareAndSet方法，该方法进行的操作的逻辑是:<br>
+(1)如果操作数的值在内存中没有被修改，返回true，然后compareAndSet方法 返回next的值<br>
+(2)如果操作数的值在内存中被修改了，则返回false，重新进入下一次循环，重新得到 current的值为1，next的值为2，然后再比较，由于这次没有被修改，所以直接返回2。
+那么，为什么自增操作要通过CAS来完成呢？仔细观察incrementAndGet()方法，发现自增操作其实拆成了两步完成的：<br>
+int current = get();<br>
+int next = current + 1;<br>
+由于volatile只能保证读取或写入的是最新值，那么可能出现以下情况：<br>
+1)A线程执行get()操作，获取current值(假设为1)<br>
+2)B线程执行get()操作，获取current值(为1)<br>
+3)B线程执行next = current + 1操作，next = 2<br>
+4)A线程执行next = current + 1操作，next = 2<br>
+这样current(值为1)执行了两次自增操作，结果本应该是3，现在得到的确是2，所以，自增操作必须采用 CAS来完成。
+
+4.CAS的优缺点
+
+CAS由于是在硬件层面保证的原子性，不会锁住当前线程，它的效率是很高的。CAS虽然很高效的实现了原子操作，但是它依然存在三个问题。
+
+(1)ABA问题。因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。
+
+从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。关于ABA问题参考文档: http://blog.hesey.net/2011/09/resolve-aba-by-atomicstampedreference.html
+
+(2)循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。如果JVM能支持处理器提供的pause指令那么效率会有一定的提升，pause指令有两个作用，第一它可以延迟流水线执行指令(de-pipeline),使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突(memory order violation)而引起CPU流水线被清空(CPU pipeline flush)，从而提高CPU的执行效率。
+
+(3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2,j=a，合并一下ij=2a，然后用CAS来操作ij。从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行CAS操作。
+
+5.concurrent包的实现
+
+由于java的CAS同时具有volatile读和volatile写的内存语义，因此Java线程之间的通信现在有了下面四种方式：<br>
+(1)A线程写volatile变量，随后B线程读这个volatile变量。<br>
+(2)A线程写volatile变量，随后B线程用CAS更新这个volatile变量。<br>
+(3)A线程用CAS更新一个volatile变量，随后B线程用CAS更新这个volatile变量。<br>
+(4)A线程用CAS更新一个volatile变量，随后B线程读这个volatile变量。<br>
+Java的CAS会使用现代处理器上提供的高效机器级别原子指令，这些原子指令以原子方式对内存执行读-改-写操作，这是在多处理器中实现同步的关键(从本质上来说，能够支持原子性读-改-写指令的计算机器，是顺序计算图灵机的异步等价机器，因此任何现代的多处理器都会去支持某种能对内存执行原子性读-改-写操作的原子指令)。同时，volatile变量的读/写和CAS可以实现线程之间的通信。把这些特性整合在一起，就形成了整个concurrent包得以实现的基石。如果我们仔细分析concurrent包的源代码实现，会发现一个通用化的实现模式：<br>
+首先，声明共享变量为volatile；<br>
+然后，使用CAS的原子条件更新来实现线程之间的同步；<br>
+同时，配合以volatile的读/写和CAS所具有的volatile读和写的内存语义来实现线程之间的通信。
+
+AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中的类)，这些concurrent包中的基础类都是使用这种模式来实现的，而concurrent包中的高层类又是依赖于这些基础类来实现的。从整体来看，concurrent包的实现示意图如下：
+<div align="center"> <img src="../pictures//concurrent.png"/> </div><br>
 ## 动态代理
 与静态代理相比，动态代理的好处就是不需要为每个类都生成代理类，可以在运行过程中动态生成代码
 
