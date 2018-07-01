@@ -390,7 +390,51 @@ CAS由于是在硬件层面保证的原子性，不会锁住当前线程，它�
 (2)循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。如果JVM能支持处理器提供的pause指令那么效率会有一定的提升，pause指令有两个作用，第一它可以延迟流水线执行指令(de-pipeline),使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突(memory order violation)而引起CPU流水线被清空(CPU pipeline flush)，从而提高CPU的执行效率。
 
 (3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2,j=a，合并一下ij=2a，然后用CAS来操作ij。从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行CAS操作。
+这里粘贴一个，模拟 CAS 实现的计数器：
+```
+public class CASCount implements Runnable {
+private SimilatedCAS counter = new SimilatedCAS();
+public void run() {
+for (int i = 0; i < 10000; i++) {
+System.out.println(this.increment());
+}
+}
 
+public int increment() {
+int oldValue = counter.getValue();
+int newValue = oldValue + 1;
+while (!counter.compareAndSwap(oldValue, newValue)) { //
+如果 CAS 失败,就去拿新值继续执行 CAS
+oldValue = counter.getValue();
+newValue = oldValue + 1;
+}
+return newValue;
+}
+public static void main(String[] args) {
+Runnable run = new CASCount();
+new Thread(run).start();
+new Thread(run).start();
+new Thread(run).start();
+new Thread(run).start();
+new Thread(run).start();
+}
+}
+class SimilatedCAS {
+private int value;
+public int getValue() {
+return value;
+}
+// 这里只能用 synchronized 了,毕竟无法调用操作系统的 CAS
+public synchronized boolean compareAndSwap(int expectedValue,
+int newValue) {
+if (value == expectedValue) {
+value = newValue;
+return true;
+}
+return false;
+}
+}
+```
 5.concurrent包的实现
 
 由于java的CAS同时具有volatile读和volatile写的内存语义，因此Java线程之间的通信现在有了下面四种方式：<br>
