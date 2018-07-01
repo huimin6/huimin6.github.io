@@ -405,6 +405,7 @@ Java的CAS会使用现代处理器上提供的高效机器级别原子指令，�
 
 AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中的类)，这些concurrent包中的基础类都是使用这种模式来实现的，而concurrent包中的高层类又是依赖于这些基础类来实现的。从整体来看，concurrent包的实现示意图如下：
 <div align="center"> <img src="../pictures//concurrent.png"/> </div><br>
+
 ## 动态代理
 与静态代理相比，动态代理的好处就是不需要为每个类都生成代理类，可以在运行过程中动态生成代码
 
