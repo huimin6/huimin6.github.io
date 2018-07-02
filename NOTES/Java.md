@@ -312,6 +312,9 @@ shutdown这个方法会将runState置为SHUTDOWN，会终止所有空闲的线�
 这篇博客写的很好：http://silencedut.com/2016/06/25/从使用到原理学习Java线程池/
 
 ## volatile关键字
+
+这篇博客讲的非常好：http://www.importnew.com/24082.html
+
 ## CAS(compare and swap)
 1.什么是CAS？
 
