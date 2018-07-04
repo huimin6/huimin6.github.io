@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [Java](#java)
+    + [String](#string)
     + [进程与线程](#进程与线程)
     + [多线程](#多线程)
         * [创建线程的三种方式](#创建线程的三种方式)
@@ -9,6 +10,7 @@
         * [线程池](#线程池)
     + [volatile关键字](#volatile关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
+    + [偏向锁、轻量级锁和重量级锁](#偏向锁、轻量级锁和重量级锁)
     + [动态代理](#动态代理)
     + [NIO与IO](#nio与io)
 - [Java虚拟机](#java虚拟机)
@@ -17,6 +19,31 @@
 <!-- /MarkdownTOC -->
 
 # Java
+
+## String
+```
+/**
+ * 编译期无法确定
+ */
+public void test(){
+    String str1="abc";   
+    String str2="def";   
+    String str3=str1+str2;
+    System.out.println("===========test============");
+    System.out.println(str3=="abcdef"); //false
+}
+```
+执行上述代码，结果为：false
+
+分析：因为str3指向堆中的"abcdef"对象，而"abcdef"是字符串池中的对象，所以结果为false。JVM对String str="abc"对象放在常量池中是在编译时做的，而String str3=str1+str2是在运行时刻才能知道的。new对象也是在运行时才做的。而这段代码总共创建了5个对象，字符串池中两个、堆中三个。+运算符会在堆中建立来两个String对象，这两个对象的值分别是"abc"和"def"，也就是说从字符串池中复制这两个值，然后在堆中创建两个对象，然后再建立对象str3，然后将"abcdef"的堆地址赋给str3。
+
+执行过程： 
+(1)栈中开辟一块中间存放引用str1，str1指向池中String常量"abc"。 
+(2)栈中开辟一块中间存放引用str2，str2指向池中String常量"def"。 
+(3)栈中开辟一块中间存放引用str3。
+(4)str1 + str2通过StringBuilder的最后一步toString()方法还原一个新的String对象"abcdef"，因此堆中开辟一块空间存放此对象。
+(5)引用str3指向堆中(str1 + str2)所还原的新String对象。 
+(6)str3指向的对象在堆中，而常量"abcdef"在池中，输出为false。
 
 ## 进程与线程
 1.进程与线程的区别：
