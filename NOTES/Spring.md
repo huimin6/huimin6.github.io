@@ -1,6 +1,8 @@
 # Spring
 ## Spring中IOC的实现原理
 
+参考博客：https://blog.csdn.net/shenghuaday/article/details/51399433
+
 ## bean的生命周期
 
 1.调用者通过getBean()请求某一个Bean，如果容器注册了org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor接口，那么在实例化Bean之前，将调用接口的postProcessBeforeInstantiation()方法<br>
