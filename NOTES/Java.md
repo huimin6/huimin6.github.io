@@ -8,12 +8,12 @@
         * [线程的生命周期](#线程的生命周期)
         * [sleep、wait和yield](#sleepwait和yield)
         * [线程池](#线程池)
-    + [volatile关键字](#volatile关键字)
+    + [volatile 关键字](#volatile关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
     + [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
     + [动态代理](#动态代理)
-    + [NIO与IO](#nio与io)
-- [Java虚拟机](#java虚拟机)
+    + [NIO 与 IO](#nio与io)
+- [Java 虚拟机](#java虚拟机)
     + [垃圾回收](#垃圾回收)
 
 <!-- /MarkdownTOC -->
