@@ -6,7 +6,7 @@
     + [多线程](#多线程)
         * [创建线程的三种方式](#创建线程的三种方式)
         * [线程的生命周期](#线程的生命周期)
-        * [sleep和wait和yield](#sleep和wait和yield)
+        * [sleep和wait和yield](#sleep、wait和yield)
         * [线程池](#线程池)
     + [volatile关键字](#volatile关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
