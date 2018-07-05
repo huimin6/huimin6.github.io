@@ -162,7 +162,7 @@ public class ThirdThread implements Callable<Integer>{
 线程的生命周期：新建(New)、就绪(Runnable)、运行(Running)、阻塞(Blocker)、死亡(Dead)
 <div align="center"> <img src="../pictures//thread.jpg"/> </div><br>
 
-### sleep和wait和yield
+### sleep、wait和yield
 |sleep()、wait()和yield()比较|
 |-|
 | sleep()、yield()是线程类(Thread)的方法，wait()是Object类的方法 |
