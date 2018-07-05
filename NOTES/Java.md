@@ -8,7 +8,7 @@
         * [线程的生命周期](#线程的生命周期)
         * [sleep、wait 和 yield](#sleepwait和yield)
         * [线程池](#线程池)
-    + [volatile 关键字](#volatile 关键字)
+    + [volatile 关键字](#volatile关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
     + [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
     + [动态代理](#动态代理)
@@ -351,7 +351,7 @@ shutdown这个方法会将runState置为SHUTDOWN，会终止所有空闲的线�
 
 参考的博客：https://blog.csdn.net/xu__cg/article/details/52962991
 
-## volatile 关键字
+## volatile关键字
 
 这篇博客讲的非常好：http://www.importnew.com/24082.html
 
