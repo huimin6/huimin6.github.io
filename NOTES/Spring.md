@@ -65,13 +65,13 @@ IoC 和 DI 由什么关系呢？其实它们是同一个概念的不同角度描
 
 ## IoC 容器的初始化
 
-1. Resource定位 （Bean 的定义文件定位）
+1.Resource定位 （Bean 的定义文件定位）
 
-2. 将 Resource 定位好的文件载入到BeanDefinition
+2.将 Resource 定位好的文件载入到BeanDefinition
 
 BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用户定义好的 Bean 表示成 IOC 容器的内部数据结构也就是 BeanDefinition， 配置文件中的每一个 <bean> 都对应着一个 BeanDefinition 对象，IoC 容器中是通过 HashMap < id, BeanDefinition > 来存储的
     
-3. 将 BeanDefinition 注册到容器中
+3.将 BeanDefinition 注册到容器中
 
 向IOC容器注册这些 BeanDefinition，这个过程是通过 BeanDefinitionRegistery 接口来实现的，将每一个 <bean> 对应的 BeanDefinition 对象注入到 HashMap < id, BeanDefinition > 容器中
     
