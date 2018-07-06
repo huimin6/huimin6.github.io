@@ -23,8 +23,8 @@ IoC—Inversion of Control，即“控制反转”，不是什么技术，而是
 
 用图例说明一下，传统程序设计如图1，都是主动去创建相关对象然后再组合起来：
 
-<div align="center"> <img src="../pictures//IoC_1.jpg"/> </div><div align="center"> <img src="../pictures//IoC_2.jpg"/> </div><br>
-
+<div align="center"> <img src="../pictures//IoC_1.jpg"/> </div> <div align="center"> <img src="../pictures//IoC_2.jpg"/> </div><br>
+<div align="center"> <span> <img src="../pictures//IoC_1.jpg"/> </span> <span> <img src="../pictures//IoC_2.jpg"/> </span> </div><br>
 当有了IoC/DI的容器后，在客户端类中不再主动去创建这些对象了，如图2-2所示:
 
 2.IoC 能做什么
@@ -42,11 +42,13 @@ DI—Dependency Injection，即“依赖注入”：是组件之间依赖关系�
 
 理解DI的关键是：“谁依赖谁，为什么需要依赖，谁注入谁，注入了什么”，那我们来深入分析一下：
 
-*谁依赖于谁：当然是应用程序依赖于IoC容器；
-*为什么需要依赖：应用程序需要IoC容器来提供对象需要的外部资源；
-*谁注入谁：很明显是IoC容器注入应用程序某个对象，应用程序依赖的对象；
+* 谁依赖于谁：当然是应用程序依赖于IoC容器；
 
-*注入了什么：就是注入某个对象所需要的外部资源（包括对象、资源、常量数据）。
+* 为什么需要依赖：应用程序需要IoC容器来提供对象需要的外部资源；
+
+* 谁注入谁：很明显是IoC容器注入应用程序某个对象，应用程序依赖的对象；
+
+* 注入了什么：就是注入某个对象所需要的外部资源（包括对象、资源、常量数据）。
 
  
 
