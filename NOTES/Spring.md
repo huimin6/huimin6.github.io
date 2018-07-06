@@ -63,12 +63,12 @@ IoC 和 DI 由什么关系呢？其实它们是同一个概念的不同角度描
 
 ## bean 的生命周期
 
-1.调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
-2.根据配置情况调用Bean构造函数或工厂方法实例化 Bean<br>
-3.如果 Bean 配置了属性信息，那么在实例化后将调用 Bean 的属性设置方法设置属性值<br>
-4.通过后处理器 BeanPostPorcessor 对 Bean 进行加工(AOP、动态代理)<br>
-5.执行属性中定义的(如果定义过这个方法) init-method 方法<br>
-6.容器关闭，触发对 Bean 后续生命周期的管理，如果 Bean 实现了 DisposableBean 接口，就调用 destory() 方法，释放资源，销毁 Bean
+1. 调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
+2. 根据配置情况调用Bean构造函数或工厂方法实例化 Bean<br>
+3. 如果 Bean 配置了属性信息，那么在实例化后将调用 Bean 的属性设置方法设置属性值<br>
+4. 通过后处理器 BeanPostPorcessor 对 Bean 进行加工(AOP、动态代理)<br>
+5. 执行属性中定义的(如果定义过这个方法) init-method 方法<br>
+6. 容器关闭，触发对 Bean 后续生命周期的管理，如果 Bean 实现了 DisposableBean 接口，就调用 destory() 方法，释放资源，销毁 Bean
 
 
 ## Spring 中用到的设计模式
