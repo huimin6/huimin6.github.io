@@ -3,7 +3,7 @@
 - [Spring](#spring)
     + [IoC](#ioc)
     + [Spring 中 IOC 的实现原理](#spring中ioc的实现原理)
-    + [IoC 容器的初始化](#ioc容器的初始化)
+    + [IoC 容器的初始化](#ioc-容器的初始化)
     + [bean 的生命周期](#bean的生命周期)
     + [Spring 中用到的设计模式](#spring中用到的设计模式)
 - [SpringMVC](#springmvc)
