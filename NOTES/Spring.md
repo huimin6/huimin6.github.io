@@ -2,9 +2,9 @@
 
 - [Spring](#spring)
     + [IoC](#ioc)
-    + [Spring中IOC的实现原理](#spring中ioc的实现原理)
-    + [bean的生命周期](#bean的生命周期)
-    + [Spring中用到的设计模式](#spring中用到的设计模式)
+    + [Spring 中 IOC 的实现原理](#spring-中-ioc-的实现原理)
+    + [bean 的生命周期](#bean-的生命周期)
+    + [Spring 中用到的设计模式](#spring-中用到的设计模式)
 - [SpringMVC](#springmvc)
 
 <!-- /MarkdownTOC -->
@@ -22,26 +22,26 @@
 　　>为何是反转，哪些方面反转了：有反转就有正转，传统应用程序是由我们自己在对象中主动控制去直接获取依赖对象，也就是正转；而反转则是由容器来帮忙创建及注入依赖对象；为何是反转？因为由容器帮我们查找及注入依赖对象，对象只是被动的接受依赖对象，所以是反转；哪些方面反转了？依赖对象的获取被反转了。
 
 用图例说明一下，传统程序设计如图2-1，都是主动去创建相关对象然后再组合起来：
-## Spring中IOC的实现原理
+## Spring 中 IOC 的实现原理
 
 参考博客：https://blog.csdn.net/shenghuaday/article/details/51399433
 
-## bean的生命周期
+## bean 的生命周期
 
-1.调用者通过getBean()请求某一个Bean，如果容器注册了org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor接口，那么在实例化Bean之前，将调用接口的postProcessBeforeInstantiation()方法<br>
-2.根据配置情况调用Bean构造函数或工厂方法实例化Bean<br>
-3.如果Bean配置了属性信息，那么在实例化后将调用Bean的属性设置方法设置属性值<br>
-4.通过后处理器BeanPostPorcessor对Bean进行加工(AOP、动态代理)<br>
-5.执行属性中定义的(如果定义过这个方法)init-method方法<br>
-6.容器关闭，触发对Bean后续生命周期的管理，如果Bean实现了DisposableBean接口，就调用destory()方法，释放资源，销毁Bean
+1.调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
+2.根据配置情况调用Bean构造函数或工厂方法实例化 Bean<br>
+3.如果 Bean 配置了属性信息，那么在实例化后将调用 Bean 的属性设置方法设置属性值<br>
+4.通过后处理器 BeanPostPorcessor 对 Bean 进行加工(AOP、动态代理)<br>
+5.执行属性中定义的(如果定义过这个方法) init-method 方法<br>
+6.容器关闭，触发对 Bean 后续生命周期的管理，如果 Bean 实现了 DisposableBean 接口，就调用 destory() 方法，释放资源，销毁 Bean
 
 
-## Spring中用到的设计模式
+## Spring 中用到的设计模式
 
-(1)工厂模式：Spring中bean的创建
+(1)工厂模式：Spring 中 bean 的创建
 # SpringMVC
 
-1.在web.xml中配置Servlet
+1.在 web.xml 中配置 Servlet
 ```
 <!-- springmvc的前端控制器 -->
     <servlet>
@@ -61,7 +61,7 @@
     </servlet-mapping>
 ```
 
-2.创建SpringMVC的xml配置文件
+2.创建 SpringMVC 的 xml 配置文件
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -89,6 +89,6 @@
     </bean>
 ```
 
-3.创建controller和view
+3.创建 controller 和 view
 
-在com.taotao.portal.controller包下面创建带有Controller注解的类，在    WEN-INF包下面创建对于的jsp页面作为视图
+在 com.taotao.portal.controller 包下面创建带有 Controller 注解的类，在    WEN-INF 包下面创建对于的 jsp 页面作为视图
