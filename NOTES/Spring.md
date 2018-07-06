@@ -63,6 +63,20 @@ IoC 和 DI 由什么关系呢？其实它们是同一个概念的不同角度描
 
 参考博客2：https://blog.csdn.net/fuzhongmin05/article/details/61614873/
 
+## IoC 容器的初始化
+
+1. Resource定位 （Bean 的定义文件定位）
+
+2. 将 Resource 定位好的文件载入到BeanDefinition
+
+BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用户定义好的 Bean 表示成 IOC 容器的内部数据结构也就是 BeanDefinition， 配置文件中的每一个 <bean> 都对应着一个 BeanDefinition 对象，IoC 容器中是通过 HashMap < id, BeanDefinition > 来存储的
+    
+3. 将 BeanDefinition 注册到容器中
+
+向IOC容器注册这些 BeanDefinition，这个过程是通过 BeanDefinitionRegistery 接口来实现的，将每一个 <bean> 对应的 BeanDefinition 对象注入到 HashMap < id, BeanDefinition > 容器中
+    
+**注意**：这时候并没有完成依赖注入，依赖的注入是在 getBean() 时候完成。对某个 Bean 设置 lazyinit 属性，那么这个 Bean 的依赖注入就会在容器初始化的时候完成
+    
 ## bean 的生命周期
 
 1. 调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
