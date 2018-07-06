@@ -23,9 +23,12 @@ IoC—Inversion of Control，即“控制反转”，不是什么技术，而是
 
 用图例说明一下，传统程序设计如图1，都是主动去创建相关对象然后再组合起来：
 
-<div align="center"> <img src="../pictures//IoC_1.jpg"/> </div> <div align="center"> <img src="../pictures//IoC_2.jpg"/> </div><br>
-<div align="center"> <span> <img src="../pictures//IoC_1.jpg"/> </span> <span> <img src="../pictures//IoC_2.jpg"/> </span> </div><br>
-当有了IoC/DI的容器后，在客户端类中不再主动去创建这些对象了，如图2-2所示:
+<div align="center"> <img src="../pictures//IoC_1.jpg"/> </div> <br> 
+<div align="center"> 图1 传统应用程序示意图 </div> <br>
+当有了 IoC/DI 的容器后，在客户端类中不再主动去创建这些对象了，如图2所示:
+
+<div align="center"> <img src="../pictures//IoC_2.jpg"/> </div><br>
+<div align="center"> 图2 有IoC/DI容器后程序结构示意图 </div> <br>
 
 2.IoC 能做什么
 
