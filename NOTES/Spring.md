@@ -59,7 +59,9 @@ IoC 和 DI 由什么关系呢？其实它们是同一个概念的不同角度描
 
 ## Spring 中 IOC 的实现原理
 
-参考博客：https://blog.csdn.net/shenghuaday/article/details/51399433
+参考博客1：https://blog.csdn.net/jiangyu1013/article/details/72654373
+
+参考博客2：https://blog.csdn.net/fuzhongmin05/article/details/61614873/
 
 ## bean 的生命周期
 
