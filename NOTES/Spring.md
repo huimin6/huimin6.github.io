@@ -77,7 +77,9 @@ BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用�
 向IOC容器注册这些 BeanDefinition，这个过程是通过 BeanDefinitionRegistery 接口来实现的，将每一个 <bean> 对应的 BeanDefinition 对象注入到 HashMap < id, BeanDefinition > 容器中
     
 **注意**：这时候并没有完成依赖注入，依赖的注入是在 getBean() 时候完成。对某个 Bean 设置 lazyinit 属性，那么这个 Bean 的依赖注入就会在容器初始化的时候完成
-    
+
+参考博客：https://www.cnblogs.com/chenjunjie12321/p/6124649.html
+
 ## bean 的生命周期
 
 1. 调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
