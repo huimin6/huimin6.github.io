@@ -23,9 +23,10 @@ IoC—Inversion of Control，即“控制反转”，不是什么技术，而是
 
 用图例说明一下，传统程序设计如图1，都是主动去创建相关对象然后再组合起来：
 
-<div align="center"> <img src="../pictures//thread.jpg"/> </div><div align="center"> <img src="../pictures//thread.jpg"/> </div><br>
+<div align="center"> <img src="../pictures//IoC_1.jpg"/> </div><div align="center"> <img src="../pictures//IoC_2.jpg"/> </div><br>
 
 当有了IoC/DI的容器后，在客户端类中不再主动去创建这些对象了，如图2-2所示:
+
 2.IoC 能做什么
 
 IoC 不是一种技术，只是一种思想，一个重要的面向对象编程的法则，它能指导我们如何设计出松耦合、更优良的程序。传统应用程序都是由我们在类内部主动创建依赖对象，从而导致类与类之间高耦合，难于测试；有了 IoC 容器后，把创建和查找依赖对象的控制权交给了容器，由容器进行注入组合对象，所以对象与对象之间是松散耦合，这样也方便测试，利于功能复用，更重要的是使得程序的整个体系结构变得非常灵活。
