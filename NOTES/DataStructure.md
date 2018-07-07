@@ -11,6 +11,7 @@
 ## 二叉树的分类
 
 <div align="center"> <img src="../pictures//binarytree.png"/> </div><br>
+
 |||
 |:-:|-|
 | 完美二叉树 | 一个深度为k(>=-1)且有2^(k+1) - 1个结点的二叉树称为完美二叉树 |
