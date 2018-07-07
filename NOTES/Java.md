@@ -954,7 +954,8 @@ public class Singleton {
     }
 }
 ```
-这种方式存在的问题就是，如果Singleton实现了Serializable接口，那么就会被序列化成多个实例，也不能避免通过反射，调用构造方法，创建多个实例
+这种方式存在的问题就是，如果Singleton实现了Serializable接口，那么就会被序列化成多个实例，也不能避免通过反射，调用构造方法，创建多个实例。
+
 (1)序列化攻击
 ```
 public void test() {
@@ -974,9 +975,9 @@ public void test() {
     System.out.println(s==s1);
 }
 ```
-上面输出结果为false，说明反序列化之后返回的是一个新的对象，为什么会这样呢？主要的原因就在readObject()方法，给出readObject()方法的源码:<br>
-readObject()方法的调用栈如下：<br>
-readObject--->readObject0--->readOrdinaryObject--->checkResolve
+上面输出结果为false，说明反序列化之后返回的是一个新的对象，为什么会这样呢？主要的原因就在readObject()方法，给出readObject()方法的源码:
+
+readObject()方法的调用栈：readObject--->readObject0--->readOrdinaryObject--->checkResolve
 ```
 private Object readOrdinaryObject(boolean unshared)
         throws IOException
@@ -1019,8 +1020,10 @@ Object obj;
                 "unable to create instance").initCause(ex);
         }
 ```
-isInstantiable()：如果一个 serializable/externalizable 的类可以在运行时被实例化，那么该方法就返回 true <br>
-desc.newInstance：该方法通过反射的方式调用无参构造方法新建一个对象。<br>
+isInstantiable()：如果一个 serializable/externalizable 的类可以在运行时被实例化，那么该方法就返回 true 
+
+desc.newInstance：该方法通过反射的方式调用无参构造方法新建一个对象。
+
 所以，也就可以解释，为什么序列化可以破坏单例了？是因为序列化会通过反射调用无参数的构造方法创建一个新的对象。
 
 查看第二部分的代码：
@@ -1038,8 +1041,10 @@ if (obj != null &&
             }
         }
 ```
-hasReadResolveMethod()：如果实现了 serializable 或者 externalizable 接口的类中包含readResolve则返回 true <br>
-invokeReadResolve：通过反射的方式调用要被反序列化的类的 readResolve 方法。<br>
+hasReadResolveMethod()：如果实现了 serializable 或者 externalizable 接口的类中包含readResolve则返回 true 
+
+invokeReadResolve：通过反射的方式调用要被反序列化的类的 readResolve 方法。
+
 所以，原理也就清楚了，主要在Singleton中定义readResolve方法，并在该方法中指定要返回的对象的生成策略，就可以方式单例被破坏。
 
 (2)反射攻击
