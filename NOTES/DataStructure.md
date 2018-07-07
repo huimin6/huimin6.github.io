@@ -24,9 +24,9 @@
 
 <div align="center"> <img src="../pictures//binarytree.png"/> </div><br>
 
-##二叉树的遍历
+## 二叉树的遍历
 
-<div align="center"> <img src="../pictures//binary-tree.png"/> </div><br>
+<div align="center"> <img src="../pictures//binary-tree.jpg"/> </div><br>
 前序遍历：A B D E C F
 
 中序遍历: D B E A F C
