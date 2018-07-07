@@ -10,7 +10,7 @@
 
 ## 二叉树的分类
 
-<div align="center"> <img src="../pictures//binarytree.png"/> </div><br>
+<div align=""> <img src="../pictures//binarytree.png"/> </div><br>
 
 |二叉树|特点|
 |:-:|-|
