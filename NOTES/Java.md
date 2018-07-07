@@ -2,6 +2,7 @@
 
 - [Java](#java)
     + [String](#string)
+    + [枚举类](#枚举类)
     + [进程与线程](#进程与线程)
     + [多线程](#多线程)
         * [创建线程的三种方式](#创建线程的三种方式)
@@ -47,6 +48,23 @@ public void test(){
 (6)str3指向的对象在堆中，而常量"abcdef"在池中，输出为false。<br>
 
 很好的一篇博客：https://www.cnblogs.com/xiaoxi/p/6036701.html
+
+## 枚举类
+
+适合实现单例设计模式
+```
+public enum SeasonEnum {
+    SPRING,SUMMER,FALL,WINTER;
+}
+```
+
+枚举类的特点：
+
+1. enum 和 class、interface 的地位一样
+2. 使用enum定义的枚举类默认继承了 java.lang.Enum，而不是继承 Object 类。枚举类可以实现一个或多个接口。
+3. 枚举类的所有实例都必须放在第一行展示，不需使用 new 关键字，不需显式调用构造器。自动添加 public static final 修饰。
+4. 使用 enum 定义、非抽象的枚举类默认使用 final 修饰，不可以被继承。
+5. 枚举类的构造器只能是私有的。
 
 ## 进程与线程
 1.进程与线程的区别：
@@ -876,6 +894,7 @@ public class Test {
 使用cglib可以实现动态代理，即使被代理的类没有实现接口，但被代理的类必须不是final类。
 
 如果项目中有些类没有实现接口，则不应该为了实现动态代理而刻意去抽出一些没有实例意义的接口，通过cglib可以解决该问题。
+
 ## NIO与IO
 1.区别
 
@@ -891,8 +910,167 @@ public class Test {
 
 参考博客：https://blog.csdn.net/a724888/article/details/72637636
 
+一、单例设计模式
+
+1.懒汉式——双重校验锁
+```
+public class Singleton {
+    //将对象实例用volatile修饰
+    private volatile static Singleton singleton = null;
+    private Singleton() {
+
+    }
+    public static Singleton getInstance() {
+        //第一次校验
+        if(singleton == null) {
+            //加锁
+            synchronized(Singleton.class) {
+                //第二次校验
+                if(singleton == null) {
+                    singleton = new Singleton();
+                }
+            }
+        }
+        return singleton;
+    }
+}
+```
+2.饿汉式——静态内部类
+```
+public class Singleton {
+    private Singleton() {
+    
+    }
+    //当未调用getInstance()方法时，静态内部类不会被加载，单例对象就不会创建
+    private static class SingletonHolder {
+        private static Singleton instance = new Singleton();
+    }
+    public static Singleton getInstance(){
+        return SingletonHolder.instance;
+    }
+    //添加下面这部分代码可以防止序列化的时候破坏单例模式，原因后面提到了
+    private Object readResolve() {
+        return singleton;
+    }
+}
+```
+这种方式存在的问题就是，如果Singleton实现了Serializable接口，那么就会被序列化成多个实例，也不能避免通过反射，调用构造方法，创建多个实例
+(1)序列化攻击
+```
+public void test() {
+    Singleton s1= null;
+    Singleton s = Singleton.getInstance();
+    //序列化
+    FileOutputStream fos = new FileOutputStream("Singleton.obj");
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    oos.writeObject(s);
+    oos.flush();
+    oos.close();
+    //反序列化
+    FileInputStream fis = new FileInputStream("Singleton.obj");
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    s1 = (Singleton)ois.readObject();
+    //输出结果为false
+    System.out.println(s==s1);
+}
+```
+上面输出结果为false，说明反序列化之后返回的是一个新的对象，为什么会这样呢？主要的原因就在readObject()方法，给出readObject()方法的源码:<br>
+readObject()方法的调用栈如下：<br>
+readObject--->readObject0--->readOrdinaryObject--->checkResolve
+```
+private Object readOrdinaryObject(boolean unshared)
+        throws IOException
+    {
+        //此处省略部分代码
+        Object obj;
+        try {
+            obj = desc.isInstantiable() ? desc.newInstance() : null;
+        } catch (Exception ex) {
+            throw (IOException) new InvalidClassException(
+                desc.forClass().getName(),
+                "unable to create instance").initCause(ex);
+        }
+ 
+        //此处省略部分代码
+        if (obj != null &&
+            handles.lookupException(passHandle) == null &&
+            desc.hasReadResolveMethod())
+        {
+            Object rep = desc.invokeReadResolve(obj);
+            if (unshared && rep.getClass().isArray()) {
+                rep = cloneArray(rep);
+            }
+            if (rep != obj) {
+                handles.setObject(passHandle, obj = rep);
+            }
+        }
+ 
+        return obj;
+    }
+```
+查看第一部分的代码：
+```
+Object obj;
+        try {
+            obj = desc.isInstantiable() ? desc.newInstance() : null;
+        } catch (Exception ex) {
+            throw (IOException) new InvalidClassException(
+                desc.forClass().getName(),
+                "unable to create instance").initCause(ex);
+        }
+```
+isInstantiable()：如果一个 serializable/externalizable 的类可以在运行时被实例化，那么该方法就返回 true <br>
+desc.newInstance：该方法通过反射的方式调用无参构造方法新建一个对象。<br>
+所以，也就可以解释，为什么序列化可以破坏单例了？是因为序列化会通过反射调用无参数的构造方法创建一个新的对象。
+
+查看第二部分的代码：
+```
+if (obj != null &&
+            handles.lookupException(passHandle) == null &&
+            desc.hasReadResolveMethod())
+        {
+            Object rep = desc.invokeReadResolve(obj);
+            if (unshared && rep.getClass().isArray()) {
+                rep = cloneArray(rep);
+            }
+            if (rep != obj) {
+                handles.setObject(passHandle, obj = rep);
+            }
+        }
+```
+hasReadResolveMethod()：如果实现了 serializable 或者 externalizable 接口的类中包含readResolve则返回 true <br>
+invokeReadResolve：通过反射的方式调用要被反序列化的类的 readResolve 方法。<br>
+所以，原理也就清楚了，主要在Singleton中定义readResolve方法，并在该方法中指定要返回的对象的生成策略，就可以方式单例被破坏。
+
+(2)反射攻击
+```
+public class Test
+{
+    public static void main(String[] args) {
+        
+        Class<Singleton> classType = Singleton.class;
+        //通过反射获取构造函数
+        Constructor<Singleton> c = (Constructor<Singleton>) classType.getDeclaredConstructor();
+        //设置之后可以调用私有的构造函数
+        c.setAccessible(true);
+        //创建对象实例
+        c.newInstance();
+    }
+}
+```
+
+3.枚举单例
+```
+public enum Singleton{
+    INSTANCE;
+}
+```
+最安全，最有效，最简单
+
+很好的博客：http://blog.chenzuhuang.com/archive/13.html
+
 # Java虚拟机
 ## 垃圾回收
-Java的垃圾回收主要是回收堆中的对象实例，什么时候回收由系统决定。在垃圾回收之前，首先要通过可达性分析（根节点是虚拟机栈中引用的对象、方法区中类静态属性引用的对象、方法区中常量引用的对象、本地方法栈中JNI引用的对象）判断对象是否存活，然后将死亡的对象实例所占用的内存空间回收。堆所占用的内存可以划分为新生代和老年代，新生代内存空间进一步还可以细分为EdenSpace、FromSurvivor、ToSurvivor，新创建的对象实例的内存大多数（启用本地线程分配缓冲的按照线程优先在TLAB上分配，大对象（很长的字符串和数组）则直接进入老年代）都在EdenSpace上分配。垃圾回收策略现在一般都是采用分代回收机制，新生代中，对象的存活率低，垃圾回收频率比较高，主要采用“复制”算法，老年代中对象的存活率高，垃圾回收频率较低，而且没有额外的空间对它进行分配担保，主要采用“标记-清理”和“标记-整理算法”。
+Java的垃圾回收主要是回收堆中的对象实例，什么时候回收由系统决定。在垃圾回收之前，首先要通过可达性分析（根节点是虚拟机栈中引用的对象、方法区中类静态属性引用的对象、方法区中常量引用的对象、本地方法栈中 JNI 引用的对象）判断对象是否存活，然后将死亡的对象实例所占用的内存空间回收。堆所占用的内存可以划分为新生代和老年代，新生代内存空间进一步还可以细分为 EdenSpace、FromSurvivor、ToSurvivor，新创建的对象实例的内存大多数（启用本地线程分配缓冲的按照线程优先在 TLAB 上分配，大对象（很长的字符串和数组）则直接进入老年代）都在 EdenSpace 上分配。垃圾回收策略现在一般都是采用分代回收机制，新生代中，对象的存活率低，垃圾回收频率比较高，主要采用“复制”算法，老年代中对象的存活率高，垃圾回收频率较低，而且没有额外的空间对它进行分配担保，主要采用“标记-清理”和“标记-整理算法”。
 
 
