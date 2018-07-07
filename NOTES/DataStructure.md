@@ -12,14 +12,13 @@
 
 <div align="center"> <img src="../pictures//binarytree.png"/> </div><br>
 <center>
-    
 |二叉树|特点|
 |:-:|-|
 | 完美二叉树 | 一个深度为k(>=-1)且有2^(k+1) - 1个结点的二叉树称为完美二叉树 |
 | 完满二叉树 | 所有非叶子节点的度都为2 |
 | 完全二叉树 | 完美二叉树从最后一层，从右到左一次删掉部分节点 |
-
 </center>
+
 ## 二叉树的遍历
 
 <div align="center"> <img src="../pictures//binary-tree.jpg"/> </div><br>
