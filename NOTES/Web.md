@@ -21,3 +21,11 @@
 Session是在服务端保存的一种数据结构，用来跟踪用户的状态，这个数据可以保存在集群、数据库、文件中；
 
 Cookie是客户端保存用户信息的一种机制，用来记录用户的一些信息，也是实现Session的一种方式。
+
+## http请求和响应
+
+参考博客：https://blog.csdn.net/xun527/article/details/78387345
+
+## http和https
+
+参考博客：https://www.cnblogs.com/wqhwe/p/5407468.html
