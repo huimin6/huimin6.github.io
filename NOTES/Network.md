@@ -23,7 +23,7 @@ TCP在传输之前会进行三次沟通，一般称为“三次握手”，传�
 
 (1)不要将确认序号 ack 与标志位中的 ACK 搞混了。
 
-(2)确认方 ack=发起方req+1，两端配对。
+(2)确认方 ack=发起方seq+1，两端配对。
 
 <div align="center"> <img src="../pictures//network1.png"/> </div><br>
 <div align="center"> 图1 用三次握手建立TCP连接 </div> <br>
