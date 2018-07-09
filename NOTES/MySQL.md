@@ -53,7 +53,7 @@
 | 主码和辅码索引的叶子节点中存储的都是存储该条数据记录的地址 | 主码索引叶子节点中存储的就是该条数据记录，辅码索引叶子节点中存储的是该条数据记录对于的主码|
 | 不支持事务 | 支持事务 |
 
-1. 区别：
+1.区别：
 
 （1）事务处理：
 
@@ -66,21 +66,30 @@ MyISAM是表级锁，而InnoDB是行级锁；
 （3）select ,update ,insert ,delete 操作：
 
 MyISAM：如果执行大量的SELECT，MyISAM是更好的选择
+
 InnoDB：如果你的数据执行大量的INSERT或UPDATE，出于性能方面的考虑，应该使用InnoDB表
+
 （4）查询表的行数不同：
 
-MyISAM：select count(*) from table,MyISAM只要简单的读出保存好的行数，注意的是，当count(*)语句包含   where条件时，两种表的操作是一样的
-InnoDB ： InnoDB 中不保存表的具体行数，也就是说，执行select count(*) from table时，InnoDB要扫描一遍整个表来计算有多少行
+MyISAM：select count(*) from table, MyISAM 只要简单的读出保存好的行数，注意的是，当 count(*) 语句包含 where 条件时，两种表的操作是一样的
+InnoDB ： InnoDB 中不保存表的具体行数，也就是说，执行 select count(*) from table 时，InnoDB 要扫描一遍整个表来计算有多少行
+
 （5）外键支持：
+
 mysiam表不支持外键，而InnoDB支持
+
 2. 为什么MyISAM会比Innodb 的查询速度快。
 
 INNODB在做SELECT的时候，要维护的东西比MYISAM引擎多很多；
+
 1）数据块，INNODB要缓存，MYISAM只缓存索引块，  这中间还有换进换出的减少； 
+
 2）innodb寻址要映射到块，再到行，MYISAM 记录的直接是文件的OFFSET，定位比INNODB要快
-3）INNODB还需要维护MVCC一致；虽然你的场景没有，但他还是需要去检查和维护
-MVCC ( Multi-Version Concurrency Control )多版本并发控制 
+
+3）INNODB还需要维护MVCC一致；虽然你的场景没有，但他还是需要去检查和维护 MVCC ( Multi-Version Concurrency Control )多版本并发控制 
+
 3. 应用场景
+
 MyISAM适合：(1)做很多count 的计算；(2)插入不频繁，查询非常频繁；(3)没有事务。
 
 InnoDB适合：(1)可靠性要求比较高，或者要求事务；(2)表更新和查询都相当的频繁，并且行锁定的机会比较大的情况。
