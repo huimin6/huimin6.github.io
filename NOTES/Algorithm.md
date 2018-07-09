@@ -4,19 +4,30 @@
 
 ## rand5生成rand7
 
-5*(rand5()-1) + rand5
+给你一个能生成1到5随机数的函数，用它写一个函数生成1到7的随机数，( 即，使用函数 rand5() 来实现函数 rand7() )
+
+rand5()能生成的数：1, 2, 3, 4, 5
+
+rand7()能生成的数：1, 2, 3, 4, 5, 6, 7
+
+现在要构造一个函数，使其所生成的数中包含 (1, 2, 3, 4, 5, 6, 7)，并且每个数生成的概率相等
+
+**f(x) = 5*(rand5()-1) + rand5()**
+
+实现代码如下：
 ```
-int x = ~(1<<31);
+int x = ~(1<<31);//相当于 int x = Integer.MAX_VALUE;
 while(x < 7) {
     x = 5*(rand5()-1) + rand5;
 }
 return x;
 ```
+
+通用解法：a < b，f(x) = a*(randa() - 1) + randa();
+
 ## 堆排序
 
 ```
-package com.atguigu.java;
-
 public class Exercise01 {
 	/**
 	 * (最大)堆的向下调整算法
@@ -75,11 +86,10 @@ public class Exercise01 {
 	}
 }
 ```
+
 ## 快速排序
 
 ```
-package com.atguigu.java;
-
 public class Exercise03 {
 	//快速排序
 	public static void quickSort(int[] a, int start, int end) {
@@ -101,7 +111,7 @@ public class Exercise03 {
 			a[j] = a[i];
 		}
 		a[i] = target;
-	    quickSort(a, start, i-1);
+	        quickSort(a, start, i-1);
 		quickSort(a, i+1, end);
 	}
 	public static void main(String[] args) {
@@ -117,7 +127,6 @@ public class Exercise03 {
 ## 归并排序
 
 ```
-package com.atguigu.java;
 /*
  * 归并排序：
  * 先把数组一分为2，数组不一定是有序的，然后不停分解，当各个子数组中只剩一个元素时，就有序了
