@@ -89,6 +89,7 @@ BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用�
 5. 执行属性中定义的(如果定义过这个方法) init-method 方法<br>
 6. 容器关闭，触发对 Bean 后续生命周期的管理，如果 Bean 实现了 DisposableBean 接口，就调用 destory() 方法，释放资源，销毁 Bean
 
+http://blog.51cto.com/wenshengzhu/1950146
 
 ## Spring 中用到的设计模式
 
