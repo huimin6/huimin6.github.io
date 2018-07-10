@@ -42,10 +42,11 @@ insert into student(id, name, score) values
 
 |关键字|详解|
 |:-:|-|
+| float | float(7, 4)，其中7表示的是这个浮点数总的位数，4表示小数点后面的位数，<br>就是说如果小数部分是4位，那么整数部分最多3位 |
 | limit | select * from student limit m, n <br>其中 m 是指记录开始的 index，从 0 开始，表示第一条记录，n 是指从第 m+1 条开始，取 n 条。<br>例如：select * from tablename limit 2, 4  即取出第3条至第6条，共4条记录 |
 | order by | select score from student order by score asc\|desc; <br> 对结果集按照一个列或者多个列进行排序，默认按照升序 |
 | count() | select count(id) from student where score > 60; <br> count() 函数返回匹配指定列的值的个数，不包括 null |
-| group by | select id from student where score = 60 group by score; <br> group by 语句用于结合聚合函数，根据一个或多个列对结果集进行分组 |
+| group by | select id from student group by score; <br> group by 语句用于结合聚合函数，根据一个或多个列对结果集进行分组 |
 # 索引
 
 **索引**：是把一个关键码和它对应的数据记录的位置相关联的过程
