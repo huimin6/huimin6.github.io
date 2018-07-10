@@ -48,6 +48,9 @@ insert into student(id, name, score) values
 | order by | select score from student order by score asc\|desc; <br> 对结果集按照一个列或者多个列进行排序，默认按照升序 |
 | count() | select count(id) from student where score > 60; <br> count() 函数返回匹配指定列的值的个数，不包括 null |
 | group by | select id from student group by score; <br> group by 语句用于结合聚合函数，根据一个或多个列对结果集进行分组 |
+
+知乎上面的高分回答：如何学习SQL?(https://www.zhihu.com/question/19552975)
+
 # 索引
 
 **索引**：是把一个关键码和它对应的数据记录的位置相关联的过程
