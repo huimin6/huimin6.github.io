@@ -17,7 +17,7 @@
 |关键字|详解|
 |:-:|-|
 | limit | select * from table limit m, n <br>其中m是指记录开始的index，从0开始，表示第一条记录，n是指从第m+1条开始，取n条。<br>例如：select * from tablename limit 2,4  即取出第3条至第6条，共4条记录 |
-| order by | SELECT column_name,column_name FROM table_name ORDER BY column_name,column_name ASC|DESC; <br> 对结果集按照一个列或者多个列进行排序，默认按照升序 |
+| order by | SELECT column_name,column_name FROM table_name ORDER BY column_name,column_name ASC\|DESC; <br> 对结果集按照一个列或者多个列进行排序，默认按照升序 |
 # 索引
 
 **索引**：是把一个关键码和它对应的数据记录的位置相关联的过程
