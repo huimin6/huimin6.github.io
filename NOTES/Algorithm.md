@@ -1,3 +1,16 @@
+<!-- MarkdownTOC -->
+
+- [算法](#算法)
+    + [2 sum问题](#2-sum问题)
+    + [rand5生成rand7](#rand5生成rand7)
+    + [堆排序](#堆排序)
+    + [快速排序](#快速排序)
+    + [归并排序](#归并排序)
+
+<!-- /MarkdownTOC -->
+
+# 算法
+
 ## 2 sum问题
 
 参考博客：https://www.cnblogs.com/TenosDoIt/p/3647244.html

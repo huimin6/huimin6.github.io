@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [MySQL](#mysql)
+- [SQL语句](#sql语句)
 - [索引](#索引)
     + [B-Tree索引](#b-tree索引)
     + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)

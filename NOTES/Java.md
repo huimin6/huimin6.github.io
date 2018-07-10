@@ -11,6 +11,7 @@
         * [线程池](#线程池)
     + [volatile 关键字](#volatile-关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
+    + [锁的分类](#锁的分类)
     + [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
     + [动态代理](#动态代理)
     + [NIO与IO](#nio与io)
