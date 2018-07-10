@@ -173,4 +173,4 @@ InnoDB的辅码索引的原理图：
 
 红黑树并不追求“完全平衡”——它只要求部分地达到平衡要求，降低了对旋转的要求，从而提高了性能。
 
-红黑树能够以 <a href="https://www.codecogs.com/eqnedit.php?latex=O(log_{2}^{n})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?O(log_{2}^{n})" title="O(log_{2}^{n})" /></a> 的时间复杂度进行搜索、插入、删除操作。此外，由于它的设计，任何不平衡都会在三次旋转之内解决。当然，还有一些更好的，但实现起来更复杂的数据结构 能够做到一步旋转之内达到平衡，但红黑树能够给我们一个比较“便宜”的解决方案。红黑树的算法时间复杂度和AVL相同，但统计性能比AVL树更高。
+红黑树能够以 <a href="https://www.codecogs.com/eqnedit.php?latex=O(log_{2}^{n})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?O(log_{2}^{n})" title="O(log_{2}^{n})" /></a> 的时间复杂度进行搜索、插入、删除操作。此外，由于它的设计，任何不平衡都会在三次旋转之内解决。当然，还有一些更好的，但实现起来更复杂的数据结构 能够做到一步旋转之内达到平衡，但红黑树能够给我们一个比较“便宜”的解决方案。红黑树的算法时间复杂度和AVL相同，但统计性能比AVL树 (平衡二叉树) 更高。
