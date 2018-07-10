@@ -51,6 +51,8 @@ insert into student(id, name, score) values
 
 知乎上面的高分回答：如何学习SQL?(https://www.zhihu.com/question/19552975)
 
+在线练习网站：http://sqlfiddle.com/ 
+
 # 索引
 
 **索引**：是把一个关键码和它对应的数据记录的位置相关联的过程
