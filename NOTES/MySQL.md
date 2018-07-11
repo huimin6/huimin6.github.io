@@ -159,6 +159,10 @@ InnoDB的辅码索引的原理图：
 
 参考的博客：https://blog.csdn.net/qq_26768741/article/details/53164202
 
+# 索引失效
+
+参考博客：https://blog.csdn.net/wuseyukui/article/details/72312574
+
 # 红黑树
 
  红黑树就是一种二叉搜索树，但是还需要满足如下要求：
