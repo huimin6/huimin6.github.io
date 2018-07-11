@@ -98,7 +98,7 @@ http://blog.51cto.com/wenshengzhu/1950146
 二、ApplicationContext中Bean的生命周期
 
 <div align="center"> <img src="../pictures//beanlifecycle2.png"/> </div> 
-<div align="center"> 图3 BeanFactory中Bean的生命周期 </div> <br>
+<div align="center"> 图4 ApplicationContext中Bean的生命周期 </div> <br>
 
 ## Spring 中用到的设计模式
 
