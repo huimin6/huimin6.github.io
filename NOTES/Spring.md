@@ -82,6 +82,10 @@ BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用�
 
 ## bean 的生命周期
 
+一、BeanFactory中Bean的生命周期
+
+<div align="center"> <img src="../pictures//beanlifecycle.png"/> </div> 
+<div align="center"> 图3 BeanFactory中Bean的生命周期 </div> <br>
 1. 调用者通过 getBean() 请求某一个 Bean，如果容器注册了 org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor 接口，那么在实例化 Bean 之前，将调用接口的 postProcessBeforeInstantiation() 方法<br>
 2. 根据配置情况调用Bean构造函数或工厂方法实例化 Bean<br>
 3. 如果 Bean 配置了属性信息，那么在实例化后将调用 Bean 的属性设置方法设置属性值<br>
@@ -90,6 +94,11 @@ BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用�
 6. 容器关闭，触发对 Bean 后续生命周期的管理，如果 Bean 实现了 DisposableBean 接口，就调用 destory() 方法，释放资源，销毁 Bean
 
 http://blog.51cto.com/wenshengzhu/1950146
+
+二、ApplicationContext中Bean的生命周期
+
+<div align="center"> <img src="../pictures//beanlifecycle2.png"/> </div> 
+<div align="center"> 图3 BeanFactory中Bean的生命周期 </div> <br>
 
 ## Spring 中用到的设计模式
 
