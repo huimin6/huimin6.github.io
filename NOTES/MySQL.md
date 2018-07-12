@@ -7,6 +7,7 @@
     + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)
         * [MyISAM索引](#myisam索引)
         * [InnoDB索引](#innodb索引)
+- [索引失效](#索引失效)
 - [红黑树](#红黑树)
 
 <!-- /MarkdownTOC -->
