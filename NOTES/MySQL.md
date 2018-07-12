@@ -51,9 +51,7 @@ insert into student(id, name, score) values
 | count() | select count(id) from student where score > 60; <br> count() 函数返回匹配指定列的值的个数，不包括 null |
 | group by | select id from student group by score; <br> group by 语句用于结合聚合函数，根据一个或多个列对结果集进行分组 |
 | inner join | select Websites.name, access_log.count, access_log.date from Websites inner join access_log on Websites.id=access_log.site_id order by access_log.count; <br>只有两个表中条件完全匹配的行，才会返回<br>inner join 和 join 是一样的|
-| left join | select Websites.name, access_log.count, access_log.date
-from Websites left join access_log on Websites.id=access_log.site_id
-order by access_log.count desc; <br> Websites是左表，access_log是右表 <br> 左表对应的要查找的列全部返回，右表不匹配的显示为null |
+| left join | select Websites.name, access_log.count, access_log.date from Websites left join access_log on Websites.id=access_log.site_id order by access_log.count desc; <br> Websites是左表，access_log是右表 <br> 左表对应的要查找的列全部返回，右表不匹配的显示为null |
 | right join | select Websites.name, access_log.count, access_log.date from access_log right join Websites on access_log.site_id=Websites.id order by access_log.count desc; <br> Websites是右表，access_log是左表 <br> 右表对应的要查找的列全部返回，左表不匹配的显示为null |
 
 
