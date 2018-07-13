@@ -518,6 +518,7 @@ AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中�
 
 参考博客：https://www.cnblogs.com/qifengshi/p/6831055.html
 
+参考博客：https://blog.csdn.net/javazejian/article/details/77410889?locationNum=1&fps=1
 ## 偏向锁、轻量级锁和重量级锁
 
 很好的博客：https://blog.csdn.net/choukekai/article/details/63688332
