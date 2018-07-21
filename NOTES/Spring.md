@@ -103,6 +103,7 @@ http://blog.51cto.com/wenshengzhu/1950146
 ## Spring 中用到的设计模式
 
 (1)工厂模式：Spring 中 bean 的创建
+
 # SpringMVC
 
 1.在 web.xml 中配置 Servlet
@@ -156,3 +157,7 @@ http://blog.51cto.com/wenshengzhu/1950146
 3.创建 controller 和 view
 
 在 com.taotao.portal.controller 包下面创建带有 Controller 注解的类，在    WEN-INF 包下面创建对于的 jsp 页面作为视图
+
+## SpringMVC源码解读
+
+参考博客：https://www.cnblogs.com/fangjian0423/p/springMVC-directory-summary.html
