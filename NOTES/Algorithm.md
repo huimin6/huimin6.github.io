@@ -2,7 +2,7 @@
 
 - [算法](#算法)
     + [2 sum问题](#2-sum问题)
-    + [rand5生成rand7](#rand5生成rand7)
+    + [rand5 生成 rand7](#rand5-生成-rand7)
     + [堆排序](#堆排序)
     + [快速排序](#快速排序)
     + [归并排序](#归并排序)
@@ -15,7 +15,7 @@
 
 参考博客：https://www.cnblogs.com/TenosDoIt/p/3647244.html
 
-## rand5生成rand7
+## rand5 生成 rand7
 
 给你一个能生成1到5随机数的函数，用它写一个函数生成1到7的随机数，( 即，使用函数 rand5() 来实现函数 rand7() )
 
