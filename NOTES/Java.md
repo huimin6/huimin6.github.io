@@ -51,6 +51,12 @@ public void test(){
 
 很好的一篇博客：https://www.cnblogs.com/xiaoxi/p/6036701.html
 
+## Java集合
+
+1.HashMap和ConcurrentHashMap
+
+参考博客：http://www.importnew.com/28263.html
+
 ## 枚举类
 
 适合实现单例设计模式
