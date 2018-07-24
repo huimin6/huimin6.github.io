@@ -15,6 +15,12 @@
     + [线程安全](#线程安全)
         * [Synchronized](#synchronized)
         * [Lock](#lock)
+        * [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
+    + [动态代理](#动态代理)
+    + [NIO与IO](#nio与io)
+    + [Java 反编译](#java-反编译)
+- [设计模式](#设计模式)
+    + [单例设计模式](#单例设计模式)
 - [Java虚拟机](#java虚拟机)
     + [垃圾回收](#垃圾回收)
     + [类加载机制](#类加载机制)
@@ -527,41 +533,88 @@ AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中�
 
 ### Lock
 
-Lock是一个接口，我们关注它的实现类 ReentrantLock
+Lock是一个接口，我们关注它的实现类 ReentrantLock 是如何实现公平锁和非公平锁
 
 1.ReentrantLock 默认是非公平锁，也可以实现公平锁
 
 2.ReentrantLock 是基于 AbstractQueuedSynchronizer 实现的，AbstractQueuedSynchronizer 可以实现独占锁也可以实现共享锁，ReentrantLock 只是使用了其中的独占锁模式
 
-通过分析 ReentrantLock 中的公平锁和非公平锁的实现，其中 tryAcquire 是公平锁和非公平锁实现的区别，下面的两种类型的锁的 tryAcquire 的实现，从中我们可以看出在公平锁中，每一次的 tryAcquire 都会检查 CLH 队列中是否仍有前驱的元素，如果仍然有那么继续等待，通过这种方式来保证**先来先服务**的原则；而非公平锁，首先是检查并设置锁的状态，这种方式会出现即使队列中有等待的线程，但是新的线程仍然会与排队线程中的对头线程竞争(**但是排队的线程是先来先服务的**)，所以新的线程可能会抢占已经在排队的线程的锁，这样就无法保证先来先服务，但是已经等待的线程们是仍然保证先来先服务的，所以总结一下公平锁和非公平锁的区别：
+通过分析 ReentrantLock 中的公平锁和非公平锁的实现，其中 tryAcquire 是公平锁和非公平锁实现的区别(源码见下文)，下面的两种类型的锁的 tryAcquire 的实现，从中我们可以看出在公平锁中，每一次的 tryAcquire 都会检查 CLH 队列中是否仍有前驱的元素，如果仍然有那么继续等待，通过这种方式来保证**先来先服务**的原则；而非公平锁，首先是检查并设置锁的状态，这种方式会出现即使队列中有等待的线程，但是新的线程仍然会与排队线程中的对头线程竞争(**但是排队的线程是先来先服务的**)，所以新的线程可能会抢占已经在排队的线程的锁，这样就无法保证先来先服务，但是已经等待的线程们是仍然保证先来先服务的，所以总结一下公平锁和非公平锁的区别：
 
-1、公平锁能保证：老的线程排队使用锁，新线程仍然排队使用锁。
+a.公平锁能保证：老的线程排队使用锁，新线程仍然排队使用锁。
 
-2、非公平锁保证：老的线程排队使用锁；但是无法保证新线程抢占已经在排队的线程的锁。
+b.非公平锁保证：老的线程排队使用锁；但是无法保证新线程抢占已经在排队的线程的锁。
+
+<div align="center"> <img src="../pictures//queue.png"/> </div><br>
 
 (1)公平锁
 
 ```
-        protected final boolean tryAcquire(int acquires) {
-            final Thread current = Thread.currentThread();
-            int c = getState();
-            if (c == 0) {
-                // !hasQueuedPredecessors()保证了不论是新的线程还是已经排队的线程都顺序使用锁
-                if (!hasQueuedPredecessors() &&
-                    compareAndSetState(0, acquires)) {
-                    setExclusiveOwnerThread(current);
-                    return true;
-                }
-            }
-            else if (current == getExclusiveOwnerThread()) {
-                int nextc = c + acquires;
-                if (nextc < 0)
-                    throw new Error("Maximum lock count exceeded");
-                setState(nextc);
-                return true;
-            }
-            return false;
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        // !hasQueuedPredecessors()保证了不论是新的线程还是已经排队的线程都顺序使用锁
+        if (!hasQueuedPredecessors() &&
+            compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
         }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0)
+             throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+核心操作：
+
+(1)获取一次锁数量，
+
+(2)如果锁数量为 0，如果当前线程是等待队列中的头节点，基于 CAS 尝试将 state (锁数量)从 0 设置为 1 一次，如果设置成功，设置当前线程为独占锁的线程；
+
+(3)如果锁数量不为 0 或者当前线程不是等待队列中的头节点或者上边的尝试又失败了，查看当前线程是不是已经是独占锁的线程了，如果是，则将当前的锁数量+1；如果不是，则将该线程封装在一个 Node 内，并加入到等待队列中去。等待被其前一个线程节点唤醒。
+
+(2)非公平锁
+```
+final boolean nonfairTryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        // 新的线程可能抢占已经排队的线程的锁的使用权
+        if (compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0) // overflow
+             throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+
+核心的操作：
+
+基于 CAS 尝试将 state（锁数量）从 0 设置为 1
+
+(1)如果设置成功，设置当前线程为独占锁的线程；
+
+(2)如果设置失败，还会再获取一次锁数量，
+
+(3)如果锁数量为 0，再基于 CAS 尝试将 state（锁数量）从 0 设置为 1 一次，如果设置成功，设置当前线程为独占锁的线程；
+
+(4)如果锁数量不为 0 或者上边的尝试又失败了，查看当前线程是不是已经是独占锁的线程了，如果是，则将当前的锁数量 +1；如果不是，则将该线程封装在一个 Node 内，并加入到等待队列中去。等待被其前一个线程节点唤醒。
+
 参考博客：https://www.cnblogs.com/qifengshi/p/6831055.html
 
 ### 偏向锁、轻量级锁和重量级锁
