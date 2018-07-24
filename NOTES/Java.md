@@ -12,13 +12,9 @@
         * [线程池](#线程池)
     + [volatile 关键字](#volatile-关键字)
     + [CAS\(compare and swap\)](#cascompare-and-swap)
-    + [锁的分类](#锁的分类)
-    + [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
-    + [动态代理](#动态代理)
-    + [NIO与IO](#nio与io)
-    + [Java 反编译](#java-反编译)
-- [设计模式](#设计模式)
-    + [单例设计模式](#单例设计模式)
+    + [线程安全](#线程安全)
+        * [Synchronized](#synchronized)
+        * [Lock](#lock)
 - [Java虚拟机](#java虚拟机)
     + [垃圾回收](#垃圾回收)
     + [类加载机制](#类加载机制)
@@ -274,9 +270,9 @@ private Runnable getTask() {
 
 (2)控制线程最大并发数
 
-那Runnable对象是什么时候放入workQueue？Worker对象又是什么时候创建，Worker里的Thread的又是什么时候调用start()方法来执行Worker的run()方法的呢？有上面的分析看出Worker里的runWorker()执行任务时是一个接一个，串行进行的，那并发是怎么体现的呢？
+那 Runnable 对象是什么时候放入 workQueue？Worker 对象又是什么时候创建，Worker里的Thread的又是什么时候调用 start()方法来执行 Worker 的 run() 方法的呢？有上面的分析看出 Worker 里的 runWorker()执行任务时是一个接一个，串行进行的，那并发是怎么体现的呢？
 
-很容易想到是在execute(Runnable runnable)时会做上面的一些任务。看下execute方法里是怎么做的。execute()方法简化后的代码：
+很容易想到是在 execute(Runnable runnable)时会做上面的一些任务。看下 execute 方法里是怎么做的。execute()方法简化后的代码：
 ```
 public void execute(Runnable command) {
     if (command == null)
@@ -326,21 +322,21 @@ private boolean addWorker(Runnable firstTask, boolean core) {
 (1)如果正在运行的线程数量小于 corePoolSize，那么马上创建线程运行这个任务；<br>
 (2)如果正在运行的线程数量大于或等于 corePoolSize，那么将这个任务放入队列；<br>
 (3)如果这时候队列满了，而且正在运行的线程数量小于 maximumPoolSize，那么还是要创建非核心线程立刻运行这个任务；<br>
-(4)如果队列满了，而且正在运行的线程数量大于或等于 maximumPoolSize，那么线程池会抛出异常RejectExecutionException。
+(4)如果队列满了，而且正在运行的线程数量大于或等于 maximumPoolSize，那么线程池会抛出异常 RejectExecutionException。
 
-通过addWorker如果成功创建新的线程成功，则通过start()开启新线程，同时将firstTask作为这个Worker里的run()中执行的第一个任务。
+通过 addWorker 如果成功创建新的线程成功，则通过 start() 开启新线程，同时将 firstTask 作为这个 Worker 里的 run() 中执行的第一个任务。
 
-虽然每个Worker的任务是串行处理，但如果创建了多个Worker，因为共用一个workQueue，所以就会并行处理了。
+虽然每个 Worker 的任务是串行处理，但如果创建了多个 Worker，因为共用一个 workQueue，所以就会并行处理了。
 
 (3)线程管理
 
 通过线程池可以很好的管理线程的复用，控制并发数，以及销毁等过程,线程的复用和控制并发上面已经讲了，而线程的管理过程已经穿插在其中了，也很好理解。
 
-在ThreadPoolExecutor有个ctl的AtomicInteger变量。通过这一个变量保存了两个内容：
+在 ThreadPoolExecutor 有个 ctl 的 AtomicInteger 变量。通过这一个变量保存了两个内容：
 
 (1)所有线程的数量<br>
 (2)每个线程所处的状态<br>
-其中低29位存线程数，高3位存runState，通过位运算来得到不同的值。
+其中低 29 位存线程数，高 3 位存 runState，通过位运算来得到不同的值。
 ```
 private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
 
@@ -386,22 +382,22 @@ shutdown这个方法会将runState置为SHUTDOWN，会终止所有空闲的线�
 这篇博客讲的非常好：http://www.importnew.com/24082.html
 
 ## CAS(compare and swap)
-1.什么是CAS？
+1.什么是 CAS？
 
 CAS，compare and swap，中文就是比较并交换
 
-2.为什么要用CAS?
+2.为什么要用 CAS?
 
-在JDK1.5之前，主要是通过synchronize关键字来保证线程的同步，这将会导致有锁。
+在 JDK1.5 之前，主要是通过 synchronize 关键字来保证线程的同步，这将会导致有锁。
 
 锁机制存在如下的问题：
 
 (1)在多线程竞争下，加锁、释放锁会导致比较多的上下文切换和调度延时，会引起性能问题<br>
 (2)一个线程持有锁会导致其它所有需要此锁的线程挂起。<br>
 (3)如果一个优先级高的线程等待一个优先级低的线程释放锁会导致优先级倒置，引起性能风险。<br>
-volatile是不错的机制，但是volatile不能保证原子性。因此对于同步最终还是要回到锁机制上来。
+volatile 是不错的机制，但是 volatile 不能保证原子性。因此对于同步最终还是要回到锁机制上来。
 
-独占锁是一种悲观锁，synchronized就是一种独占锁，会导致其它所有需要锁的线程挂起，等待持有锁的线程释放锁。而另一个更加有效的锁就是乐观锁。所谓乐观锁就是，每次不加锁而是假设没有冲突而去完成某项操作，如果因为冲突失败就重试，直到成功为止。乐观锁用到的机制就是CAS，Compare and Swap。其实CAS也算是有锁操作，只不过是由CPU来触发，比synchronized性能好的多。CAS的关键点在于，系统在硬件层面保证了比较并交换操作的原子性，处理器使用基于对缓存加锁或总线加锁的方式来实现多处理器之间的原子操作。
+独占锁是一种悲观锁，synchronized 就是一种独占锁，会导致其它所有需要锁的线程挂起，等待持有锁的线程释放锁。而另一个更加有效的锁就是乐观锁。所谓乐观锁就是，每次不加锁而是假设没有冲突而去完成某项操作，如果因为冲突失败就重试，直到成功为止。乐观锁用到的机制就是 CAS，Compare and Swap。其实 CAS 也算是有锁操作，只不过是由 CPU 来触发，比 synchronized 性能好的多。CAS 的关键点在于，系统在硬件层面保证了比较并交换操作的原子性，处理器使用基于对缓存加锁或总线加锁的方式来实现多处理器之间的原子操作。
 
 CAS 是非阻塞算法的一种常见实现。
 
@@ -413,9 +409,9 @@ CAS 实现了区别于 sychronized 同步锁的一种乐观锁，当多个线程
 
 一个线程间共享的变量，首先在主存中会保留一份，然后每个线程的工作内存也会保留一份副本。这里说的预期值，就是线程保留的副本。当该线程从主存中获取该变量的值后，主存中该变量可能已经被其他线程刷新了，但是该线程工作内存中该变量却还是原来的值，这就是所谓的预期值了。当你要用CAS刷新该值的时候，如果发现线程工作内存和主存中不一致了，就会失败，如果一致，就可以更新成功。
 
-Atomic包提供了一系列原子类。这些类可以保证多线程环境下，当某个线程在执行atomic的方法时，不会被其他线程打断，而别的线程就像自旋锁一样，一直等到该方法执行完成，才由JVM从等待队列中选择一个线程执行。Atomic类在软件层面上是非阻塞的，它的原子性其实是在硬件层面上借助相关的指令来保证的。AtomicInteger是一个支持原子操作的  Integer类，就是保证对AtomicInteger类型变量的增加和减少操作是原子性的，不会出现多个线程下的数据不一致问题。如果不使用AtomicInteger，要实现一个按顺序获取的ID，就必须在每次获取时进行加锁操作，以避免出现并发时获取到同样的ID的现象。
+Atomic 包提供了一系列原子类。这些类可以保证多线程环境下，当某个线程在执行 atomic 的方法时，不会被其他线程打断，而别的线程就像自旋锁一样，一直等到该方法执行完成，才由 JVM 从等待队列中选择一个线程执行。Atomic 类在软件层面上是非阻塞的，它的原子性其实是在硬件层面上借助相关的指令来保证的。AtomicInteger 是一个支持原子操作的  Integer 类，就是保证对 AtomicInteger 类型变量的增加和减少操作是原子性的，不会出现多个线程下的数据不一致问题。如果不使用 AtomicInteger，要实现一个按顺序获取的 ID，就必须在每次获取时进行加锁操作，以避免出现并发时获取到同样的 ID 的现象。
 
-用AtomicInteger来研究在没有锁的情况下是如何做到数据正确性的。
+用 AtomicInteger 来研究在没有锁的情况下是如何做到数据正确性的。
 ```
 //借助volatile原语，保证线程间的数据是可见的
 private volatile int value;
@@ -433,36 +429,36 @@ public final int incrementAndGet() {
     }
 }
 ```
-在这里采用了CAS操作，每次从内存中读取数据然后将此数据和+1后的结果进行CAS操作，如果成功就返回结果，否则重试直到成功为止。而compareAndSet利用JNI来完成CPU指令的操作。
+在这里采用了 CAS 操作，每次从内存中读取数据然后将此数据和+1后的结果进行 CAS 操作，如果成功就返回结果，否则重试直到成功为止。而 compareAndSet 利用 JNI 来完成 CPU 指令的操作。
 ```
 public final boolean compareAndSet(int expect, int update) {   
     return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
 }
 ```
-其中，unsafe.compareAndSwapInt()是一个native方法，正是调用CAS原语完成该操作。首先假设有一个变量i，i的初始值为0。每个线程都对i进行+1操作。CAS是这样保证同步的：假设有两个线程，线程1读取内存中的值为0，current = 0，next = 1，然后挂起，然后线程2对i进行操作，将i的值变成了1。线程2执行完，回到线程1，进入if里的compareAndSet方法，该方法进行的操作的逻辑是:<br>
+其中，unsafe.compareAndSwapInt() 是一个 native 方法，正是调用 CAS 原语完成该操作。首先假设有一个变量 i，i 的初始值为 0。每个线程都对 i 进行 +1 操作。CAS 是这样保证同步的：假设有两个线程，线程1读取内存中的值为 0，current = 0，next = 1，然后挂起，然后线程 2 对 i 进行操作，将i的值变成了 1。线程 2 执行完，回到线程 1，进入 if 里的 compareAndSet 方法，该方法进行的操作的逻辑是:<br>
 (1)如果操作数的值在内存中没有被修改，返回true，然后compareAndSet方法返回next的值<br>
-(2)如果操作数的值在内存中被修改了，则返回false，重新进入下一次循环，重新得到 current的值为1，next的值为2，然后再比较，由于这次没有被修改，所以直接返回2。
-那么，为什么自增操作要通过CAS来完成呢？仔细观察incrementAndGet()方法，发现自增操作其实拆成了两步完成的：<br>
+(2)如果操作数的值在内存中被修改了，则返回false，重新进入下一次循环，重新得到 current的值为 1，next的值为 2，然后再比较，由于这次没有被修改，所以直接返回 2。
+那么，为什么自增操作要通过 CAS 来完成呢？仔细观察 incrementAndGet()方法，发现自增操作其实拆成了两步完成的：<br>
 int current = get();<br>
 int next = current + 1;<br>
 由于volatile只能保证读取或写入的是最新值，那么可能出现以下情况：<br>
-1)A线程执行get()操作，获取current值(假设为1)<br>
-2)B线程执行get()操作，获取current值(为1)<br>
-3)B线程执行next = current + 1操作，next = 2<br>
-4)A线程执行next = current + 1操作，next = 2<br>
-这样current(值为1)执行了两次自增操作，结果本应该是3，现在得到的确是2，所以，自增操作必须采用 CAS来完成。
+1)A 线程执行 get()操作，获取 current 值(假设为 1)<br>
+2)B 线程执行 get()操作，获取 current 值(为1)<br>
+3)B 线程执行 next = current + 1操作，next = 2<br>
+4)A 线程执行 next = current + 1操作，next = 2<br>
+这样 current(值为 1)执行了两次自增操作，结果本应该是 3，现在得到的确是 2，所以，自增操作必须采用 CAS 来完成。
 
-4.CAS的优缺点
+4.CAS 的优缺点
 
-CAS由于是在硬件层面保证的原子性，不会锁住当前线程，它的效率是很高的。CAS虽然很高效的实现了原子操作，但是它依然存在三个问题。
+CAS 由于是在硬件层面保证的原子性，不会锁住当前线程，它的效率是很高的。CAS 虽然很高效的实现了原子操作，但是它依然存在三个问题。
 
-(1)ABA问题。因为CAS需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。
+(1)ABA 问题。因为 CAS 需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。
 
-从Java1.5开始JDK的atomic包里提供了一个类AtomicStampedReference来解决ABA问题。这个类的compareAndSet方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
+从 Java1.5 开始 JDK 的 atomic 包里提供了一个类 AtomicStampedReference 来解决 ABA 问题。这个类的 compareAndSet 方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
 
-(2)循环时间长开销大。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。如果JVM能支持处理器提供的pause指令那么效率会有一定的提升，pause指令有两个作用，第一它可以延迟流水线执行指令(de-pipeline),使CPU不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突(memory order violation)而引起CPU流水线被清空(CPU pipeline flush)，从而提高CPU的执行效率。
+(2)循环时间长开销大。自旋 CAS 如果长时间不成功，会给CPU带来非常大的执行开销。如果 JVM 能支持处理器提供的 pause 指令那么效率会有一定的提升，pause 指令有两个作用，第一它可以延迟流水线执行指令(de-pipeline),使 CPU 不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突(memory order violation)而引起CPU流水线被清空(CPU pipeline flush)，从而提高 CPU 的执行效率。
 
-(3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量i＝2,j=a，合并一下ij=2a，然后用CAS来操作ij。从Java1.5开始JDK提供了AtomicReference类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行CAS操作。
+(3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量 i＝2, j=a，合并一下ij=2a，然后用 CAS 来操作 ij。从 Java1.5 开始 JDK 提供了 AtomicReference 类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行CAS操作。 
 这里粘贴一个，模拟 CAS 实现的计数器：
 ```
 public class CASCount implements Runnable {
@@ -523,16 +519,57 @@ Java的CAS会使用现代处理器上提供的高效机器级别原子指令，�
 AQS，非阻塞数据结构和原子变量类(java.util.concurrent.atomic包中的类)，这些concurrent包中的基础类都是使用这种模式来实现的，而concurrent包中的高层类又是依赖于这些基础类来实现的。从整体来看，concurrent包的实现示意图如下：
 <div align="center"> <img src="../pictures//concurrent.png"/> </div><br>
 
-## 锁的分类
+## 线程安全
 
-参考博客：https://www.cnblogs.com/qifengshi/p/6831055.html
+### Synchronized
 
 参考博客：https://blog.csdn.net/javazejian/article/details/77410889?locationNum=1&fps=1
-## 偏向锁、轻量级锁和重量级锁
+
+### Lock
+
+Lock是一个接口，我们关注它的实现类 ReentrantLock
+
+1.ReentrantLock 默认是非公平锁，也可以实现公平锁
+
+2.ReentrantLock 是基于 AbstractQueuedSynchronizer 实现的，AbstractQueuedSynchronizer 可以实现独占锁也可以实现共享锁，ReentrantLock 只是使用了其中的独占锁模式
+
+通过分析 ReentrantLock 中的公平锁和非公平锁的实现，其中 tryAcquire 是公平锁和非公平锁实现的区别，下面的两种类型的锁的 tryAcquire 的实现，从中我们可以看出在公平锁中，每一次的 tryAcquire 都会检查 CLH 队列中是否仍有前驱的元素，如果仍然有那么继续等待，通过这种方式来保证**先来先服务**的原则；而非公平锁，首先是检查并设置锁的状态，这种方式会出现即使队列中有等待的线程，但是新的线程仍然会与排队线程中的对头线程竞争(**但是排队的线程是先来先服务的**)，所以新的线程可能会抢占已经在排队的线程的锁，这样就无法保证先来先服务，但是已经等待的线程们是仍然保证先来先服务的，所以总结一下公平锁和非公平锁的区别：
+
+1、公平锁能保证：老的线程排队使用锁，新线程仍然排队使用锁。
+
+2、非公平锁保证：老的线程排队使用锁；但是无法保证新线程抢占已经在排队的线程的锁。
+
+(1)公平锁
+
+```
+        protected final boolean tryAcquire(int acquires) {
+            final Thread current = Thread.currentThread();
+            int c = getState();
+            if (c == 0) {
+                // !hasQueuedPredecessors()保证了不论是新的线程还是已经排队的线程都顺序使用锁
+                if (!hasQueuedPredecessors() &&
+                    compareAndSetState(0, acquires)) {
+                    setExclusiveOwnerThread(current);
+                    return true;
+                }
+            }
+            else if (current == getExclusiveOwnerThread()) {
+                int nextc = c + acquires;
+                if (nextc < 0)
+                    throw new Error("Maximum lock count exceeded");
+                setState(nextc);
+                return true;
+            }
+            return false;
+        }
+参考博客：https://www.cnblogs.com/qifengshi/p/6831055.html
+
+### 偏向锁、轻量级锁和重量级锁
 
 很好的博客：https://blog.csdn.net/choukekai/article/details/63688332
 
 ## 动态代理
+
 与静态代理相比，动态代理的好处就是不需要为每个类都生成代理类，可以在运行过程中动态生成代码
 
 1.静态代理
