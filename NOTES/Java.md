@@ -62,6 +62,21 @@ public void test(){
 
 HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储在 table[0] 的位置，HashTable 中的 key 和 value 都不允许出现 null
 
+接下来主要讲jdk8中的HashMap
+
+(1)常用的参数
+
+int threshold;             // 所能容纳的 key-value 对极限 数组容量\*负载因子，数组容量默认是 16，都取 2 的整数倍
+
+final float loadFactor;    // 负载因子，默认 0.75
+
+int modCount;  //modCount 字段主要用来记录 HashMap 内部结构发生变化(值被覆盖不算结构变化)的次数，主要用于迭代的快速失败
+
+int size; //所容纳的 key-value 对个数
+
+(2)当链表长度太长（默认超过8）时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高 HashMap 的性能
+
+
 参考博客：http://www.importnew.com/28263.html
 
 2.HashMap 线程不安全的原因
@@ -70,7 +85,7 @@ HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储
 
 (2)两个线程同时进行扩容操作，线程 1 先扩容完毕后返回新的 table，线程 2 开始扩容，这时线程 2 操作的 table 已经变为线程 1 扩容完毕后的 table，这时就会产生链表环，导致再查询的时候，出现死循环。
 
-出现死循环的这个问题只可能会在Java7中出现，Java8已经修复了，出现这个循环的原因是因为在java7里面元素的插入是尾插法，而扩容之后转移元素的时候用的是头插法
+出现死循环的这个问题只可能会在 Java7 中出现，Java8 已经修复了，出现这个循环的原因是因为在 java7 里面元素的插入是尾插法，而扩容之后转移元素的时候用的是头插法
 
 参考博客：https://coolshell.cn/articles/9606.html/comment-page-1#comments
 
