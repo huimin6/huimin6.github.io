@@ -66,18 +66,44 @@ HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储
 
 (1)常用的参数
 
-int threshold;             // 所能容纳的 key-value 对极限 数组容量\*负载因子，数组容量默认是 16，都取 2 的整数倍
+//默认的初始容量为16
+static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
-final float loadFactor;    // 负载因子，默认 0.75
+//最大的容量上限为2^30
+static final int MAXIMUM_CAPACITY = 1 << 30;
 
-int modCount;  //modCount 字段主要用来记录 HashMap 内部结构发生变化(值被覆盖不算结构变化)的次数，主要用于迭代的快速失败
+//默认的负载因子为0.75
+static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-int size; //所容纳的 key-value 对个数
+//变成树型结构的临界值为8
+static final int TREEIFY_THRESHOLD = 8;
+
+//恢复链式结构的临界值为6
+static final int UNTREEIFY_THRESHOLD = 6;
+
+//哈希表
+transient Node<K,V>[] table;
+
+//哈希表中键值对的个数
+transient int size;
+
+//哈希表被修改的次数
+transient int modCount;
+
+//它是通过capacity*load factor计算出来的，当size到达这个值时，就会进行扩容操作
+int threshold;
+
+//负载因子
+final float loadFactor;
+
+//当哈希表的大小超过这个阈值，才会把链式结构转化成树型结构，否则仅采取扩容来尝试减少冲突
+static final int MIN_TREEIFY_CAPACITY = 64;
 
 (2)当链表长度太长（默认超过8）时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高 HashMap 的性能
 
 
 参考博客：http://www.importnew.com/28263.html
+参考博客：https://blog.csdn.net/u013124587/article/details/52649867
 
 2.HashMap 线程不安全的原因
 
