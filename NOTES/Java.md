@@ -66,40 +66,40 @@ HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储
 
 (1)常用的参数
 
-//默认的初始容量为16
+//默认的初始容量为 16 <br>
 static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
-//最大的容量上限为2^30
+//最大的容量上限为 2^30 <br>
 static final int MAXIMUM_CAPACITY = 1 << 30;
 
-//默认的负载因子为0.75
+//默认的负载因子为 0.75 <br>
 static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
-//变成树型结构的临界值为8
+//变成树型结构的临界值为 8 <br>
 static final int TREEIFY_THRESHOLD = 8;
 
-//恢复链式结构的临界值为6
+//恢复链式结构的临界值为 6 <br>
 static final int UNTREEIFY_THRESHOLD = 6;
 
-//哈希表
+//哈希表 <br>
 transient Node<K,V>[] table;
 
-//哈希表中键值对的个数
+//哈希表中键值对的个数 <br>
 transient int size;
 
-//哈希表被修改的次数
+//哈希表被修改的次数 <br>
 transient int modCount;
 
-//它是通过capacity*load factor计算出来的，当size到达这个值时，就会进行扩容操作
+//它是通过 capacity*load factor 计算出来的，当 size 到达这个值时，就会进行扩容操作 <br>
 int threshold;
 
-//负载因子
+//负载因子 <br>
 final float loadFactor;
 
-//当哈希表的大小超过这个阈值，才会把链式结构转化成树型结构，否则仅采取扩容来尝试减少冲突
+//当哈希表的大小超过这个阈值，才会把链式结构转化成树型结构，否则仅采取扩容来尝试减少冲突 <br>
 static final int MIN_TREEIFY_CAPACITY = 64;
 
-(2)当链表长度太长（默认超过8）时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高 HashMap 的性能
+(2)当链表长度太长(默认超过 8)时，链表就转换为红黑树，利用红黑树快速增删改查的特点提高 HashMap 的性能
 
 
 参考博客：http://www.importnew.com/28263.html
@@ -111,7 +111,9 @@ static final int MIN_TREEIFY_CAPACITY = 64;
 
 (2)两个线程同时进行扩容操作，线程 1 先扩容完毕后返回新的 table，线程 2 开始扩容，这时线程 2 操作的 table 已经变为线程 1 扩容完毕后的 table，这时就会产生链表环，导致再查询的时候，出现死循环。
 
-出现死循环的这个问题只可能会在 Java7 中出现，Java8 已经修复了，出现这个循环的原因是因为在 java7 里面元素的插入是尾插法，而扩容之后转移元素的时候用的是头插法
+出现死循环的这个问题只可能会在 Java7 中出现，Java8 已经修复了，出现这个循环的原因是因为在 java7 里面元素的插入(包括扩容）都是头插法
+
+(下面第一篇博客中的示例就是假设了我们的 hash 算法就是简单的用 key mod 一下表的大小（也就是数组的长度）。其中的哈希桶数组 table 的 size=2， 所以 key = 3、7、5，put 顺序依次为 5、7、3。在 mod 2 以后都冲突在 table[1] 这里了。这里假设负载因子 loadFactor=1，即当键值对的实际大小 size 大于 table 的实际大小时进行扩容。接下来的三个步骤是哈希桶数组 resize 成 4，然后所有的Node重新rehash的过程。)
 
 参考博客：https://coolshell.cn/articles/9606.html/comment-page-1#comments
 
