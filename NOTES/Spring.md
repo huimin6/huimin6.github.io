@@ -123,7 +123,18 @@ AOP 就是将分散在各个业务逻辑代码中相同代码，通过横向切�
 
 一个类被 AOP 织入增强后，就产生了一个结果类，它是融合了原类和增强逻辑的代理类。Spring AOP 使用动态代理技术( JDK 动态代理和 CGLIB 动态代理)在程序运行期间织入增强的代码。
 
+2. Spring AOP的两种动态代理示例
 
+* JDK 动态代理
+
+<div align="center"> <img src="../pictures//jdk_1.png"/> </div> 
+<div align="center"> <img src="../pictures//jdk_2.png"/> </div> 
+<div align="center"> <img src="../pictures//jdk_3.png"/> </div> 
+
+* CGLIB 动态代理
+
+<div align="center"> <img src="../pictures//cglib_1.png"/> </div> 
+<div align="center"> <img src="../pictures//cglib_2.png"/> </div> 
 
 ## bean 的生命周期
 
