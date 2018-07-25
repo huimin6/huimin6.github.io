@@ -58,11 +58,13 @@ public void test(){
 
 ## Java集合
 
-1.HashMap和ConcurrentHashMap
+1.HashMap 和 ConcurrentHashMap
+
+HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储在 table[0] 的位置，HashTable 中的 key 和 value 都不允许出现 null
 
 参考博客：http://www.importnew.com/28263.html
 
-2.HashMap线程不安全的原因
+2.HashMap 线程不安全的原因
 
 (1)插入连个hash值相等的元素，但是这两个元素的值不同，这时候如果两个线程同时去查容量发现都不需要扩容
 
