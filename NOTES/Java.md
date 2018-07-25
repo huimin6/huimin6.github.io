@@ -58,11 +58,141 @@ public void test(){
 
 ## Java集合
 
-1.HashMap 和 ConcurrentHashMap
+1.HashMap
 
 HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储在 table[0] 的位置，HashTable 中的 key 和 value 都不允许出现 null
 
-接下来主要讲jdk8中的HashMap
+(1)jdk7 中的 HashMap
+
+插入元素的方法：
+```
+public V put(K key, V value) {
+    if (table == EMPTY_TABLE) {
+        inflateTable(threshold);
+    }
+    //键为空的元素放在 table[0]位置
+    if (key == null)
+        return putForNullKey(value);
+    //获取 key 的 hashCode() 值
+    int hash = hash(key);
+    //通过 hash & (table.length-1) 求下标的位置
+    //也就是取 hash 值的低 table.length-1 位
+    int i = indexFor(hash, table.length);
+    for (Entry<K,V> e = table[i]; e != null; e = e.next) {
+        Object k;
+        //如果 key 已经存在，就更新 value
+        if (e.hash == hash && ((k = e.key) == key || key.equals(k))) {
+            V oldValue = e.value;
+            e.value = value;
+            e.recordAccess(this);
+            return oldValue;
+        }
+    }
+
+    modCount++;
+    //如果 key 不存在就添加到链表
+    addEntry(hash, key, value, i);
+    return null;
+}
+```
+addEntry(...)方法的源码：
+```
+void addEntry(int hash, K key, V value, int bucketIndex) {
+    if ((size >= threshold) && (null != table[bucketIndex])) {
+        resize(2 * table.length);
+        hash = (null != key) ? hash(key) : 0;
+        //找到要插入的桶
+        bucketIndex = indexFor(hash, table.length);
+    }
+
+    createEntry(hash, key, value, bucketIndex);
+}
+```
+createEntry(...)方法的源码：
+```
+void createEntry(int hash, K key, V value, int bucketIndex) {
+    //找到对应链表的头节点
+    Entry<K,V> e = table[bucketIndex];
+    //头插法插入
+    table[bucketIndex] = new Entry<>(hash, key, value, e);
+    size++;
+}
+```
+Entry的结构：
+```
+static class Entry<K,V> implements Map.Entry<K,V> {
+    final K key;
+    V value;
+    Entry<K,V> next;
+    int hash;
+```
+
+扩容的方法：
+```
+void resize(int newCapacity) {
+    Entry[] oldTable = table;
+    int oldCapacity = oldTable.length;
+    if (oldCapacity == MAXIMUM_CAPACITY) {
+        threshold = Integer.MAX_VALUE;
+        return;
+    }
+
+    Entry[] newTable = new Entry[newCapacity];
+    transfer(newTable, initHashSeedAsNeeded(newCapacity));
+    table = newTable;
+    threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
+    }
+```
+扩容后转移元素的方法：
+```
+void transfer(Entry[] newTable, boolean rehash) {
+    int newCapacity = newTable.length;
+    for (Entry<K,V> e : table) {
+        while(null != e) {
+            Entry<K,V> next = e.next;
+            if (rehash) {
+                e.hash = null == e.key ? 0 : hash(e.key);
+            }
+            int i = indexFor(e.hash, newCapacity);
+            e.next = newTable[i];
+            newTable[i] = e;
+            e = next;
+        }
+    }
+}
+```
+
+get元素的方法：
+```
+public V get(Object key) {
+    if (key == null)
+        return getForNullKey();
+    Entry<K,V> entry = getEntry(key);
+
+    return null == entry ? null : entry.getValue();
+}
+```
+getEntry()方法：
+```
+final Entry<K,V> getEntry(Object key) {
+    if (size == 0) {
+        return null;
+    }
+
+    int hash = (key == null) ? 0 : hash(key);
+    for (Entry<K,V> e = table[indexFor(hash, table.length)];
+            e != null;
+            e = e.next) {
+        Object k;
+        if (e.hash == hash &&
+            ((k = e.key) == key || (key != null && key.equals(k))))
+            return e;
+    }
+    return null;
+}
+```
+
+(2)jdk8 中的 HashMap
 
 (1)常用的参数
 
@@ -108,17 +238,29 @@ static final int MIN_TREEIFY_CAPACITY = 64;
 
 2.HashMap 线程不安全的原因
 
-(1)插入连个hash值相等的元素，但是这两个元素的值不同，这时候如果两个线程同时去查容量发现都不需要扩容
+(1)插入连个 hash 值相等的元素，但是这两个元素的值不同，这时候如果两个线程同时去查容量发现都不需要扩容
 
 (2)两个线程同时进行扩容操作，线程 1 先扩容完毕后返回新的 table，线程 2 开始扩容，这时线程 2 操作的 table 已经变为线程 1 扩容完毕后的 table，这时就会产生链表环，导致再查询的时候，出现死循环。
 
 出现死循环的这个问题只可能会在 Java7 中出现，Java8 已经修复了，出现这个循环的原因是因为在 java7 里面元素的插入(包括扩容）都是头插法
 
-(下面第一篇博客中的示例就是假设了我们的 hash 算法就是简单的用 key mod 一下表的大小（也就是数组的长度）。其中的哈希桶数组 table 的 size=2， 所以 key = 3、7、5，put 顺序依次为 5、7、3。在 mod 2 以后都冲突在 table[1] 这里了。这里假设负载因子 loadFactor=1，即当键值对的实际大小 size 大于 table 的实际大小时进行扩容。接下来的三个步骤是哈希桶数组 resize 成 4，然后所有的Node重新rehash的过程。)
+(下面第一篇博客中的示例就是假设了我们的 hash 算法就是简单的用 key mod 一下表的大小（也就是数组的长度）。其中的哈希桶数组 table 的 size=2， 所以 key = 3、7、5，put 顺序依次为 5、7、3。在 mod 2 以后都冲突在 table[1] 这里了。这里假设负载因子 loadFactor=1，即当键值对的实际大小 size 大于 table 的实际大小时进行扩容。接下来的三个步骤是哈希桶数组 resize 成 4，然后所有的Node重新 rehash 的过程。)
 
 参考博客：https://coolshell.cn/articles/9606.html/comment-page-1#comments
 
 参考博客：https://blog.csdn.net/qq_35721740/article/details/64904680
+
+2.ConcurrentHashMap
+
+<div align="center"> <img src="../pictures//segment_1.png"/> </div> 
+
+ConcurrentHashMap 类中包含两个静态内部类 HashEntry 和 Segment。
+
+HashEntry 用来封装映射表的键 / 值对；Segment 用来充当锁的角色，每个 Segment 对象守护整个散列映射表的若干个桶。每个桶是由若干个 HashEntry 对象链接起来的链表。一个 ConcurrentHashMap 实例中包含由若干个 Segment 对象组成的数组。每个 Segment 守护者一个 HashEntry 数组里的元素，当对 HashEntry 数组的数据进行修改时，必须首先获得它对应的Segment锁。
+
+<div align="center"> <img src="../pictures//segment_2.png"/> </div> 
+
+参考博客：https://blog.csdn.net/dingjianmin/article/details/79776646
 
 ## 枚举类
 
