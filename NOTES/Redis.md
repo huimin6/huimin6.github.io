@@ -3,8 +3,9 @@
 - [Redis](#redis)
 - [Redis安装](#redis安装)
 - [Redis介绍](#redis介绍)
-- [Redis中的五种数据类型](#redis中的五种数据类型)
-    + [字符串string](#字符串string)
+    + [Redis中的五种数据类型](#redis中的五种数据类型)
+- [Redis集群中 leader 的选举算法](#redis集群中-leader-的选举算法)
+- [Redis压力测试](#redis压力测试)
 
 <!-- /MarkdownTOC -->
 
@@ -67,9 +68,9 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，是一种内存�
 但是Redis提供了两种数据库持久化方案。由于数据是存储在内存中，所以数据的读取速度可以达到每秒万级。所以大型的网站会利用Redis做缓存，来降低对数据库的访
 问量，提高网站的性能。
 
-# Redis中的五种数据类型
+## Redis中的五种数据类型
 
-## 字符串string
+1.字符串string
 
 (key, value)
 
@@ -77,21 +78,25 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，是一种内存�
 
 典型的应用场景：
 
-1.缓存：使用Redis作为缓存层，MySQL作为数据存储层，降低数据库的访问压力
+a.缓存：使用Redis作为缓存层，MySQL作为数据存储层，降低数据库的访问压力
 
-2.共享session：将session全部存储在Redis中集中管理
+b.共享session：将session全部存储在Redis中集中管理
 
-3.限速（验证码获取次数）
+c.限速（验证码获取次数）
 
-4.计数（视频点击次数）
+d.计数（视频点击次数）
 
-列表（list）
+2.列表（list）
 
-哈希（hash）
+3.哈希（hash）
 
-集合（set）
+4.集合（set）
 
-有序集合（zset）
+5.有序集合（zset）
+
+# Redis集群中 leader 的选举算法
+
+参考博客：[Raft 协议实战之 Redis Sentinel 的选举 Leader 源码解析] (http://weizijun.cn/2015/04/30/Raft%E5%8D%8F%E8%AE%AE%E5%AE%9E%E6%88%98%E4%B9%8BRedis%20Sentinel%E7%9A%84%E9%80%89%E4%B8%BELeader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/)
 
 # Redis压力测试
 
