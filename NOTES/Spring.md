@@ -85,7 +85,7 @@ BeanDefinitionReader 读取、解析 Resource 定位的资源，也就是将用�
 
 ## AOP
 
-AOP-Aspect Oriented Programming，面向切面编程。要理解面向切面编程，首先我们回顾一下之前我们通过抽取出父类的这种纵向继承的方式，来减少重复的代码。比如，Horse, Pig, Camel 这些对象都有 run() 和 eat() 方法，通过引入一个包含这两个方法的抽象的Animal父类，Horse, Pig, Camel 这些对象就可以通过继承 Animal 复用 run() 和 eat() 方法。但是有些情况下，我们是没法通过抽取出父类的这种纵向的方式来实现代码的复用的。例如下面的这段代码：
+AOP-Aspect Oriented Programming，面向切面编程。要理解面向切面编程，首先我们回顾一下之前我们通过抽取出父类的这种纵向继承的方式，来减少重复的代码。比如，Horse, Pig, Camel 这些对象都有 run() 和 eat() 方法，通过引入一个包含这两个方法的抽象的 Animal 父类，Horse, Pig, Camel 这些对象就可以通过继承 Animal 复用 run() 和 eat() 方法。但是有些情况下，我们是没法通过抽取出父类的这种纵向的方式来实现代码的复用的。例如下面的这段代码：
 
 <div align="center"> <img src="../pictures//aop_1.png"/> </div> 
 
@@ -124,7 +124,7 @@ AOP 就是将分散在各个业务逻辑代码中相同代码，通过横向切�
 
 * 代理
 
-一个类被 AOP 织入增强后，就产生了一个结果类，它是融合了原类和增强逻辑的代理类。Spring AOP 使用动态代理技术( JDK 动态代理和 CGLIB 动态代理)在程序运行期间织入增强的代码。
+一个类被 AOP 织入增强后，就产生了一个结果类，它是融合了原类和增强逻辑的代理类。Spring AOP 使用动态代理技术 (JDK 动态代理和 CGLIB 动态代理) 在程序运行期间织入增强的代码。
 
 2.Spring AOP的两种动态代理示例
 
