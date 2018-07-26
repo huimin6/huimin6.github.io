@@ -95,11 +95,13 @@ public V put(K key, V value) {
     return null;
 }
 ```
-addEntry(...)方法的源码：
+addEntry(...) 方法的源码：
 ```
 void addEntry(int hash, K key, V value, int bucketIndex) {
     if ((size >= threshold) && (null != table[bucketIndex])) {
+        //扩容
         resize(2 * table.length);
+        //判断 key 是否为 null
         hash = (null != key) ? hash(key) : 0;
         //找到要插入的桶
         bucketIndex = indexFor(hash, table.length);
@@ -108,7 +110,7 @@ void addEntry(int hash, K key, V value, int bucketIndex) {
     createEntry(hash, key, value, bucketIndex);
 }
 ```
-createEntry(...)方法的源码：
+createEntry(...) 方法的源码：
 ```
 void createEntry(int hash, K key, V value, int bucketIndex) {
     //找到对应链表的头节点
@@ -118,7 +120,7 @@ void createEntry(int hash, K key, V value, int bucketIndex) {
     size++;
 }
 ```
-Entry的结构：
+Entry 的结构：
 ```
 static class Entry<K,V> implements Map.Entry<K,V> {
     final K key;
@@ -139,6 +141,7 @@ void resize(int newCapacity) {
 
     Entry[] newTable = new Entry[newCapacity];
     transfer(newTable, initHashSeedAsNeeded(newCapacity));
+    //创建一个新的 table
     table = newTable;
     threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
     }
@@ -147,14 +150,18 @@ void resize(int newCapacity) {
 ```
 void transfer(Entry[] newTable, boolean rehash) {
     int newCapacity = newTable.length;
+    //遍历每一个桶 (索引数组)
     for (Entry<K,V> e : table) {
+        //遍历链表
         while(null != e) {
+            //拆下节点之前，需要先记录当前节点的 next
             Entry<K,V> next = e.next;
             if (rehash) {
                 e.hash = null == e.key ? 0 : hash(e.key);
             }
             int i = indexFor(e.hash, newCapacity);
             e.next = newTable[i];
+            //头插法
             newTable[i] = e;
             e = next;
         }
@@ -162,7 +169,7 @@ void transfer(Entry[] newTable, boolean rehash) {
 }
 ```
 
-get元素的方法：
+get 元素的方法：
 ```
 public V get(Object key) {
     if (key == null)
@@ -172,7 +179,7 @@ public V get(Object key) {
     return null == entry ? null : entry.getValue();
 }
 ```
-getEntry()方法：
+getEntry() 方法：
 ```
 final Entry<K,V> getEntry(Object key) {
     if (size == 0) {
