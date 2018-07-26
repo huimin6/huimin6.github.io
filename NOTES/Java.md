@@ -106,7 +106,6 @@ void addEntry(int hash, K key, V value, int bucketIndex) {
         //找到要插入的桶
         bucketIndex = indexFor(hash, table.length);
     }
-
     createEntry(hash, key, value, bucketIndex);
 }
 ```
@@ -138,7 +137,6 @@ void resize(int newCapacity) {
         threshold = Integer.MAX_VALUE;
         return;
     }
-
     Entry[] newTable = new Entry[newCapacity];
     transfer(newTable, initHashSeedAsNeeded(newCapacity));
     //创建一个新的 table
@@ -175,7 +173,6 @@ public V get(Object key) {
     if (key == null)
         return getForNullKey();
     Entry<K,V> entry = getEntry(key);
-
     return null == entry ? null : entry.getValue();
 }
 ```
@@ -185,7 +182,6 @@ final Entry<K,V> getEntry(Object key) {
     if (size == 0) {
         return null;
     }
-
     int hash = (key == null) ? 0 : hash(key);
     for (Entry<K,V> e = table[indexFor(hash, table.length)];
             e != null;
@@ -198,7 +194,19 @@ final Entry<K,V> getEntry(Object key) {
     return null;
 }
 ```
+计算 hash 值源码：
+```
+final int hash(Object k) {
+    int h = hashSeed;
+    if (0 != h && k instanceof String) {
+        return sun.misc.Hashing.stringHash32((String) k);
+    }
+    h ^= k.hashCode();
 
+    h ^= (h >>> 20) ^ (h >>> 12);
+    return h ^ (h >>> 7) ^ (h >>> 4);
+}
+```
 (2)jdk8 中的 HashMap
 
 (1)常用的参数
@@ -245,7 +253,7 @@ static final int MIN_TREEIFY_CAPACITY = 64;
 
 2.HashMap 线程不安全的原因
 
-(1)插入连个 hash 值相等的元素，但是这两个元素的值不同，这时候如果两个线程同时去查容量发现都不需要扩容
+(1)当多个线程在插入元素时，同时检测到总数量超过 threshold 的时候就会 resize ，各自生成新的数组并赋给该 Map 底层的数组 table，结果最终只有最后一个线程生成的新数组被赋给 table 变量，其他线程的均会丢失。而且当某些线程已经完成赋值而其他线程刚开始的时候，就会用已经被赋值的 table 作为原始数组，这样也会有问题。
 
 (2)两个线程同时进行扩容操作，线程 1 先扩容完毕后返回新的 table，线程 2 开始扩容，这时线程 2 操作的 table 已经变为线程 1 扩容完毕后的 table，这时就会产生链表环，导致再查询的时候，出现死循环。
 
