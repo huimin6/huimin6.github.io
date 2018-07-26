@@ -96,7 +96,7 @@ d.计数（视频点击次数）
 
 # Redis集群中 leader 的选举算法
 
-参考博客：[Raft 协议实战之 Redis Sentinel 的选举 Leader 源码解析] (http://weizijun.cn/2015/04/30/Raft%E5%8D%8F%E8%AE%AE%E5%AE%9E%E6%88%98%E4%B9%8BRedis%20Sentinel%E7%9A%84%E9%80%89%E4%B8%BELeader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/)
+参考博客：[Raft 协议实战之 Redis Sentinel 的选举 Leader 源码解析](http://weizijun.cn/2015/04/30/Raft%E5%8D%8F%E8%AE%AE%E5%AE%9E%E6%88%98%E4%B9%8BRedis%20Sentinel%E7%9A%84%E9%80%89%E4%B8%BELeader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/)
 
 # Redis压力测试
 
