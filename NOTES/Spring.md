@@ -128,13 +128,13 @@ AOP 就是将分散在各个业务逻辑代码中相同代码，通过横向切�
 
 2.Spring AOP的两种动态代理示例
 
-* JDK 动态代理
+(1) JDK 动态代理
 
 <div align="center"> <img src="../pictures//jdk_1.png"/> </div> 
 <div align="center"> <img src="../pictures//jdk_2.png"/> </div> 
 <div align="center"> <img src="../pictures//jdk_3.png"/> </div> 
 
-* CGLIB 动态代理
+(2) CGLIB 动态代理
 
 <div align="center"> <img src="../pictures//cglib_1.png"/> </div> 
 <div align="center"> <img src="../pictures//cglib_2.png"/> </div> 
