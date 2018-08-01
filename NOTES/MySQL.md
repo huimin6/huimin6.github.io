@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [MySQL](#mysql)
+- [MySQL架构](#mysql架构)
 - [SQL语句](#sql语句)
 - [事务](#事务)
 - [索引](#索引)
@@ -14,6 +15,18 @@
 <!-- /MarkdownTOC -->
 
 # MySQL
+
+# MySQL架构
+
+分为四层：
+
+1.连接层：客户端和连接服务
+
+2.服务层：SQL分析和优化、缓存查询、跨存储引擎功能的实现
+
+3.引擎层：MySQL数据的存储和读取
+
+4.存储层：数据存储在硬盘
 
 # SQL语句
 
@@ -54,11 +67,29 @@ insert into student(id, name, score) values
 | inner join | select Websites.name, access_log.count, access_log.date from Websites <br> inner join access_log on Websites.id=access_log.site_id order by access_log.count; <br>只有两个表中条件完全匹配的行，才会返回<br>inner join 和 join 是一样的|
 | left join | select Websites.name, access_log.count, access_log.date from Websites <br> left join access_log on Websites.id=access_log.site_id order by access_log.count desc; <br> Websites是左表，access_log是右表 <br> 左表对应的要查找的列全部返回，右表不匹配的显示为null |
 | right join | select Websites.name, access_log.count, access_log.date from access_log <br> right join Websites on access_log.site_id=Websites.id order by access_log.count desc; <br> Websites是右表，access_log是左表 <br> 右表对应的要查找的列全部返回，左表不匹配的显示为null |
+| full join | mysql不支持full join |
+| having | SELECT Websites.name, Websites.url, SUM(access_log.count) AS nums FROM <br> (access_log INNER JOIN Websites ON access_log.site_id=Websites.id) <br> GROUP BY Websites.name HAVING SUM(access_log.count) > 200;<br>
+在 SQL 中增加 HAVING 子句原因是，WHERE 关键字无法与聚合函数一起使用<br>
+HAVING 子句可以让我们筛选分组后的各组数据 |
+
 
 
 知乎上面的高分回答：如何学习SQL?(https://www.zhihu.com/question/19552975)
 
 在线练习网站：http://sqlfiddle.com/ 
+
+3.机器怎么读取SQL语句？
+
+1.FROM <br>
+2.ON <br>
+3.JOIN <br>
+4.WHERE <br>
+5.GROUP BY <br>
+6.HAVING <br>
+7.SELECT <br>
+8.DISTINCT <br>
+9.ORDER BY <br>
+10.LIMIT <br>
 
 # 事务
 
@@ -112,33 +143,85 @@ D，Durability，持久性，就是事务提交完毕，操作记录会被持久
 
 # 索引
 
-**索引**：是把一个关键码和它对应的数据记录的位置相关联的过程
+1.索引是啥？
 
-**索引文件**：用于记录这种联系 (关键码和它对应的数据记录的位置) 的文件组织结构
+索引：是排好序的快速查找数据结构。索引会影响到查找和排序两个部分。
+
+索引文件：用于记录这种联系 (关键码和它对应的数据记录的位置) 的文件组织结构
 
 数据按照某种顺序存储在磁盘中后，我们称之为主文件。建立索引就是在主文件之上创建索引文件，**索引文件的格式为 (key, pointer)**， 其中key就是主文件中用来标识一条记录的key，pointer就是用来存储key所对应文件在磁盘中的存储位置。如下图所示：
 <div align="center"> <img src="../pictures//index1.png"/> </div><br>
 数据表中保存的是员工信息，选取cid作为索引文件的key，pointer就指向该cid对应的磁盘中的一条记录。假如要查询一条cid==8的记录，我们还没有建立索引，就需要先将磁盘中的数据读入内存中，然后查询这些数据中是否有 cid==8 的记录，如果有就取出来，如果没有就继续查询，直到找到该记录为止。查询过程中，将数据库中的记录读入内存时，我们将一条记录的所有信息全部读入进去，这样我们一次性读入内存中的数据条数就会减少，这样一次IO访问所能查询的数据条数就会减少，查询的效率就很低。如果已经建立索引，我们只需要将索引文件读入内存中，索引文件中只保存了key和pointer，所需要的存储空间就比较小，一次可以读入多个索引记录，这样一次IO访问，所能查询的数据条数就会增加，查询效率也就提高了。
 
+2.建索引的目的
+
+提高查询的效率，因为索引是有序的
+
+3.什么时候建索引？
+
+(1)主键自动创建唯一索引
+
+(2)频繁作为查询条件的字段应该建立索引
+
+(3)查询中与其他表关联的字段，外键关系建立索引
+
+(4)高并发环境下建组合索引
+
+(5)查询中排序的字段
+
+(6)查询中统计或者分组的字段
+
+
+
+4.什么时候不适合建索引
+
+(1)表记录很少
+
+(2)频繁更新的字段
+
+(3)where条件里用不到的字段
+
+(4)某个字段的重复值较多的时候
+
+5.索引怎么优化？
+
+(1)需要使用关键字 EXPLAIN，例如：explain select * from user;
+
+(2)EXPLAIN能干嘛？
+
+表的读取顺序
+
+数据读取操作的操作类型
+
+哪些索引可以使用
+
+哪些索引被实际使用
+
+表之间的引用
+
+每张表有多少行被优化器查询
+
+
+
 ## B-Tree索引
 
-在创建索引的过程中，如果主文件很大，那么一级索引相应的也会很大，查询的效率就会变得很低。这时候考虑建立二级甚至多级索引，假设一条索引记录为16字节，那么1000条索引记录，就需要40个块来存储。我们根据存储一级索引的块来建立二级索引，二级索引中一条记录指向一级索引中的一个块，二级索引一共需要2个块来存储。如下图所示：
+在创建索引的过程中，如果主文件很大，那么一级索引相应的也会很大，查询的效率就会变得很低。这时候考虑建立二级甚至多级索引，假设一条索引记录为 16 字节，那么 1000 条索引记录，就需要 40 个块来存储。我们根据存储一级索引的块来建立二级索引，二级索引中一条记录指向一级索引中的一个块，二级索引一共需要 2 个块来存储。如下图所示：
 <div align="center"> <img src="../pictures//index2.png"/> </div><br>
-如果要查找一条数据记录，那么我们最多只需要查询存储二级索引的2个块，一级索引中的某一个块和存储数据库数据的某一个块就完成此次数据查询。
+如果要查找一条数据记录，那么我们最多只需要查询存储二级索引的 2 个块，一级索引中的某一个块和存储数据库数据的某一个块就完成此次数据查询。
 
-如果我们的数据量变得更大，索引的层数也会增多，这样将上图顺时针旋转90度就变成了B-Tree索引
+如果我们的数据量变得更大，索引的层数也会增多，这样将上图顺时针旋转 90 度就变成了 B-Tree 索引
 
-**B树就是一个满足如下要求的m叉树：**
+B树就是一个满足如下要求的 m 叉树：
 
-1.如果一个节点不是叶子节点，也不是根节点，每个节点至少有[m/2]个孩子节点，至多有m个孩子节点
+1.如果一个节点不是叶子节点，也不是根节点，每个节点至少有 [m/2] 个孩子节点，至多有 m 个孩子节点
 
 2.根节点至少有两个孩子
 
 3.所有的叶子结点必须在同一层
 
-4.B树的创建过程是从下到上创建
+4.B 树的创建过程是从下到上创建
 
-**B+树与B树的区别**是，B+树的非叶子节点中不保存磁盘数据的pointer信息，所有的信息都保存在叶子节点中。B树中的一个节点除了要保存孩子节点的pointer之外，还需要保存当前节点的key所对应的数据库中的某一条记录的pointer
+B+ 树与 B 树的区别是，B+ 树的非叶子节点中不保存磁盘数据的 pointer 信息，所有的信息都保存在叶子节点中。B 树中的一个节点除了要保存孩子节点的 pointer 之外，还需要保存当前节点的 key 所对应的数据库中的某一条记录的 pointer
 
 ## MyISAM与InnoDB存储引擎
 
@@ -150,6 +233,8 @@ D，Durability，持久性，就是事务提交完毕，操作记录会被持久
 | 主码索引与辅码索引都是具有相同的结构 | 主码索引与辅码索引差别较大 |
 | 主码和辅码索引的叶子节点中存储的都是存储该条数据记录的地址 | 主码索引叶子节点中存储的就是该条数据记录，辅码索引叶子节点中存储的是该条数据记录对于的主码|
 | 不支持事务 | 支持事务 |
+| 只缓存索引 | 缓存索引和真实数据 |
+| 不支持主外键 | 支持主外键 |
 
 ### MyISAM索引
 
@@ -163,13 +248,13 @@ MyISAM的辅码索引原理图：
 
 ### InnoDB索引
 
-InnoDB的主码索引原理图：
+InnoDB 的主码索引原理图：
 <div align="center"> <img src="../pictures//index5.png"/> </div><br>
 &ensp;&ensp;&ensp;&ensp;图中的数据表就是按照B+树的结构来存储的，所以数据表本身就是主码索引，索引的叶子节点中直接存储的是该主键对应的数据表中的一条记录，而不是这条记录的存储地址。
 <br></br>
-InnoDB的辅码索引的原理图：
+InnoDB 的辅码索引的原理图：
 <div align="center"> <img src="../pictures//index6.png"/> </div><br>
-&ensp;&ensp;&ensp;&ensp;图中索引的叶子节点中存储的既不是一条数据记录，也不是数据记录的地址，而是主码，也就是说InnoDB的辅码索引是建立在主码索引之上的，在数据查询过程中需要先根据辅码索引找到目标记录对应的主码，然后再根据主码查找到目标记录。所以，InnoDB的主码索引效率非常高，辅码索引的效率比较低。
+&ensp;&ensp;&ensp;&ensp;图中索引的叶子节点中存储的既不是一条数据记录，也不是数据记录的地址，而是主码，也就是说 InnoDB 的辅码索引是建立在主码索引之上的，在数据查询过程中需要先根据辅码索引找到目标记录对应的主码，然后再根据主码查找到目标记录。所以，InnoDB 的主码索引效率非常高，辅码索引的效率比较低。
 
 
 参考的博客：https://blog.csdn.net/qq_26768741/article/details/53164202
@@ -186,11 +271,11 @@ InnoDB的辅码索引的原理图：
  
  2.根节点是黑色
  
- 3.叶子节点（为null或者nil）是黑色
+ 3.叶子节点 (为 null 或者 nil) 是黑色
  
- 4.任意子树从根节点到叶子节点的任意一条路径，所经过的黑色节点个数是相同(为null和nil的叶子节点也计算在内)
+ 4.任意子树从根节点到叶子节点的任意一条路径，所经过的黑色节点个数是相同 (为 null 和 nil 的叶子节点也计算在内)
  
- 5.最长路径（root->最远的nil）的距离不能超过最短路径（root->最近的nil）的两倍
+ 5.最长路径 (root->最远的 nil) 的距离不能超过最短路径 (root->最近的 nil) 的两倍
  
  <div align="center"> <img src="../pictures//red-black tree1.jpg"/> </div><br>
  
