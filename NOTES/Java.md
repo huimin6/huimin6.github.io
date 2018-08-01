@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [Java](#java)
+    + [classpath](#classpath)
     + [String](#string)
     + [Java集合](#java集合)
     + [枚举类](#枚举类)
@@ -28,6 +29,26 @@
 <!-- /MarkdownTOC -->
 
 # Java
+
+## classpath 
+
+1.src 不是 classpath，WEB-INF/classes，lib 才是 classpath，WEB-INF/ 是资源目录，客户端不能直接访问，在编译的时候 src 目录下的配置文件会被复制到 classpath 下。
+
+2.WEB-INF/classes 目录存放 src 目录 java 文件编译之后的 class 文件，xml、properties 等资源配置文件，这是一个定位资源的入口。
+
+3.引用 classpath 路径下的文件，只需在文件名前加 classpath:
+```
+<param-value>classpath:applicationContext-*.xml</param-value> 
+<!-- 引用其子目录下的文件,如 -->
+<param-value>classpath:context/conf/controller.xml</param-value>
+```
+4.lib 和 classes 同属 classpath，两者的访问优先级为: lib > classes。
+
+5.classpath 和 classpath* 区别：
+```
+classpath：只会到你的 class 路径中查找找文件;
+classpath*：不仅包含 class 路径，还包括 jar 文件中 (class 路径) 进行查找。
+```
 
 ## String
 ```
