@@ -35,7 +35,7 @@
 
 (1)创建start-all.sh文件，文件内容如下：
 
-```html
+```
 cd redis01
 ./redis-server redis.conf
 cd ..
@@ -131,3 +131,7 @@ redis-benchmark -t set,lpush -q -n 100000
 ```
 redis-benchmark -n 100000 -q script load "redis.call('set','foo','bar')"
 ```
+
+RabbitMQ 的面试问题
+
+1.

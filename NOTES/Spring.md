@@ -2,6 +2,8 @@
 
 - [Spring](#spring)
     + [IoC](#ioc)
+    + [bean 的创建和销毁](#bean-的创建和销毁)
+    + [依赖注入的两种方式](#依赖注入的两种方式)
     + [Spring 中 IOC 的实现原理](#spring-中-ioc-的实现原理)
     + [IoC 容器的初始化](#ioc-容器的初始化)
     + [AOP](#aop)
@@ -59,6 +61,138 @@ DI—Dependency Injection，即“依赖注入”：是组件之间依赖关系�
  
 
 IoC 和 DI 由什么关系呢？其实它们是同一个概念的不同角度描述，由于控制反转概念比较含糊（可能只是理解为容器控制对象这一个层面，很难让人想到谁来维护对象关系），所以 2004 年大师级人物 Martin Fowler 又给出了一个新的名字：“依赖注入”，相对 IoC 而言，“依赖注入”明确描述了“被注入对象依赖 IoC 容器配置依赖对象”。
+
+## bean 的创建和销毁
+
+```
+public class UserServiceImpl implements UserService {
+    
+    public void myInit() {
+        System.out.println("初始化");
+    }
+    
+    public void myDestory() {
+        System.out.println("销毁");
+    }
+    @Override
+    public void addUser() {
+        System.out.println("a_ioc add user");
+    }
+}
+```
+
+配置文件中配置 bean 的初始化和销毁方法，其中初始化方法用来准备数据等，销毁方法用来清理资源等，对象销毁必须关闭容器 (ClassPathXmlApplicationContext.close())，而且这个 bean 的 scope 必须是 singleton 不能是 prototype 
+```
+<bean id="userServiceId" class="com.itheima.a_ioc.UserServiceImpl" init-method="myInit" destroy-method="myDestory"></bean>
+```
+
+## 依赖注入的两种方式
+
+1.属性注入
+
+将要注入的属性 xxx 通过设置 setXxx() 方法进行注入，Spring 是通过 setXxx() 这个方法去找对应的属性的，这个属性可以不存在，但是在配置文件中，property 中的 name 必须和 set 方法中的一致
+
+```
+public class BookServiceImpl implements BookService {
+    //需要注入的属性 1
+    private BookDao bookDao;
+    //需要注入的属性 2
+    private String name;
+    //对应的 set 方法
+    public void setBookDao(BookDao bookDao) {
+        this.bookDao = bookDao;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+配置文件；
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl">
+    <property name="bookDao" ref="bookDaoId"></property>
+    <property name="name" value="WeBank"></property>
+<bean id="bookDaoId" class="com.itheima.b_di.BookDaoImpl"></bean>
+```
+
+2.构造方法注入
+
+使用构造方法注入的前提是：bean 必须提供带参的构造方法
+
+配置文件有以下几种配置方式：
+
+*按类型匹配入参
+*按索引匹配入参
+*联合使用类型和索引匹配入参
+*通过自身类型反射入参
+
+```
+public class BookServiceImpl implements BookService {
+
+    private BookDao bookDao;
+    private String name;
+    
+    public BookServiceImpl(BookDao bookDao, String name) {
+        this.bookDao = bookDao;
+        this.name = name;
+    }
+}
+```
+
+1.按照类型匹配入参方式
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl">
+    <constructor-arg type="BookDao" ref="bookDaoId"></constructor-arg>
+    <constructor-arg type="String" value="WeBank"></constructor-arg>
+</bean>
+```
+2.按照索引匹配入参方式
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl">
+    <constructor-arg index="0" ref="bookDaoId"></constructor-arg>
+    <constructor-arg index="1" value="WeBank"></constructor-arg>
+</bean>
+```
+注意：按照索引匹配入参的方式，如果有多个构造器，使用的是第一个构造器
+3.联合使用类型和索引匹配入参
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl">
+    <constructor-arg index="0" type="BookDao" ref="bookDaoId"></constructor-arg>
+    <constructor-arg index="1" type="String" value="WeBank"></constructor-arg>
+</bean>
+```
+4.通过自身类型反射入参
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl">
+    <constructor-arg ref="bookDaoId"></constructor-arg>
+    <constructor-arg value="WeBank"></constructor-arg>
+</bean>
+```
+如果 bean 构造函数入参的类型是可辨别的，由于 Java 反射机制可以获取构造函数入参的类型，即使构造函数的注入不提供类型和索引的信息，Spring 依旧可以完成构造函数信息的注入
+
+通过构造方法注入和属性注入都会出现循环依赖的情况，只是属性注入情况复杂一些
+```
+<bean id="bookServiceId" class="com.itheima.b_di.BookServiceImpl" scope="prototype">
+    <property name="bookDao" ref="bookDaoId"></property>
+</bean>
+<bean id="bookDaoId" class="com.itheima.b_di.BookDaoImpl" scope="prototype">
+    <property name="bookService" ref="bookServiceId"></property>
+</bean>
+```
+
+属性注入的几种情况：
+
+1.两个都是单例，创建对象成功
+
+2.两个都是多例，创建对象失败
+
+3.bookServiceId 是单例，bookDaoId 是多例，成功
+
+4.bookServiceId 是多例，bookDaoId 是多例，失败
+
+如果一个是单例，一个是 prototype，那么一定要保证单例对象能提前暴露出来，才可以正常注入属性。原因就是容器在创建对象的过程中，如果是单例的而且有无参的构造方法会直接创建，并把对象暴露出来，然后再完成属性注入。
+
 
 
 ## Spring 中 IOC 的实现原理
