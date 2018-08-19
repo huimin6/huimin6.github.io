@@ -5,11 +5,13 @@
 - [SQL语句](#sql语句)
 - [事务](#事务)
 - [索引](#索引)
+    + [InnoDB 中的 MVCC](#innodb-中的-mvcc)
     + [B-Tree索引](#b-tree索引)
     + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)
         * [MyISAM 索引](#myisam-索引)
         * [InnoDB 索引](#innodb-索引)
 - [索引失效](#索引失效)
+    + [数据库中的死锁](#数据库中的死锁)
 - [红黑树](#红黑树)
 
 <!-- /MarkdownTOC -->
@@ -245,9 +247,92 @@ show profile 分析 SQL 在 MySQL 服务器里面的执行细节和生命周期�
 
 SQL 数据库服务器的参数调优
 
+## InnoDB 中的 MVCC
 
+MVCC，多版本并发控制，主要用来采用了多版本并发控制来提高读操作的性能，MVCC 提供了非锁定读：不需要等待访问行上的锁释放，读取行的一个快照。只有 READ_COMMITTED 和 REPEATABLE_READ 两种事务隔离级别才能使用 MVCC。
 
+InnoDB 中的 MVCC 是通过在每行记录的后面添加两列，分别是创建时间和删除时间，但是并不是记录实际的时间值，而是记录系统的版本号 (可以理解为操作数据的事务的ID)，每一个事务在启动的时候，都有一个唯一的递增的版本号。
 
+在执行数据库的查询的过程中，MVCC 操作的规则是：
+
+查找事务创建时间小于等于当前事务ID，并且删除时间大于等于当前事务 ID 的数据行
+
+假设现在有数据表 user：
+
+|id|name|创建时间 (事务ID)|删除时间 (事务ID)|
+|:-:|:-:|:-:|:-:|
+| 1 | Tom | 1 | undefined |
+| 2 | James | 1 | undefined |
+| 3 | Rocket | 1 | undefined |
+
+现在要执行下面两个事务：
+
+事务 1 的 ID 为 2
+```
+start transaction;
+select * from user;  //(1)
+select * from user;  //(2)
+commit; 
+```
+
+事务 2 的 ID 为 3
+
+```
+start transaction;
+insert into user values(NULL,'Lucy');
+commit;
+```
+
+假设在事务 1 执行到 (1) 位置，事务 2 开始执行并提交，那么数据表 user 中的记录将会变成：
+
+|id|name|创建时间 (事务ID)|删除时间 (事务ID)|
+|:-:|:-:|:-:|:-:|
+| 1 | Tom | 1 | undefined |
+| 2 | James | 1 | undefined |
+| 3 | Rocket | 1 | undefined |
+| 4 | Lucy | 3 | undefined |
+
+当事务 1 继续执行到 (2) 位置，根据 MVCC 的操作规则，因为当前事务 1 的 ID 为 2，它只会查找 创建时间小于等于 2 的数据记录，那么新插入的数据行就不会被读取
+
+以上内容参考博客：https://blog.csdn.net/whoamiyang/article/details/51901888
+
+InnoDB 的加锁方式：
+
+record lock：记录锁，也就是仅仅锁着单独的一行
+
+gap lock：间隙锁，仅仅锁住一个区间 (注意这里的区间都是开区间，也就是不包括边界值)
+
+next-key lock：record lock + gap lock，所以 next-key lock 也就半开半闭区间，且是下界开，上界闭，比如 (16, 21]。InnoDB 默认的加锁方式，主要是用来解决幻读的问题
+
+InnoDB有三种行锁的算法：
+
+如果在查询或者删除的过程中锁定了某些行或某一行，InnoDB 就会锁定一个区间
+
+假设数据库中有一张数据表 store，id 是主键
+
+|id|count|
+|:-:|:-:|
+| 2 | 11 |
+| 3 | 12 |
+| 8 | 13 |
+
+执行如下操作：
+
+(1) select * from store where id = 2 for update; InnoDB 会锁定 id = 2 的这一行
+
+(2) delete from store where id = 10; 数据表中没有 id = 10 的记录，所以 InnoDB 会锁定 id 在 (2, 无穷大) 这个区间中的所有
+
+(3) delete from store where id = 5; 数据表中没有 id = 5 的记录，但是 InnoDB 会锁定 id 在 (3, 5] 这个区间，因为在 id = 5 的前后都有数据记录，所以和上面的 id = 10 不同
+
+(4) delete from store where id > 3; 锁定的区间就是 (3, 无穷大)
+
+(5) delete from store where id < 3; 锁定的区间就是 (无穷小, 2]
+
+注意：
+
+(1)如果 SQL 语句中没有用到索引，那么就会锁定整张表，因为 InnoDB 中的锁是通过对索引加锁来实现的
+
+(2)next-key lock 是为了防止幻读而设计的，只有在隔离级别是 REPEATABLE_READ 或者更高的隔离级别才有可能解决幻读的问题，READ_COMMITED 这种隔离级别下就不存在 next-key lock 这一说法
 
 ## B-Tree索引
 
@@ -271,7 +356,7 @@ B+ 树与 B 树的区别是，B+ 树的非叶子节点中不保存磁盘数据�
 
 ## MyISAM与InnoDB存储引擎
 
-|MyISAM|InnoDB|
+| MyISAM | InnoDB |
 |-|-|
 | B+ 树索引 | B+ 树索引 |
 | 非聚集索引 | 聚集索引 |
@@ -309,6 +394,14 @@ InnoDB 的辅码索引的原理图：
 
 参考博客：https://blog.csdn.net/wuseyukui/article/details/72312574
 
+## 数据库中的死锁
+
+1.多个事务不同顺序锁定资源时，会产生死锁
+
+2.多个事务同时锁定同一个资源，产生死锁
+
+InnoDB目前处理死锁的方法是，将持有最小行级排他锁的事务进行回滚（相对比较简单的死锁回滚方法） 
+
 # 红黑树
 
  红黑树就是一种二叉搜索树，但是还需要满足如下要求：
@@ -330,3 +423,4 @@ InnoDB 的辅码索引的原理图：
 红黑树并不追求“完全平衡”——它只要求部分地达到平衡要求，降低了对旋转的要求，从而提高了性能。
 
 红黑树能够以 <a href="https://www.codecogs.com/eqnedit.php?latex=O(log_{2}^{n})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?O(log_{2}^{n})" title="O(log_{2}^{n})" /></a> 的时间复杂度进行搜索、插入、删除操作。此外，由于它的设计，任何不平衡都会在三次旋转之内解决。当然，还有一些更好的，但实现起来更复杂的数据结构 能够做到一步旋转之内达到平衡，但红黑树能够给我们一个比较“便宜”的解决方案。红黑树的算法时间复杂度和 AVL 相同，但统计性能比 AVL 树 (平衡二叉树) 更高。
+
