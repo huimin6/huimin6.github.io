@@ -4,7 +4,7 @@
     + [get和post的区别](#get和post的区别)
     + [cookie和session的区别](#cookie和session的区别)
     + [http请求和响应](#http请求和响应)
-    + [http和https](#http和https)
+    + [http 和 https](#http-和-https)
 
 <!-- /MarkdownTOC -->
 
@@ -81,6 +81,16 @@ session 对象默认 30 分钟没有使用，则服务器会自动销毁 session
 
 参考博客：https://blog.csdn.net/xun527/article/details/78387345
 
-## http和https
+## http 和 https
 
 参考博客：https://www.cnblogs.com/wqhwe/p/5407468.html
+
+https 的连接过程：
+
+https 首先与安全套接层建立连接，服务端接收到客户端的连接请求之后，将 SSL 证书发给客户端
+
+客户端校验这个证书的信息，并从中读取公钥，并用公钥加密对称秘钥，发送个服务端
+
+服务端接收到之后，用自己的私钥去解密，获得对称秘钥，以后所有的会话都用对称秘钥加密
+
+细节的讲解：https://baijiahao.baidu.com/s?id=1570143475599137&wfr=spider&for=pc
