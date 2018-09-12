@@ -5,13 +5,13 @@
 - [SQL语句](#sql语句)
 - [事务](#事务)
 - [索引](#索引)
-    + [InnoDB 中的 MVCC](#innodb-中的-mvcc)
-    + [B-Tree索引](#b-tree索引)
-    + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)
-        * [MyISAM 索引](#myisam-索引)
-        * [InnoDB 索引](#innodb-索引)
+  + [InnoDB 中的 MVCC](#innodb-中的-mvcc)
+  + [B-Tree索引](#b-tree索引)
+  + [MyISAM与InnoDB存储引擎](#myisam与innodb存储引擎)
+    * [MyISAM 索引](#myisam-索引)
+    * [InnoDB 索引](#innodb-索引)
 - [索引失效](#索引失效)
-    + [数据库中的死锁](#数据库中的死锁)
+  + [数据库中的死锁](#数据库中的死锁)
 - [红黑树](#红黑树)
 
 <!-- /MarkdownTOC -->
@@ -249,9 +249,9 @@ SQL 数据库服务器的参数调优
 
 ## InnoDB 中的 MVCC
 
-MVCC，多版本并发控制，主要用来采用了多版本并发控制来提高读操作的性能，MVCC 提供了非锁定读：不需要等待访问行上的锁释放，读取行的一个快照。只有 READ_COMMITTED 和 REPEATABLE_READ 两种事务隔离级别才能使用 MVCC。
+MVCC，多版本并发控制，采用了多版本并发控制来提高读操作的性能，MVCC 提供了非锁定读：不需要等待访问行上的锁释放，读取行的一个快照。只有 READ_COMMITTED 和 REPEATABLE_READ 两种事务隔离级别才能使用 MVCC。
 
-InnoDB 中的 MVCC 是通过在每行记录的后面添加两列，分别是创建时间和删除时间，但是并不是记录实际的时间值，而是记录系统的版本号 (可以理解为操作数据的事务的ID)，每一个事务在启动的时候，都有一个唯一的递增的版本号。
+InnoDB 中的 MVCC 是通过在每行记录的后面添加两列，分别是创建时间和删除时间，但是并不是记录实际的时间值，而是记录系统的版本号 (可以理解为操作数据的事务的 ID)，每一个事务在启动的时候，都有一个唯一的递增的版本号。
 
 在执行数据库的查询的过程中，MVCC 操作的规则是：
 
