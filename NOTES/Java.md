@@ -1,36 +1,61 @@
 <!-- MarkdownTOC -->
 
 - [Java](#java)
+    + [多态](#多态)
     + [classpath](#classpath)
     + [String](#string)
-    + [Java集合](#java集合)
+    + [自动装箱和拆箱](#自动装箱和拆箱)
+    + [Java 集合](#java-集合)
     + [枚举类](#枚举类)
     + [进程与线程](#进程与线程)
+    + [死锁](#死锁)
     + [Java内存模型 \(JMM\)](#java内存模型-jmm)
     + [多线程](#多线程)
         * [创建线程的三种方式](#创建线程的三种方式)
         * [线程的生命周期](#线程的生命周期)
         * [sleep、wait 和 yield](#sleepwait-和-yield)
         * [线程池](#线程池)
+        * [BlockingQueue 阻塞队列](#blockingqueue-阻塞队列)
     + [AQS 队列同步器](#aqs-队列同步器)
     + [volatile 关键字](#volatile-关键字)
+    + [设置线程池的大小](#设置线程池的大小)
     + [CAS \(compare and swap\)](#cas-compare-and-swap)
     + [线程安全](#线程安全)
         * [Synchronized](#synchronized)
         * [Lock](#lock)
         * [偏向锁、轻量级锁和重量级锁](#偏向锁轻量级锁和重量级锁)
     + [动态代理](#动态代理)
-    + [NIO与IO](#nio与io)
+    + [NIO 与 IO](#nio-与-io)
     + [Java 反编译](#java-反编译)
 - [设计模式](#设计模式)
     + [单例设计模式](#单例设计模式)
 - [Java虚拟机](#java虚拟机)
     + [垃圾回收](#垃圾回收)
+    + [CMS 和 G1](#cms-和-g1)
     + [类加载机制](#类加载机制)
+    + [类的初始化](#类的初始化)
+- [Java 8 新特性](#java-8-新特性)
+- [Java 9 新特性](#java-9-新特性)
 
 <!-- /MarkdownTOC -->
 
 # Java
+
+## 多态
+
+多态是同一个行为具有多个不同表现形式或形态的能力。多态就是同一个接口，使用不同的实例而执行不同操作
+
+多态存在的三个必要条件：
+
+(1)继承
+
+(2)父类引用指向子类实例
+
+(3)重写
+
+优点：
+
+1.消除类型之间的耦合
 
 ## classpath 
 
@@ -79,23 +104,97 @@ public void test(){
 
 很好的一篇博客：https://www.cnblogs.com/xiaoxi/p/6036701.html
 
-## Java集合
+## 自动装箱和拆箱
 
-ArrayList 的默认大小是 10，每次扩容为原来的 1.5 倍，非线程安全，底层是通过 object\[\] 数组实现的
+1.Integer 和 int 的区别
+
+(1)Integer 是 int 的包装类；int 是基本数据类型； 
+(2)Integer 变量必须实例化后才能使用；int 变量不需要； 
+(3)Integer 实际是对象的引用，指向此 new 的 Integer 对象；int 是直接存储数据值； 
+(4)Integer 的默认值是 null；int 的默认值是 0。
+
+2.面试的问题
+
+```
+public class Main {
+    public static void main(String[] args) {
+         
+        Integer a = 1;
+        Integer b = 2;
+        Integer c = 3;
+        Integer d = 3;
+        Integer e = 321;
+        Integer f = 321;
+        Long g = 3L;
+        Long h = 2L;
+         
+        System.out.println(c==d); // true
+        System.out.println(e==f); // false 只缓存-128~127
+        System.out.println(c==(a+b)); // true (a+b)先触发自动拆箱 (调用 intValue()方法) 计算，然后自动装箱(调用 Integer.ValueOf(int i))
+        System.out.println(c.equals(a+b)); // true
+        System.out.println(g==(a+b)); // true 当 "=="运算符的两个操作数都是包装器类型的引用，则是比较指向的是否是同一个对象，而如果其中有一个操作数是表达式 (即包含算术运算) 则比较的是数值 (即会触发自动拆箱的过程)。另外，对于包装器类型，equals 方法并不会进行类型转换。明白了这 2 点之后，上面的输出结果便一目了然；
+        System.out.println(g.equals(a+b)); // false 
+        System.out.println(g.equals(a+h)); // true
+    }
+}
+```
+
+Integer 中的对象缓存是静态内部类 IntegerCache 实现的，创建的对象存储在 cache[] 数组中
+
+3.自动拆箱和装箱的缺点
+
+自动装箱有一个问题，那就是在一个循环中进行自动装箱操作的情况，如下面的例子就会创建多余的对象，影响程序的性能。
+```
+Integer sum = 0;
+ for(int i=1000; i<5000; i++){
+   sum+=i;
+}
+```
+
+上面的代码 sum+=i 可以看成 sum = sum + i，但是 + 这个操作符不适用于 Integer 对象，首先 sum 进行自动拆箱操作，进行数值相加操作，最后发生自动装箱操作转换成 Integer 对象。其内部变化如下:
+
+sum = sum.intValue() + i;
+
+Integer sum = new Integer(result);
+
+由于我们这里声明的 sum 为 Integer 类型，在上面的循环中会创建将近 4000 个无用的 Integer 对象，在这样庞大的循环中，会降低程序的性能并且加重了垃圾回收的工作量。因此在我们编程时，需要注意到这一点，正确地声明变量类型，避免因为自动装箱引起的性能问题。
+
+因为自动装箱会隐式地创建对象，像前面提到的那样，如果在一个循环体中，会创建无用的中间对象，这样会增加 GC 压力，拉低程序的性能。所以在写循环时一定要注意代码，避免引入不必要的自动装箱操作。
+
+参考的博客：http://www.importnew.com/15712.html
+
+## Java 集合
+
+1.List
+
+ArrayList 的默认大小是 10，每次扩容为原来的 1.5 倍，非线程安全，底层是通过 object[] 数组实现的
 Vector 每次扩容为为原来的 2 倍，底层是通过 object[] 数组实现的
 LinkedList 底层是通过双向链表实现的
 
-1.HashMap
+2.Map
 
-HashMap 只允许一个 key 值为 null，而且 key 为 null 的元素都存储在 table[0] 的位置，Hashtable 中的 key 和 value 都不允许出现 null
+(1)HashMap
+
+HashMap(继承AbstractMap) 只允许一个 key 值为 null，而且 key 为 null 的元素都存储在 table[0] 的位置
+
+Hashtable(继承Dictionary) 中的 key 和 value 都不允许出现 null
 
 HashMap 中默认的初始化容量为 16，每次扩容变为原来的两倍
 
 Hashtable 中 hash 数组默认的大小是 11，每次扩容为原来的两倍加 1
 
+Hashtable 中桶位置的计算 index = (hash & 0x7FFFFFFF) % tab.length;
+
+HashMap 中桶位置的计算 h & (length-1)
+
+HashMap 的应用场景：
+
+HashMap 不适合在多线程的场景下直接使用，适合在单线程和对数据的存取顺序没有要求的情况下使用
+
+
 (1)jdk7 中的 HashMap
 
-默认的初始化容量为16
+默认的初始化容量为 16
 
 插入元素的方法：
 ```
@@ -128,6 +227,7 @@ public V put(K key, V value) {
     return null;
 }
 ```
+
 addEntry(...) 方法的源码：
 ```
 void addEntry(int hash, K key, V value, int bucketIndex) {
@@ -142,6 +242,7 @@ void addEntry(int hash, K key, V value, int bucketIndex) {
     createEntry(hash, key, value, bucketIndex);
 }
 ```
+
 createEntry(...) 方法的源码：
 ```
 void createEntry(int hash, K key, V value, int bucketIndex) {
@@ -152,6 +253,7 @@ void createEntry(int hash, K key, V value, int bucketIndex) {
     size++;
 }
 ```
+
 Entry 的结构：
 ```
 static class Entry<K,V> implements Map.Entry<K,V> {
@@ -177,6 +279,7 @@ void resize(int newCapacity) {
     threshold = (int)Math.min(newCapacity * loadFactor, MAXIMUM_CAPACITY + 1);
     }
 ```
+
 扩容后转移元素的方法：
 ```
 void transfer(Entry[] newTable, boolean rehash) {
@@ -209,12 +312,14 @@ public V get(Object key) {
     return null == entry ? null : entry.getValue();
 }
 ```
+
 getEntry() 方法：
 ```
 final Entry<K,V> getEntry(Object key) {
     if (size == 0) {
         return null;
     }
+    //判断 key 是否是 null
     int hash = (key == null) ? 0 : hash(key);
     for (Entry<K,V> e = table[indexFor(hash, table.length)];
             e != null;
@@ -227,6 +332,7 @@ final Entry<K,V> getEntry(Object key) {
     return null;
 }
 ```
+
 计算 hash 值源码：
 ```
 final int hash(Object k) {
@@ -240,6 +346,7 @@ final int hash(Object k) {
     return h ^ (h >>> 7) ^ (h >>> 4);
 }
 ```
+
 (2)jdk8 中的 HashMap
 
 (1)常用的参数
@@ -304,9 +411,11 @@ static final int MIN_TREEIFY_CAPACITY = 64;
 
 ConcurrentHashMap 类中包含两个静态内部类 HashEntry 和 Segment。
 
-HashEntry 用来封装映射表的键 / 值对；Segment 用来充当锁的角色，每个 Segment 对象守护整个散列映射表的若干个桶。每个桶是由若干个 HashEntry 对象链接起来的链表。一个 ConcurrentHashMap 实例中包含由若干个 Segment 对象组成的数组。每个 Segment 守护者一个 HashEntry 数组里的元素，当对 HashEntry 数组的数据进行修改时，必须首先获得它对应的Segment锁。
+HashEntry 用来封装映射表的键值对；Segment 用来充当锁的角色，每个 Segment 对象守护整个散列映射表的若干个桶。每个桶是由若干个 HashEntry 对象链接起来的链表。一个 ConcurrentHashMap 实例中包含由若干个 Segment 对象组成的数组。每个 Segment 守护者一个 HashEntry 数组里的元素，当对 HashEntry 数组的数据进行修改时，必须首先获得它对应的Segment锁。
 
 <div align="center"> <img src="../pictures//segment_2.png"/> </div> 
+
+
 
 参考博客：https://blog.csdn.net/dingjianmin/article/details/79776646
 
@@ -321,13 +430,18 @@ public enum SeasonEnum {
 
 枚举类的特点：
 
-1. enum 和 class、interface 的地位一样
-2. 使用enum定义的枚举类默认继承了 java.lang.Enum，而不是继承 Object 类。枚举类可以实现一个或多个接口。
-3. 枚举类的所有实例都必须放在第一行展示，不需使用 new 关键字，不需显式调用构造器。自动添加 public static final 修饰。
-4. 使用 enum 定义、非抽象的枚举类默认使用 final 修饰，不可以被继承。
-5. 枚举类的构造器只能是私有的。
+1.enum 和 class、interface 的地位一样。
+
+2.使用enum定义的枚举类默认继承了 java.lang.Enum，而不是继承 Object 类。枚举类可以实现一个或多个接口。
+
+3.枚举类的所有实例都必须放在第一行展示，不需使用 new 关键字，不需显式调用构造器。自动添加 public static final 修饰。
+
+4.使用 enum 定义、非抽象的枚举类默认使用 final 修饰，不可以被继承。
+
+5.枚举类的构造器只能是私有的。
 
 ## 进程与线程
+
 1.进程与线程的区别：
 
 (1)线程是调度的基本单位，进程是拥有资源的基本单位。
@@ -344,6 +458,27 @@ public enum SeasonEnum {
 
 (7) 从逻辑角度来看，多线程的意义在于一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程看做多个独立的应用，来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。
 
+## 死锁
+
+1.产生死锁的四个必要条件：
+
+(1)互斥条件：一个资源每次只能被一个进程使用。
+
+(2)请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。
+
+(3)不剥夺条件：进程已获得的资源，在未使用完之前，不能强行剥夺。
+
+(4)循环等待条件：若干进程之间形成一种头尾相接的循环等待资源关系。
+
+2.Java 中如何避免死锁
+
+1.避免一个线程同时获取多个锁，如果需要获取多个锁，保证获取锁的顺序都是一样的
+
+2.避免一个线程在锁内同时占用多个资源，尽量保证每个锁只占用一个资源
+
+3.尝试使用定时锁，使用lock.tryLock来代替使用内置锁。
+
+
 ## Java内存模型 (JMM)
 
 Java 内存模型 (即 Java Memory Model) 是一个抽象的概念，是一种规则，它控制了各个变量 (包括实例字段、静态字段和数组中的元素) 在共享数据区 (主内存) 和私有数据区 (工作内存) 中的访问方式。JVM 中程序运行程序的实体就是线程，每个线程在创建时 JVM 都分配工作内存，工作内存区的数据是从主内存中拷贝过来的。Java 内存模型规定所有的变量都存储在主内存，所有线程都可以访问主内存，但是不能直接操作主内存的变量。每个线程只能先从主内存中拷贝变量到自己的工作内存中，然后操作变量，最后再把变量写入主内存。
@@ -358,6 +493,7 @@ Java 内存模型 (即 Java Memory Model) 是一个抽象的概念，是一种�
 
 ## 多线程
 ### 创建线程的三种方式
+
 1.继承Thread类
 ```
 public class FirstThread extends Thread{
@@ -378,6 +514,7 @@ public class FirstThread extends Thread{
     }
 }
 ```
+
 2.实现Runnable接口
 ```
 public class SecondThread implements Runnable{
@@ -401,6 +538,7 @@ public class SecondThread implements Runnable{
      
 }
 ```
+
 3.实现Callable接口
 ```
 import java.util.concurrent.Callable;
@@ -450,7 +588,9 @@ public class ThirdThread implements Callable<Integer>{
 
 }
 ```
+
 ### 线程的生命周期
+
 线程的生命周期：新建(New)、就绪(Runnable)、运行(Running)、阻塞(Blocker)、死亡(Dead)
 <div align="center"> <img src="../pictures//thread.jpg"/> </div><br>
 
@@ -465,14 +605,18 @@ public class ThirdThread implements Callable<Integer>{
 | wait() 和 notify() 会对对象的"锁标志"进行操作，所以它们必须在 synchronized 函数或 synchronized 代码块中进行调用。如果在 non- synchronized 函数或 non-synchronized 代码块中进行调用，虽然能编译通过，但在**运行时**会发生 IllegalMonitorStateException 的异常。|
 
 ### 线程池
+
 1.线程池的创建
+
 创建线程池由ThreadPoolExecutor类来完成，该类的一个最核心的构造方法就是:
 ```
 public class ThreadPoolExecutor extends AbstractExecutorService {
     
     public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, 
-        long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, 
-        ThreadFactory threadFactory, RejectedExecutionHandler handler);
+                              long keepAliveTime, TimeUnit unit, 
+                              BlockingQueue<Runnable> workQueue, 
+                              ThreadFactory threadFactory, 
+                              RejectedExecutionHandler handler);
 ```
 参数含义:
 
@@ -569,6 +713,7 @@ public void execute(Runnable command) {
         reject(command);
 }
 ```
+
 addWorker() 方法的简化代码：
 ```
 private boolean addWorker(Runnable firstTask, boolean core) {
@@ -634,20 +779,103 @@ shutdown 这个方法会将 runState 置为 SHUTDOWN，会终止所有空闲的�
 
 3.线程池的分类
 
-|类型|特点|
-|:-:|-|
-| CachedThreadPool | 1.通过Exectors.newCachedThreadPool()静态静态方法来创建<br>2.线程数量不定的线程池<br>3.只有非核心线程，最大线程数量为Integer.MAX_VALUE，可视为任意大<br>4.有超时机制，时长为60s，即超过60s的空闲线程就会被回收<br>5.当线程池中的线程都处于活动状态时，线程池会创建新的线程来处理新任务，否则就会利用空闲的线程来处理新任务。因此任何任务都会被立即执行6.该线程池比较适合执行大量耗时较少的任务 |
-| FixedThreadPool | 1.通过Exectors.newFixedThreadPool(int nThreads)静态方法来创建<br>2.线程数量固定的线程池<br>3.只有核心线程切并且不会被回收<br>4.当所有线程都处于活动状态时，新任务都会处于等待状态，直到有线程空闲出来 |
-| ScheduledThreadPool |1.通过Exector的newScheduledThreadPool静态方法来创建<br>2.核心线程数量是固定的，而非核心线程数不固定的，并且非核心线程有超时机制，只要处于闲置状态就会被立即回收<br>3.该线程池主要用于执行定时任务和具有固定周期的重复任务 |
-| SingleThreadExecutor | 1.通过Exector的newSingleThreadPool静态方法来创建<br>2.只有一个核心线程，它确保所有的任务都在同一个线程中按顺序执行。因此在这些任务之间不需要处理线程同步的问题 |
+CachedThreadPool  
 
-参考的博客：https://blog.csdn.net/xu__cg/article/details/52962991
+```
+public static ExecutorService newCachedThreadPool() {
+    return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                  60L, TimeUnit.SECONDS,
+                                  new SynchronousQueue<Runnable>());
+}
+```
+
+1.通过 Exectors.newCachedThreadPool() 静态静态方法来创建<br>2.线程数量不定的线程池<br>3.只有非核心线程，最大线程数量为Integer.MAX_VALUE，可视为任意大<br>4.有超时机制，时长为 60s，即超过 60s 的空闲线程就会被回收<br>
+5.当线程池中的线程都处于活动状态时，线程池会创建新的线程来处理新任务，否则就会利用空闲的线程来处理新任务。因此任何任务都会被立即执行<br>
+6.该线程池比较适合执行大量耗时较少的任务
+
+FixedThreadPool
+
+```
+public static ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
+}
+```
+
+1.通过 Exectors.newFixedThreadPool(int nThreads) 静态方法来创建<br>2.线程数量固定的线程池<br>
+3.只有核心线程切并且不会被回收<br>4.当所有线程都处于活动状态时，新任务都会处于等待状态，直到有线程空闲出来
+
+ScheduledThreadPool
+
+```
+public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize) {
+        return new ScheduledThreadPoolExecutor(corePoolSize);
+        //上面的 return 实际执行的是下面的代码
+        return new ThreadPoolExecutor(corePoolSize, Integer.MAX_VALUE, 
+                                      0, NANOSECONDS,
+                                      new DelayedWorkQueue());
+}
+```
+
+1.通过Exector的newScheduledThreadPool(int corePoolSize)静态方法来创建<br>
+2.核心线程数量是固定的，而非核心线程数不固定的，并且非核心线程有超时机制，只要处于闲置状态就会被立即回收<br>3.该线程池主要用于执行定时任务和具有固定周期的重复任务
+
+SingleThreadExecutor
+
+```
+public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+}
+```
+
+1.通过Exector的newSingleThreadPool静态方法来创建<br>
+2.只有一个核心线程，它确保所有的任务都在同一个线程中按顺序执行。因此在这些任务之间不需要处理线程同步的问题<br>
+3.当前线程如果出现异常，会重启一个线程去执行任务
+
+### BlockingQueue 阻塞队列
+
+1.阻塞队列的分类
+
+(1)SynchronousQueue 是一个无界阻塞队列，但是该队列要求在添加任务完毕后必须等待任务被取走才能再次执行添加操作。如果没有线程可以立即执行新提交的任务，就新创建一个线程，所以一般要求线程池 maximumPoolSize 的大小需要是 Integer.MAX_VALUE，来避免任务被丢弃。
+
+优点：可以避免处理具有内部依赖性的请求集时加锁，如果任务 A1 和 A2 之间有内部关联，A1 必须先运行，那么先提交 A1，后提交 A2，当使用 SynchronousQueue 时，A1 肯定先被执行
+
+(2)ArrayBlockingQueue 是一个有界阻塞队列，是通过 object[] 数组 + 1个ReentrantLock 实现的阻塞队列。有公平和非公平两种阻塞队列。控制并发访问的锁对象只有一个 lock，两个 Condition 唤醒条件，notEmpty 用来唤醒 take 方法， notFull 用来唤醒 put 方法
+
+优点：队列大小有界，有助于防止资源耗尽
+
+缺点：队列的大小难以调整和控制
+
+(3)LinkedBlockingDeque 是一个无界的阻塞队列，但是也可以设置队列的大小，变成有界阻塞队列，有三种构造方式 (Integer.MAXVALUE，声明的大小，将集合元素添加到队列)。是通过单向队列 + 2个ReentrantLock 的方式实现的。takeLock 是执行获取操作的锁，putLock 是执行添加操作的锁。
+根据线程池的工作原理，如果 LinkedBlockingQueue 是无界的，那么创建的线程数量永远不会超过 corePoolSize。
+
+优点：可用于处理瞬态突发请求，当命令以超过队列所能处理的平均数连续到达时，此策略允许任务具有无限增长的可能性；
+由于 LinkedBlockingQueue 执行添加和获取操作的是两个不同的锁，生产者和消费者可以并行的操作队列中的数据，所以它的并发能力较高
+
+2.LinkedBlockingQueue和ArrayBlockingQueue的区别
+
+(1)队列大小有所不同，ArrayBlockingQueue是有界的初始化必须指定大小，而LinkedBlockingQueue可以是有界的也可以是无界的(Integer.MAX_VALUE)，对于后者而言，当添加速度大于移除速度时，在无界的情况下，可能会造成内存溢出等问题。
+
+(2)数据存储容器不同，ArrayBlockingQueue采用的是数组作为数据存储容器，而LinkedBlockingQueue采用的则是以Node节点作为连接对象的链表。
+
+(3)由于ArrayBlockingQueue采用的是数组的存储容器，因此在插入或删除元素时不会产生或销毁任何额外的对象实例，而LinkedBlockingQueue则会生成一个额外的Node对象。这可能在长时间内需要高效并发地处理大批量数据的时，对于GC可能存在较大影响。
+
+(4)两者的实现队列添加或移除的锁不一样，ArrayBlockingQueue实现的队列中的锁是没有分离的，即添加操作和移除操作采用的同一个ReenterLock锁，而LinkedBlockingQueue实现的队列中的锁是分离的，其添加采用的是putLock，移除采用的则是takeLock，这样能大大提高队列的吞吐量，也意味着在高并发的情况下生产者和消费者可以并行地操作队列中的数据，以此来提高整个队列的并发性能。
+
+
+参考博客：https://blog.csdn.net/javazejian/article/details/77410889
+
 
 ## AQS 队列同步器
 
 AQS (Abstract Queue Synchronizer) 队列同步器由一个 Valotaile 变量标记状态 State，以及一个 CLH (同步、FIFO) 队列构成
 
 具体实现类：
+
 1. CountdownLatch： 等待多个线程完成 <br>
 2. CyclicBarrier：同步屏障 <br>
 3. Semaphore：控制并发线程数 <br>
@@ -656,7 +884,27 @@ AQS (Abstract Queue Synchronizer) 队列同步器由一个 Valotaile 变量标�
 
 这篇博客讲的非常好：http://www.importnew.com/24082.html
 
+volatile 是怎么实现修改后可见的？
+
+volatile 源码分析
+
+参考的博客：http://www.importnew.com/27863.html
+
+## 设置线程池的大小
+
+最佳线程数目 = (线程等待时间/线程执行时间 + 1) * CPU 数目
+
+线程的等待时间越大需要的线程越多，线程的执行时间越大需要的线程越少
+
+一般说来，大家认为线程池的大小经验值应该这样设置：(其中N为CPU的个数)
+
+如果是 CPU 密集型应用，则线程池大小设置为 N+1
+
+如果是 IO 密集型应用，则线程池大小设置为 2N+1
+
+
 ## CAS (compare and swap)
+
 1.什么是 CAS？
 
 CAS，compare and swap，中文就是比较并交换
@@ -682,7 +930,7 @@ CAS 有 3 个操作数，内存值 V，旧的预期值 A，要修改的新值 B�
 
 CAS 实现了区别于 sychronized 同步锁的一种乐观锁，当多个线程尝试使用 CAS 同时更新同一个变量时，只有其中一个线程能更新变量的值，而其它线程都失败，失败的线程并不会被挂起，而是被告知这次竞争中失败，并可以再次尝试。
 
-一个线程间共享的变量，首先在主存中会保留一份，然后每个线程的工作内存也会保留一份副本。这里说的预期值，就是线程保留的副本。当该线程从主存中获取该变量的值后，主存中该变量可能已经被其他线程刷新了，但是该线程工作内存中该变量却还是原来的值，这就是所谓的预期值了。当你要用CAS刷新该值的时候，如果发现线程工作内存和主存中不一致了，就会失败，如果一致，就可以更新成功。
+一个线程间共享的变量，首先在主存中会保留一份，然后每个线程的工作内存也会保留一份副本。这里说的预期值，就是线程保留的副本。当该线程从主存中获取该变量的值后，主存中该变量可能已经被其他线程刷新了，但是该线程工作内存中该变量却还是原来的值，这就是所谓的预期值了。当你要用 CAS 刷新该值的时候，如果发现线程工作内存和主存中不一致了，就会失败，如果一致，就可以更新成功。
 
 Atomic 包提供了一系列原子类。这些类可以保证多线程环境下，当某个线程在执行 atomic 的方法时，不会被其他线程打断，而别的线程就像自旋锁一样，一直等到该方法执行完成，才由 JVM 从等待队列中选择一个线程执行。Atomic 类在软件层面上是非阻塞的，它的原子性其实是在硬件层面上借助相关的指令来保证的。AtomicInteger 是一个支持原子操作的  Integer 类，就是保证对 AtomicInteger 类型变量的增加和减少操作是原子性的，不会出现多个线程下的数据不一致问题。如果不使用 AtomicInteger，要实现一个按顺序获取的 ID，就必须在每次获取时进行加锁操作，以避免出现并发时获取到同样的 ID 的现象。
 
@@ -727,13 +975,30 @@ int next = current + 1;<br>
 
 CAS 由于是在硬件层面保证的原子性，不会锁住当前线程，它的效率是很高的。CAS 虽然很高效的实现了原子操作，但是它依然存在三个问题。
 
-(1)ABA 问题。因为 CAS 需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是A，变成了B，又变成了A，那么使用CAS进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么A－B－A 就会变成1A-2B－3A。
+(1)ABA 问题。因为 CAS 需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是 A，变成了 B，又变成了 A，那么使用 CAS 进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA 问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么 A－B－A 就会变成 1A-2B－3A。
 
 从 Java1.5 开始 JDK 的 atomic 包里提供了一个类 AtomicStampedReference 来解决 ABA 问题。这个类的 compareAndSet 方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
+```
+public class AtomicStampedReference<V> {
+
+    private static class Pair<T> {
+        final T reference;
+        final int stamp;
+        private Pair(T reference, int stamp) {
+            this.reference = reference;
+            this.stamp = stamp;
+        }
+        static <T> Pair<T> of(T reference, int stamp) {
+            return new Pair<T>(reference, stamp);
+        }
+    }
+
+    private volatile Pair<V> pair;
+```
 
 (2)循环时间长开销大。自旋 CAS 如果长时间不成功，会给 CPU 带来非常大的执行开销。如果 JVM 能支持处理器提供的 pause 指令那么效率会有一定的提升，pause 指令有两个作用，第一它可以延迟流水线执行指令 (de-pipeline),使 CPU 不会消耗过多的执行资源，延迟的时间取决于具体实现的版本，在一些处理器上延迟时间是零。第二它可以避免在退出循环的时候因内存顺序冲突 (memory order violation) 而引起 CPU 流水线被清空 (CPU pipeline flush)，从而提高 CPU 的执行效率。
 
-(3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量 i＝2, j=a，合并一下 ij=2a，然后用 CAS 来操作 ij。从 Java1.5 开始 JDK 提供了 AtomicReference 类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行 CAS 操作。 
+(3)只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS 的方式来保证原子操作，但是对多个共享变量操作时，循环 CAS 就无法保证操作的原子性，这个时候就可以用锁，或者有一个取巧的办法，就是把多个共享变量合并成一个共享变量来操作。比如有两个共享变量 i＝2, j=a，合并一下 ij=2a，然后用 CAS 来操作 ij。从 Java1.5 开始 JDK 提供了 AtomicReference 类来保证引用对象之间的原子性，你可以把多个变量放在一个对象里来进行 CAS 操作。 
 这里粘贴一个，模拟 CAS 实现的计数器：
 ```
 public class CASCount implements Runnable {
@@ -781,7 +1046,7 @@ return false;
 ```
 5.concurrent 包的实现
 
-由于 java 的 CAS 同时具有 volatile 读和 volatile 写的内存语义，因此J ava 线程之间的通信现在有了下面四种方式：<br>
+由于 java 的 CAS 同时具有 volatile 读和 volatile 写的内存语义，因此 Java 线程之间的通信现在有了下面四种方式：<br>
 (1)A 线程写 volatile 变量，随后 B 线程读这个 volatile 变量。<br>
 (2)A 线程写 volatile 变量，随后 B 线程用 CAS 更新这个 volatile 变量。<br>
 (3)A 线程用 CAS 更新一个 volatile 变量，随后 B 线程用 CAS 更新这个 volatile 变量。<br>
@@ -798,7 +1063,7 @@ AQS，非阻塞数据结构和原子变量类 (java.util.concurrent.atomic包中
 
 ### Synchronized
 
-Synchronized 由JVM实现属于悲观锁
+Synchronized 由 JVM 实现属于悲观锁
 
 参考博客：https://blog.csdn.net/javazejian/article/details/77410889?locationNum=1&fps=1
 
@@ -810,7 +1075,7 @@ Lock 是一个接口，我们关注它的实现类 ReentrantLock 是如何实现
 
 2.ReentrantLock 是基于 AbstractQueuedSynchronizer 实现的，AbstractQueuedSynchronizer 可以实现独占锁也可以实现共享锁，ReentrantLock 只是使用了其中的独占锁模式
 
-通过分析 ReentrantLock 中的公平锁和非公平锁的实现，其中 tryAcquire 是公平锁和非公平锁实现的区别(源码见下文)，下面的两种类型的锁的 tryAcquire 的实现，从中我们可以看出在公平锁中，每一次的 tryAcquire 都会检查 CLH 队列中是否仍有前驱的元素，如果仍然有那么继续等待，通过这种方式来保证**先来先服务**的原则；而非公平锁，首先是检查并设置锁的状态，这种方式会出现即使队列中有等待的线程，但是新的线程仍然会与排队线程中的对头线程竞争(**但是排队的线程是先来先服务的**)，所以新的线程可能会抢占已经在排队的线程的锁，这样就无法保证先来先服务，但是已经等待的线程们是仍然保证先来先服务的，所以总结一下公平锁和非公平锁的区别：
+通过分析 ReentrantLock 中的公平锁和非公平锁的实现，其中 tryAcquire 是公平锁和非公平锁实现的区别 (源码见下文)，下面的两种类型的锁的 tryAcquire 的实现，从中我们可以看出在公平锁中，每一次的 tryAcquire 都会检查 CLH 队列中是否仍有前驱的元素，如果仍然有那么继续等待，通过这种方式来保证**先来先服务**的原则；而非公平锁，首先是检查并设置锁的状态，这种方式会出现即使队列中有等待的线程，但是新的线程仍然会与排队线程中的对头线程竞争(**但是排队的线程是先来先服务的**)，所以新的线程可能会抢占已经在排队的线程的锁，这样就无法保证先来先服务，但是已经等待的线程们是仍然保证先来先服务的，所以总结一下公平锁和非公平锁的区别：
 
 3.ReentrantLock 由 JDK 实现属于乐观锁
 
@@ -984,17 +1249,18 @@ public class Test {
     }
 }
 ```
+
 (5)**小结**
 
 通过静态代理，是否完全解决了上述的4个问题：
 
 已解决：
 
-1)解决了“开闭原则（OCP）”的问题，因为并没有修改Math类，而扩展出了MathProxy类
+1)解决了“开闭原则 (OCP) ”的问题，因为并没有修改 Math 类，而扩展出了 MathProxy 类
 
-2)解决了“依赖倒转（DIP）”的问题，通过引入接口
+2)解决了“依赖倒转 (DIP) ”的问题，通过引入接口
 
-3)解决了“单一职责（SRP）”的问题，Math类不再需要去计算耗时与延时操作，但从某些方面讲MathProxy还是存在该问题
+3)解决了“单一职责 (SRP) ”的问题，Math 类不再需要去计算耗时与延时操作，但从某些方面讲 MathProxy 还是存在该问题
 
 未解决：
 
@@ -1002,9 +1268,9 @@ public class Test {
 
 如果要解决上面的问题，可以使用动态代理。
 
-2.JDK动态代理
+2.JDK 动态代理
 
-使用JDK内置的Proxy实现，只需要一个代理类，而不是针对每个类编写代理类。
+使用 JDK 内置的 Proxy 实现，只需要一个代理类，而不是针对每个类编写代理类。
 
 在上一个示例中修改代理类MathProxy如下：
 ```
@@ -1099,6 +1365,7 @@ public class Test {
 }
 ```
 **小结**：
+
 JDK内置的Proxy动态代理可以在运行时动态生成字节码，而没必要针对每个类编写代理类。中间主要使用到了一个接口InvocationHandler与Proxy.newProxyInstance静态方法。
 
 使用内置的Proxy实现动态代理有一个问题：被代理的类必须实现接口，未实现接口则没办法完成动态代理。
@@ -1111,7 +1378,7 @@ CGLIB(Code Generation Library)是一个开源项目,是一个强大的，高性�
 
 <div align="center"> <img src="../pictures//cglib.png"/> </div><br>
 
-(2)使用cglib完成动态代理，大概的原理是：cglib继承被代理的类，重写方法，织入通知，动态生成字节码并运行，因为是继承所以final类是没有办法动态代理的。具体实现如下：
+(2)使用 cglib 完成动态代理，大概的原理是：cglib 继承被代理的类，重写方法，织入通知，动态生成字节码并运行，因为是继承所以 final 类是没有办法动态代理的。具体实现如下：
 ```
 package com.atguigu.java2;
 
@@ -1131,8 +1398,6 @@ public class DynamicProxy implements MethodInterceptor {
     // 被代理对象
     Object targetObject;
 
-    //Generate a new class if necessary and uses the specified callbacks (if any) to create a new object instance. 
-    //Uses the no-arg constructor of the superclass.
     //动态生成一个新的类，使用父类的无参构造方法创建一个指定了特定回调的代理实例
     public Object getProxyObject(Object object) {
         this.targetObject = object;
@@ -1174,6 +1439,7 @@ public class DynamicProxy implements MethodInterceptor {
 
 }
 ```
+
 (3)测试运行：
 ```
 package com.atguigu.java2;
@@ -1199,24 +1465,25 @@ public class Test {
 ```
 (4)**小结**
 
-使用cglib可以实现动态代理，即使被代理的类没有实现接口，但被代理的类必须不是final类。
+使用 cglib 可以实现动态代理，即使被代理的类没有实现接口，但被代理的类必须不是 final 类。
 
-如果项目中有些类没有实现接口，则不应该为了实现动态代理而刻意去抽出一些没有实例意义的接口，通过cglib可以解决该问题。
+如果项目中有些类没有实现接口，则不应该为了实现动态代理而刻意去抽出一些没有实例意义的接口，通过 cglib 可以解决该问题。
 
-## NIO与IO
+## NIO 与 IO
+
 1.区别
 
-(1)IO是面向流(stream)的，NIO是面向缓冲区(channel和buffer)的；
+(1)IO 是面向流(stream)的，NIO是面向缓冲区(channel和buffer)的；
 
-(2)IO只能一次从流中读取或者写入1个字节或者几个字节，没有缓冲，NIO是先读入或者写入缓冲区，然后再处理，相对来说更灵活一些；
+(2)IO 只能一次从流中读取或者写入 1 个字节或者几个字节，没有缓冲，NIO 是先读入或者写入缓冲区，然后再处理，相对来说更灵活一些；
 
-(3)IO是阻塞的，当调用read()和write()方法时，直到读取到数据或者数据完全写入，否则就会一直处于阻塞状态，NIO是非阻塞的，从某个通道发送请求读取数据，如果没有数据，线程就会去执行其他任务，不需要等待，通常线程会某个通道的IO空闲时间去执行其他通道的IO操作；
+(3)IO 是阻塞的，当调用 read() 和 write() 方法时，直到读取到数据或者数据完全写入，否则就会一直处于阻塞状态，NIO 是非阻塞的，从某个通道发送请求读取数据，如果没有数据，线程就会去执行其他任务，不需要等待，通常线程会某个通道的 IO 空闲时间去执行其他通道的 IO 操作；
 
-(4)Java NIO的选择器允许一个单独的线程来监视多个输入通道，你可以注册多个通道使用一个选择器，然后使用一个单独的线程来“选择”通道：这些通道里已经有可以处理的输入，或者选择已准备写入的通道。这种选择机制，使得一个单独的线程很容易来管理多个通道。
+(4)Java NIO 的选择器允许一个单独的线程来监视多个输入通道，你可以注册多个通道使用一个选择器，然后使用一个单独的线程来“选择”通道：这些通道里已经有可以处理的输入，或者选择已准备写入的通道。这种选择机制，使得一个单独的线程很容易来管理多个通道。
 
 ## Java 反编译
 
-假设现在有一个test.java文件
+假设现在有一个 test.java 文件
 
 使用 javap -c test 就可以得到字节码文件，也就是每个方法所执行的JVM指令，可以分析源码级别的问题
 
@@ -1249,6 +1516,7 @@ public class Singleton {
     }
 }
 ```
+
 2.饿汉式——静态内部类
 ```
 public class Singleton {
@@ -1289,9 +1557,9 @@ public void test() {
     System.out.println(s==s1);
 }
 ```
-上面输出结果为false，说明反序列化之后返回的是一个新的对象，为什么会这样呢？主要的原因就在readObject()方法，给出readObject()方法的源码:
+上面输出结果为 false，说明反序列化之后返回的是一个新的对象，为什么会这样呢？主要的原因就在 readObject() 方法，给出 readObject() 方法的源码:
 
-readObject()方法的调用栈：readObject--->readObject0--->readOrdinaryObject--->checkResolve
+readObject() 方法的调用栈：readObject--->readObject0--->readOrdinaryObject--->checkResolve
 ```
 private Object readOrdinaryObject(boolean unshared)
         throws IOException
@@ -1323,6 +1591,7 @@ private Object readOrdinaryObject(boolean unshared)
         return obj;
     }
 ```
+
 查看第一部分的代码：
 ```
 Object obj;
@@ -1334,6 +1603,7 @@ Object obj;
                 "unable to create instance").initCause(ex);
         }
 ```
+
 isInstantiable()：如果一个 serializable/externalizable 的类可以在运行时被实例化，那么该方法就返回 true 
 
 desc.newInstance：该方法通过反射的方式调用无参构造方法新建一个对象。
@@ -1355,6 +1625,7 @@ if (obj != null &&
             }
         }
 ```
+
 hasReadResolveMethod()：如果实现了 serializable 或者 externalizable 接口的类中包含readResolve则返回 true 
 
 invokeReadResolve：通过反射的方式调用要被反序列化的类的 readResolve 方法。
@@ -1389,10 +1660,119 @@ public enum Singleton{
 很好的博客：http://blog.chenzuhuang.com/archive/13.html
 
 # Java虚拟机
+
 ## 垃圾回收
-Java的垃圾回收主要是回收堆中的对象实例，什么时候回收由系统决定。在垃圾回收之前，首先要通过可达性分析（根节点是虚拟机栈中引用的对象、方法区中类静态属性引用的对象、方法区中常量引用的对象、本地方法栈中 JNI 引用的对象）判断对象是否存活，然后将死亡的对象实例所占用的内存空间回收。堆所占用的内存可以划分为新生代和老年代，新生代内存空间进一步还可以细分为 EdenSpace、FromSurvivor、ToSurvivor，新创建的对象实例的内存大多数（启用本地线程分配缓冲的按照线程优先在 TLAB 上分配，大对象（很长的字符串和数组）则直接进入老年代）都在 EdenSpace 上分配。垃圾回收策略现在一般都是采用分代回收机制，新生代中，对象的存活率低，垃圾回收频率比较高，主要采用“复制”算法，老年代中对象的存活率高，垃圾回收频率较低，而且没有额外的空间对它进行分配担保，主要采用“标记-清理”和“标记-整理算法”。
+Java的垃圾回收主要是回收堆中的对象实例，什么时候回收由系统决定。在垃圾回收之前，首先要通过可达性分析 (根节点是虚拟机栈中引用的对象、方法区中类静态属性引用的对象、方法区中常量引用的对象、本地方法栈中 JNI 引用的对象) 判断对象是否存活，然后将死亡的对象实例所占用的内存空间回收。堆所占用的内存可以划分为新生代和老年代，新生代内存空间进一步还可以细分为 EdenSpace、FromSurvivor、ToSurvivor，新创建的对象实例的内存大多数 (启用本地线程分配缓冲的按照线程优先在 TLAB 上分配，大对象 (很长的字符串和数组) 则直接进入老年代) 都在 EdenSpace 上分配。垃圾回收策略现在一般都是采用分代回收机制，新生代中，对象的存活率低，垃圾回收频率比较高，主要采用“复制”算法，老年代中对象的存活率高，垃圾回收频率较低，而且没有额外的空间对它进行分配担保，主要采用“标记-清理”和“标记-整理算法”。
+
+## CMS 和 G1
+
+CMS 垃圾收集器是以获取最短停顿时间为目标的垃圾回收器
+
+优点；
+
+并发清除，停顿时间短
+
+缺点：
+
+1)无法清理浮动垃圾 (就是并发清除过程中，又产生的垃圾)
+      
+2)采用标记-清除算法，会产生内存碎片，导致没有连续的空间分配给大对象，而触发 FullGC
+
+1)初始标记：标记与 GC Roots 相关联的对象，需要停顿
+
+2)并发标记：和用户线程一起执行
+
+3)重新标记：标记在程序执行期间，对象状态发生变化的，需要停顿
+
+4)并发清除：垃圾回收
+
+G1 垃圾收集器，将堆区域拆分成对个大小相等的 Region (区域)，垃圾回收时根据每个 Region 的价值大小，优先回收价值较大的区域。
+
+1)初始标记：标记与 GC Roots 相关联的对象，需要停顿
+
+2)并发标记：和用户线程一起执行
+
+3)最终标记：标记在程序执行期间，对象状态发生变化的，需要停顿
+
+4)筛选回收：优先回收价值最大的区域
 
 ## 类加载机制
 
 非常好的博客：https://blog.csdn.net/javazejian/article/details/73413292
 
+## 类的初始化
+
+1.子类引用父类的静态变量，父类不会发生初始化，也就是父类的静态初始化块不会执行
+
+2.创建一个父类的数组，不会触发父类的初始化
+
+3.测试输出某个类的静态常量 (static final) 不会触发这个类的初始化，因为在编译阶段的通过常量传播优化，已经将这个静态常量存储到了测试类的常量池中
+
+4.初始化一个类，要求父类全部初始化完毕，但是父接口不需要，只有在引用父接口中的常量的时候才会初始化
+
+# Java 8 新特性
+
+1.lambda 表达式 (省去了创建匿名内部类的麻烦)
+```
+//接口必须只有一个抽象方法
+interface MyMath {
+    int add(int a, int b);
+}
+
+MyMath math = (int a, int b) -> System.out.println(a+b);
+MyMath math = (int a, int b) -> {
+    System.out.println(a);
+    System.out.println(b);
+    System.out.println(a+b);
+}
+```
+
+2.方法引用(::)
+
+通过方法名调用方法，减少冗余代码的冗余
+
+```
+class MyTest {
+    public void add() {
+        System.out.println("use method add");
+    }
+
+    public static void main(String[] args) {
+        MyTest t = new MyTest();
+        t.forEach(MyTest::add);
+    }
+}
+```
+
+3.函数式接口
+
+函数式接口就是有且只有一个抽象方法的接口，非抽象方法数量任意
+
+JDK 1.8 新增加的函数接口：java.util.function ，更好的支持 lambda 表达式
+
+4.Java 8 日期 API 
+
+用来解决日期类不提供国际化，没有时区支持，非线程安全的问题
+
+在 java.time 包下提供了很多新的 API。以下为两个比较重要的 API：
+
+Local(本地) − 简化了日期时间的处理，没有时区的问题。
+
+Zoned(时区) − 通过制定的时区处理日期时间
+
+5.Optional 类
+
+Optional 类是一个可以为 null 的容器，用来解决空指针异常
+
+# Java 9 新特性
+
+1.引入模块系统
+
+模块系统就是代码和数据的封装体
+
+声明一个模块
+```
+module com.runoob.mymodule {
+
+}
+```
