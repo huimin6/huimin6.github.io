@@ -399,7 +399,7 @@ static final int MIN_TREEIFY_CAPACITY = 64;
 
 出现死循环的这个问题只可能会在 Java7 中出现，Java8 已经修复了，出现这个循环的原因是因为在 java7 里面元素的插入(包括扩容）都是头插法
 
-(下面第一篇博客中的示例就是假设了我们的 hash 算法就是简单的用 key mod 一下表的大小（也就是数组的长度）。其中的哈希桶数组 table 的 size=2， 所以 key = 3、7、5，put 顺序依次为 5、7、3。在 mod 2 以后都冲突在 table[1] 这里了。这里假设负载因子 loadFactor=1，即当键值对的实际大小 size 大于 table 的实际大小时进行扩容。接下来的三个步骤是哈希桶数组 resize 成 4，然后所有的Node重新 rehash 的过程。)
+(下面第一篇博客中的示例就是假设了我们的 hash 算法就是简单的用 key mod 一下表的大小（也就是数组的长度）。其中的哈希桶数组 table 的 size=2， 所以 key = 3、7、5，put 顺序依次为 5、7、3。在 mod 2 以后都冲突在 table[1] 这里了。这里假设负载因子 loadFactor=1，即当键值对的实际大小 size 大于 table 的实际大小时进行扩容。接下来的三个步骤是哈希桶数组 resize 成 4，然后所有的 Node 重新 rehash 的过程。)
 
 参考博客：https://coolshell.cn/articles/9606.html/comment-page-1#comments
 
@@ -418,6 +418,19 @@ HashEntry 用来封装映射表的键值对；Segment 用来充当锁的角色�
 
 
 参考博客：https://blog.csdn.net/dingjianmin/article/details/79776646
+
+LinkedHashMap 可以保证数据的插入顺序，是通过“HashMap + 循环双向队列”实现的
+
+<div align="center"> <img src="../pictures//LinkedHashMap_1.png"/> </div> 
+
+header 是单独存在的，用来标识第一个添加的节点，每一次添加元素都是按照 HashMap 中的方式添加，只是添加完毕还需要维护循环双向链表的顺序
+
+LinkedHashMap 中的 Entry 数据结构：
+```
+private static class Entry<K,V> extends HashMap.Entry<K,V> {
+    //在 HashMap 中 Entry 的基础上，多了两个指向前驱结点和后继节点的指针
+    Entry<K,V> before, after;
+```
 
 ## 枚举类
 
@@ -448,15 +461,15 @@ public enum SeasonEnum {
 
 (2)进程有独立的地址空间，线程之间没有单独的地址空间，但是线程有自己的堆栈和局部变量。
 
-(3) 一个程序至少有一个进程，一个进程至少有一个线程。
+(3)一个程序至少有一个进程，一个进程至少有一个线程。
 
-(4) 线程的划分尺度小于进程，使得多线程程序的并发性高。
+(4)线程的划分尺度小于进程，使得多线程程序的并发性高。
 
-(5) 进程在执行过程中拥有独立的内存单元，而多个线程共享内存，从而极大地提高了程序的运行效率。
+(5)进程在执行过程中拥有独立的内存单元，而多个线程共享内存，从而极大地提高了程序的运行效率。
 
-(6) 线程在执行过程中与进程还是有区别的。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。
+(6)线程在执行过程中与进程还是有区别的。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。
 
-(7) 从逻辑角度来看，多线程的意义在于一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程看做多个独立的应用，来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。
+(7)从逻辑角度来看，多线程的意义在于一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程看做多个独立的应用，来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。
 
 ## 死锁
 
@@ -602,7 +615,7 @@ public class ThirdThread implements Callable<Integer>{
 | sleep() 暂停线线程，会把执行机会让给其他线程，不考虑线程的优先级，yield()暂停线程，只会把线程让给同级或者优先级更高的线程 |
 | sleep() 会抛 InterruptionException 的异常，但是 yield() 方法不会抛出任何异常 |
 | wait() 后进入等待锁定池，只有针对此对象发出 notify()方法后获得对象锁进入**可运行状态**|
-| wait() 和 notify() 会对对象的"锁标志"进行操作，所以它们必须在 synchronized 函数或 synchronized 代码块中进行调用。如果在 non- synchronized 函数或 non-synchronized 代码块中进行调用，虽然能编译通过，但在**运行时**会发生 IllegalMonitorStateException 的异常。|
+| wait() 和 notify() 会对对象的"锁标志"进行操作，所以它们必须在 synchronized 函数或 synchronized 代码块中进行调用。如果在 non-synchronized 函数或 non-synchronized 代码块中进行调用，虽然能编译通过，但在**运行时**会发生 IllegalMonitorStateException 的异常。|
 
 ### 线程池
 
@@ -850,7 +863,7 @@ public static ExecutorService newSingleThreadExecutor() {
 
 缺点：队列的大小难以调整和控制
 
-(3)LinkedBlockingDeque 是一个无界的阻塞队列，但是也可以设置队列的大小，变成有界阻塞队列，有三种构造方式 (Integer.MAXVALUE，声明的大小，将集合元素添加到队列)。是通过单向队列 + 2个ReentrantLock 的方式实现的。takeLock 是执行获取操作的锁，putLock 是执行添加操作的锁。
+(3)LinkedBlockingQeque 是一个无界的阻塞队列，但是也可以设置队列的大小，变成有界阻塞队列，有三种构造方式 (Integer.MAXVALUE，声明的大小，将集合元素添加到队列)。是通过单向队列 + 2个ReentrantLock 的方式实现的。takeLock 是执行获取操作的锁，putLock 是执行添加操作的锁。
 根据线程池的工作原理，如果 LinkedBlockingQueue 是无界的，那么创建的线程数量永远不会超过 corePoolSize。
 
 优点：可用于处理瞬态突发请求，当命令以超过队列所能处理的平均数连续到达时，此策略允许任务具有无限增长的可能性；
@@ -952,30 +965,30 @@ public final int incrementAndGet() {
     }
 }
 ```
-在这里采用了 CAS 操作，每次从内存中读取数据然后将此数据和+1后的结果进行 CAS 操作，如果成功就返回结果，否则重试直到成功为止。而 compareAndSet 利用 JNI 来完成 CPU 指令的操作。
+在这里采用了 CAS 操作，每次从内存中读取数据然后将此数据和 +1 后的结果进行 CAS 操作，如果成功就返回结果，否则重试直到成功为止。而 compareAndSet 利用 JNI 来完成 CPU 指令的操作。
 ```
 public final boolean compareAndSet(int expect, int update) {   
     return unsafe.compareAndSwapInt(this, valueOffset, expect, update);
 }
 ```
-其中，unsafe.compareAndSwapInt() 是一个 native 方法，正是调用 CAS 原语完成该操作。首先假设有一个变量 i，i 的初始值为 0。每个线程都对 i 进行 +1 操作。CAS 是这样保证同步的：假设有两个线程，线程1读取内存中的值为 0，current = 0，next = 1，然后挂起，然后线程 2 对 i 进行操作，将i的值变成了 1。线程 2 执行完，回到线程 1，进入 if 里的 compareAndSet 方法，该方法进行的操作的逻辑是:<br>
+其中，unsafe.compareAndSwapInt() 是一个 native 方法，正是调用 CAS 原语完成该操作。首先假设有一个变量 i，i 的初始值为 0。每个线程都对 i 进行 +1 操作。CAS 是这样保证同步的：假设有两个线程，线程 1 读取内存中的值为 0，current = 0，next = 1，然后挂起，然后线程 2 对 i 进行操作，将i的值变成了 1。线程 2 执行完，回到线程 1，进入 if 里的 compareAndSet 方法，该方法进行的操作的逻辑是:<br>
 (1)如果操作数的值在内存中没有被修改，返回true，然后compareAndSet方法返回next的值<br>
 (2)如果操作数的值在内存中被修改了，则返回false，重新进入下一次循环，重新得到 current的值为 1，next的值为 2，然后再比较，由于这次没有被修改，所以直接返回 2。
 那么，为什么自增操作要通过 CAS 来完成呢？仔细观察 incrementAndGet()方法，发现自增操作其实拆成了两步完成的：<br>
 int current = get();<br>
 int next = current + 1;<br>
-由于volatile只能保证读取或写入的是最新值，那么可能出现以下情况：<br>
-1)A 线程执行 get()操作，获取 current 值(假设为 1)<br>
-2)B 线程执行 get()操作，获取 current 值(为1)<br>
-3)B 线程执行 next = current + 1操作，next = 2<br>
-4)A 线程执行 next = current + 1操作，next = 2<br>
+由于 volatile 只能保证读取或写入的是最新值，那么可能出现以下情况：<br>
+1)A 线程执行 get() 操作，获取 current 值 (假设为 1)<br>
+2)B 线程执行 get() 操作，获取 current 值 (为1)<br>
+3)B 线程执行 next = current + 1 操作，next = 2<br>
+4)A 线程执行 next = current + 1 操作，next = 2<br>
 这样 current(值为 1)执行了两次自增操作，结果本应该是 3，现在得到的确是 2，所以，自增操作必须采用 CAS 来完成。
 
 4.CAS 的优缺点
 
 CAS 由于是在硬件层面保证的原子性，不会锁住当前线程，它的效率是很高的。CAS 虽然很高效的实现了原子操作，但是它依然存在三个问题。
 
-(1)ABA 问题。因为 CAS 需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是 A，变成了 B，又变成了 A，那么使用 CAS 进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA 问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么 A－B－A 就会变成 1A-2B－3A。
+(1)ABA 问题。因为 CAS 需要在操作值的时候检查下值有没有发生变化，如果没有发生变化则更新，但是如果一个值原来是 A，变成了 B，又变成了 A，那么使用 CAS 进行检查时会发现它的值没有发生变化，但是实际上却变化了。ABA 问题的解决思路就是使用版本号。在变量前面追加上版本号，每次变量更新的时候把版本号加一，那么 A-B-A 就会变成 1A-2B-3A。
 
 从 Java1.5 开始 JDK 的 atomic 包里提供了一个类 AtomicStampedReference 来解决 ABA 问题。这个类的 compareAndSet 方法作用是首先检查当前引用是否等于预期引用，并且当前标志是否等于预期标志，如果全部相等，则以原子方式将该引用和该标志的值设置为给定的更新值。
 ```
