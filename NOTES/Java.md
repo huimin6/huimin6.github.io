@@ -432,6 +432,11 @@ private static class Entry<K,V> extends HashMap.Entry<K,V> {
     Entry<K,V> before, after;
 ```
 
+LinkedHashMap 的数据迭代方式有两种，一种是按照访问顺序迭代，最近访问的放在列表的尾部，另外一种是按照数据的插入方式迭代，通过 accessOrder 来标志来实现
+```
+//true表示按照访问顺序迭代，false时表示按照插入顺序 
+private final boolean accessOrder;  
+```
 ## 枚举类
 
 适合实现单例设计模式
