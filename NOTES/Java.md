@@ -419,11 +419,13 @@ HashEntry 用来封装映射表的键值对；Segment 用来充当锁的角色�
 
 参考博客：https://blog.csdn.net/dingjianmin/article/details/79776646
 
-LinkedHashMap 可以保证数据的插入顺序，是通过“HashMap + 循环双向队列”实现的
+3.LinkedHashMap 可以保证数据的插入顺序，是通过“HashMap + 循环双向队列”实现的，默认的大小是 16，每次扩容为原来的 2 倍
 
 <div align="center"> <img src="../pictures//LinkedHashMap_1.png"/> </div> 
 
-header 是单独存在的，用来标识第一个添加的节点，每一次添加元素都是按照 HashMap 中的方式添加，只是添加完毕还需要维护循环双向链表的顺序
+header 是单独存在的，用来标识第一个添加的节点
+
+每一次添加元素都是按照 HashMap 中的插入元素的方式添加，只是添加完毕还需要保证新插入的节点位于循环双向链表的末尾
 
 LinkedHashMap 中的 Entry 数据结构：
 ```
