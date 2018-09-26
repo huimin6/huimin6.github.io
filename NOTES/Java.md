@@ -108,9 +108,12 @@ public void test(){
 
 1.Integer 和 int 的区别
 
-(1)Integer 是 int 的包装类；int 是基本数据类型； 
+(1)Integer 是 int 的包装类；int 是基本数据类型；
+
 (2)Integer 变量必须实例化后才能使用；int 变量不需要； 
+
 (3)Integer 实际是对象的引用，指向此 new 的 Integer 对象；int 是直接存储数据值； 
+
 (4)Integer 的默认值是 null；int 的默认值是 0。
 
 2.面试的问题
@@ -165,10 +168,14 @@ Integer sum = new Integer(result);
 
 ## Java 集合
 
+Java 集合的两个根接口分别是，Collection(子接口是List, Set, Queue) 和 Map 接口
+
 1.List
 
 ArrayList 的默认大小是 10，每次扩容为原来的 1.5 倍，非线程安全，底层是通过 object[] 数组实现的
+
 Vector 每次扩容为为原来的 2 倍，底层是通过 object[] 数组实现的
+
 LinkedList 底层是通过双向链表实现的
 
 2.Map
@@ -477,6 +484,20 @@ public enum SeasonEnum {
 (6)线程在执行过程中与进程还是有区别的。每个独立的线程有一个程序运行的入口、顺序执行序列和程序的出口。但是线程不能够独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制。
 
 (7)从逻辑角度来看，多线程的意义在于一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程看做多个独立的应用，来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。
+
+线程间的通信方式
+
+1.利用共享变量实现
+
+a.synchronized + notify() + wait()
+
+b.Lock + Condition
+
+2.利用 CyclicBarrier，Semaphore 和 CountDownLatch
+
+3.利用 PipedInputStream
+
+4.利用 BlockingQueue
 
 ## 死锁
 

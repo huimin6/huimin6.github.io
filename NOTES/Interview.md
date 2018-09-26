@@ -95,3 +95,17 @@ CacheManager 对象的创建，依赖于 SystemInit 对象，所以 SystemInit �
 
 depends-on 适用于表面上看起来两个 bean 之间没有使用属性之类的强连接的 bean，但是两个 bean 又确实存在前后依赖关系的情况，使用了 depends-on 的时候，
 CacheManager 会先于 SystemInit 销毁
+
+## 获取 Class 对象的方式
+
+1.类名.class
+
+不执行静态块和动态块
+
+2.Class.forName("类的全限定名")
+
+执行静态块，不执行动态块
+
+3.对象.getClass()
+
+因为要创建对象，所以静态块和动态块都会执行
