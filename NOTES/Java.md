@@ -1,6 +1,8 @@
 <!-- MarkdownTOC -->
 
 - [Java](#java)
+    + [接口和抽象类](#接口和抽象类)
+    + [abstract private final](#abstract-private-final)
     + [多态](#多态)
     + [classpath](#classpath)
     + [String](#string)
@@ -9,6 +11,7 @@
     + [枚举类](#枚举类)
     + [进程与线程](#进程与线程)
     + [死锁](#死锁)
+    + [ThreadLocal](#threadlocal)
     + [Java内存模型 \(JMM\)](#java内存模型-jmm)
     + [多线程](#多线程)
         * [创建线程的三种方式](#创建线程的三种方式)
@@ -40,6 +43,24 @@
 <!-- /MarkdownTOC -->
 
 # Java
+
+## 接口和抽象类
+
+1.接口只能定义静态常量(public static final)，抽象类可以定义普通的成员变量
+
+2.接口不能有构造方法，抽象类可以有构造方法，抽象类的构造方法是给子类调用完成抽象类的初始化
+
+3.接口只能有抽象方法(public abstract)，抽象类还可以有普通的方法(不能是 private)
+
+4.接口不能有初始化块，抽象类里面可以有初始化块
+
+5.一个类可以实现多个接口，只能继承一个抽象类，接口可以继承多个接口
+
+6.抽象类和接口中都不能有 static 方法，抽象类和接口是不能实例化的，即不能被分配内存；而 static 修饰的方法在类实例化之前就已经别分配了内存，这样一来矛盾就出现了；抽象类不能被分配内存，而 static 方法必须被分配内存。所以抽象类中不能有静态的抽象方法。
+
+## abstract private final
+
+abstract 和 private 不能共用，abstract 和 final 不能共用，abstract 和 static 不能共存
 
 ## 多态
 
@@ -451,7 +472,7 @@ private final boolean accessOrder;
 适合实现单例设计模式
 ```
 public enum SeasonEnum {
-    SPRING,SUMMER,FALL,WINTER;
+    SPRING, SUMMER, FALL, WINTER;
 }
 ```
 
@@ -485,19 +506,33 @@ public enum SeasonEnum {
 
 (7)从逻辑角度来看，多线程的意义在于一个应用程序中，有多个执行部分可以同时执行。但操作系统并没有将多个线程看做多个独立的应用，来实现进程的调度和管理以及资源分配。这就是进程和线程的重要区别。
 
-线程间的通信方式
+2.进程间通信方式
 
-1.利用共享变量实现
+(1)管道：无名管道、高级管道、有名管道
+
+(2)消息队列
+
+(3)信号量
+
+(4)信号
+
+(5)共享内存
+
+(6)套接字
+
+3.线程间的通信方式
+
+(1)利用共享变量实现
 
 a.synchronized + notify() + wait()
 
 b.Lock + Condition
 
-2.利用 CyclicBarrier，Semaphore 和 CountDownLatch
+(2)利用 CyclicBarrier，Semaphore 和 CountDownLatch
 
-3.利用 PipedInputStream
+(3)利用 PipedInputStream
 
-4.利用 BlockingQueue
+(4)利用 BlockingQueue
 
 ## 死锁
 
@@ -513,12 +548,38 @@ b.Lock + Condition
 
 2.Java 中如何避免死锁
 
-1.避免一个线程同时获取多个锁，如果需要获取多个锁，保证获取锁的顺序都是一样的
+(1)避免一个线程同时获取多个锁，如果需要获取多个锁，保证获取锁的顺序都是一样的
 
-2.避免一个线程在锁内同时占用多个资源，尽量保证每个锁只占用一个资源
+(2)避免一个线程在锁内同时占用多个资源，尽量保证每个锁只占用一个资源
 
-3.尝试使用定时锁，使用lock.tryLock来代替使用内置锁。
+(3)尝试使用定时锁，使用 lock.tryLock 来代替使用内置锁。
 
+## ThreadLocal
+
+ThreadLocal 保存的共享变量，会为每一个调用的线程创建一个副本
+
+(1)实际的通过 ThreadLocal 创建的副本是存储在每个线程自己的 threadLocals 中的；
+
+(2)为何 threadLocals 的类型 ThreadLocalMap 的键值为 ThreadLocal 对象，因为每个线程中可有多个 threadLocal 变量；
+
+(3)在进行 get 之前，必须先 set，否则会报空指针异常；如果想在get之前不需要调用set就能正常访问的话，必须重写initialValue()方法，而默认情况下，initialValue 方法返回的是 null。
+
+使用实例：
+```
+private static final ThreadLocal threadSession = new ThreadLocal();  
+public static Session getSession() throws InfrastructureException {  
+    Session s = (Session) threadSession.get();  
+    try {  
+        if (s == null) {  
+            s = getSessionFactory().openSession();  
+            threadSession.set(s);  
+        }  
+    } catch (HibernateException ex) {  
+        throw new InfrastructureException(ex);  
+    }  
+    return s;  
+}  
+```
 
 ## Java内存模型 (JMM)
 
@@ -1220,6 +1281,7 @@ public interface IMath {
 
 }
 ```
+
 (2)主题类，算术类，实现抽象接口
 ```
 package com.atguigu.java;
@@ -1238,6 +1300,7 @@ public class Math implements IMath {
     
 }
 ```
+
 (3)代理类
 ```
 package com.atguigu.java;
@@ -1275,6 +1338,7 @@ public class MathProxy implements IMath {
     }
 }
 ```
+
 (4)运行测试
 ```
 package com.atguigu.java;
@@ -1381,6 +1445,7 @@ public class DynamicProxy implements InvocationHandler {
 
 }
 ```
+
 测试运行
 ```
 package com.atguigu.java1;

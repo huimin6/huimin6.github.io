@@ -1,6 +1,7 @@
 <!-- MarkdownTOC -->
 
 - [算法](#算法)
+- [图解算法](#图解算法)
 - [刷题遇到的问题](#刷题遇到的问题)
 	+ [2 sum问题](#2-sum问题)
 	+ [rand5 生成 rand7](#rand5-生成-rand7)
@@ -18,6 +19,10 @@
 <!-- /MarkdownTOC -->
 
 # 算法
+
+# 图解算法
+
+非常好的博客：https://keysaim.github.io
 
 # 刷题遇到的问题
 
