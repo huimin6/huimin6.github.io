@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>My New Hugo Site on My New Hugo Site</title>
+    <title>huimin的博客 on huimin的博客</title>
     <link>https://huimin6.github.io/</link>
-    <description>Recent content in My New Hugo Site on My New Hugo Site</description>
+    <description>Recent content in huimin的博客 on huimin的博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sun, 30 Sep 2018 15:16:05 +0800</lastBuildDate>
@@ -26,6 +26,59 @@
 &lt;p&gt;2.策略模式&lt;/p&gt;
 
 &lt;p&gt;3.装饰者模式&lt;/p&gt;
+</description>
+          </item>
+        
+      
+    
+      
+        
+          <item>
+            <title></title>
+            <link>https://huimin6.github.io/post/maven/</link>
+            <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+            
+            <guid>https://huimin6.github.io/post/maven/</guid>
+            <description>
+
+&lt;p&gt;&lt;div align=&#34;center&#34;&gt; &lt;img src=&#34;../pictures//maven-logo-black-on-white.png&#34;/&gt; &lt;/div&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;h1 id=&#34;maven&#34;&gt;Maven&lt;/h1&gt;
+
+&lt;h4 id=&#34;maven是基于项目对象模型-pom-project-object-model-可以通过一小段描述信息-配置-来管理项目的构建-报告和文档的软件项目管理工具&#34;&gt;Maven是基于项目对象模型(POM project object model)，可以通过一小段描述信息（配置）来管理项目的构建，报告和文档的软件项目管理工具&lt;/h4&gt;
+
+&lt;p&gt;Maven的核心功能便是合理描述项目间的依赖关系，通俗点讲，就是通过pom.xml文件的配置获取jar包，而不需要手动去添加jar包（省事儿啊，是不是）&lt;/p&gt;
+
+&lt;p&gt;Maven项目的结构时固定的，结构如下&lt;/p&gt;
+
+&lt;p&gt;Example&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;---pom.xml 核心配置文件，放在根目录下
+
+---src
+
+    ---main
+
+        ---java 源码目录
+
+        ---resources java配置文件目录
+
+---test
+
+    ---java
+
+    ---resources
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;依赖调解规则&#34;&gt;依赖调解规则&lt;/h2&gt;
+
+&lt;p&gt;如果 A -&amp;gt; B -&amp;gt; C -&amp;gt; X(1.0)， A -&amp;gt; D -&amp;gt; X(2.0)，A 间接的依赖 X，现在 X 中有两个版本，那么 A 最终会选择哪个版本？&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;最短路径原则：如果 A 依赖的 jar 包有两个不同的路径，那么选择路径最短的那条，也就是说上面问题的答案是，A 会选择 X(2.0)&lt;/li&gt;
+&lt;li&gt;第一声明优先原则：如果 A 依赖的 jar 包有两个不同的路径，但是这两条路径的长度是一样的，A -&amp;gt; B -&amp;gt; F(1.0)，A -&amp;gt; B -&amp;gt; F(2.0)，那么 A 最终会根据 F 在文件中声明的顺序，谁先声明就用谁&lt;/li&gt;
+&lt;li&gt;可选依赖不会传递：如果 A -&amp;gt; B，B -&amp;gt; C，B -&amp;gt; D，A 直接依赖于 B，B 对于 C 和 D 是可选依赖，那么 A 中不会直接引入 C 和 D。可选依赖通过 optional 配置，true 表示可选。如果 A 需要依赖 C 或者 D，就需要显示的声明对 C 或者 D 的依赖&lt;/li&gt;
+&lt;/ul&gt;
 </description>
           </item>
         
