@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>My New Hugo Site on My New Hugo Site</title>
-    <link>http://huimin6.github.io/</link>
+    <link>https://huimin6.github.blog/</link>
     <description>Recent content in My New Hugo Site on My New Hugo Site</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
@@ -13,10 +13,10 @@
         
           <item>
             <title>First</title>
-            <link>http://huimin6.github.io/post/first/</link>
+            <link>https://huimin6.github.blog/post/first/</link>
             <pubDate>Sun, 30 Sep 2018 15:16:05 +0800</pubDate>
             
-            <guid>http://huimin6.github.io/post/first/</guid>
+            <guid>https://huimin6.github.blog/post/first/</guid>
             <description>
 
 &lt;h2 id=&#34;标题一&#34;&gt;标题一&lt;/h2&gt;

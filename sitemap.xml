@@ -3,29 +3,29 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://huimin6.github.io/post/first/</loc>
+    <loc>https://huimin6.github.blog/post/first/</loc>
     <lastmod>2018-09-30T15:16:05+08:00</lastmod>
   </url>
   
   <url>
-    <loc>http://huimin6.github.io/categories/</loc>
+    <loc>https://huimin6.github.blog/categories/</loc>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://huimin6.github.io/</loc>
-    <lastmod>2018-09-30T15:16:05+08:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>http://huimin6.github.io/post/</loc>
+    <loc>https://huimin6.github.blog/</loc>
     <lastmod>2018-09-30T15:16:05+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>http://huimin6.github.io/tags/</loc>
+    <loc>https://huimin6.github.blog/post/</loc>
+    <lastmod>2018-09-30T15:16:05+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://huimin6.github.blog/tags/</loc>
     <priority>0</priority>
   </url>
   
