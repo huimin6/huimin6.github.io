@@ -7,6 +7,7 @@
     + [Spring 中 IOC 的实现原理](#spring-中-ioc-的实现原理)
     + [IoC 容器的初始化](#ioc-容器的初始化)
     + [AOP](#aop)
+        * [切入点表达式](#切入点表达式)
     + [bean 的生命周期](#bean-的生命周期)
     + [Spring 中用到的设计模式](#spring-中用到的设计模式)
 - [SpringMVC](#springmvc)
