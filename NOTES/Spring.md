@@ -273,6 +273,14 @@ AOP 就是将分散在各个业务逻辑代码中相同代码，通过横向切�
 <div align="center"> <img src="../pictures//cglib_1.png"/> </div> 
 <div align="center"> <img src="../pictures//cglib_2.png"/> </div> 
 
+### 切入点表达式
+
+* 匹配任意数量的字符
+
++ 匹配指定的类和子类
+
+.. 匹配任意数量的子包和或参数
+
 ## bean 的生命周期
 
 一、BeanFactory中Bean的生命周期
