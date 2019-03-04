@@ -1,8 +1,15 @@
 <div align="center"> <img src="../pictures//maven-logo-black-on-white.png"/> </div><br>
 
+<!-- MarkdownTOC -->
+
+- [Maven](#maven)
+    + [mac 电脑安装 maven](#mac-电脑安装-maven)
+    + [依赖调解规则](#依赖调解规则)
+<!-- MarkdownTOC -->
+
 # Maven
 
-#### Maven是基于项目对象模型(POM project object model)，可以通过一小段描述信息（配置）来管理项目的构建，报告和文档的软件项目管理工具
+Maven是基于项目对象模型(POM project object model)，可以通过一小段描述信息（配置）来管理项目的构建，报告和文档的软件项目管理工具
 
 Maven的核心功能便是合理描述项目间的依赖关系，通俗点讲，就是通过pom.xml文件的配置获取jar包，而不需要手动去添加jar包（省事儿啊，是不是）
 
@@ -27,7 +34,7 @@ Example
         ---resources
         
 
-## mac电脑安装maven
+## mac 电脑安装 maven
 
 参考博客：https://cloud.tencent.com/developer/article/1194577
 
