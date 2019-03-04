@@ -27,6 +27,10 @@ Example
         ---resources
         
 
+## mac电脑安装maven
+
+参考博客：https://cloud.tencent.com/developer/article/1194577
+
 ## 依赖调解规则
 
 如果 A -> B -> C -> X(1.0)， A -> D -> X(2.0)，A 间接的依赖 X，现在 X 中有两个版本，那么 A 最终会选择哪个版本？
