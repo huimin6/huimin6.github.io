@@ -4,6 +4,7 @@
 
 - [Maven](#maven)
     + [mac 电脑安装 maven](#mac-电脑安装-maven)
+    + [IDEA 配置本地 Maven](#idea-配置本地-maven)
     + [依赖调解规则](#依赖调解规则)
 <!-- MarkdownTOC -->
 
@@ -37,6 +38,10 @@ Example
 ## mac 电脑安装 maven
 
 参考博客：https://cloud.tencent.com/developer/article/1194577
+
+## IDEA 配置本地 Maven
+
+参考博客：https://blog.csdn.net/qq_32588349/article/details/51461182
 
 ## 依赖调解规则
 
