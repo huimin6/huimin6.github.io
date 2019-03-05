@@ -1,6 +1,9 @@
 # mac的使用
 
 ## mac安装oh-my-zsh
+
+整体参考博客：https://blog.csdn.net/u013310075/article/details/62585826
+
 1.克隆仓库，在终端执行命令
 
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
