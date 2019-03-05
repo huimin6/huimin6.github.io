@@ -24,3 +24,5 @@ chsh -s /bin/zsh
 vi ~/.zshrc
 
 6.修改文件中的ZSH_THEME="miloshadzic"中的名字
+
+主题地址：https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
