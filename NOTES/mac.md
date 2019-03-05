@@ -5,14 +5,14 @@
 
 git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 
-2. 如果你已存在~/.zshrc文件，则备份现有的~/.zshrc文件，在终端执行如下命令
+2.如果你已存在~/.zshrc文件，则备份现有的~/.zshrc文件，在终端执行如下命令
 
 cp ~/.zshrc ~/.zshrc.orig
 
-3. 创建一个新的zsh配置文件
+3.创建一个新的zsh配置文件
 
 cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 
-4. 改变默认的Shell
+4.改变默认的Shell
 
 chsh -s /bin/zsh
