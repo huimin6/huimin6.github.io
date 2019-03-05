@@ -33,3 +33,18 @@ vi ~/.zshrc
 7.卸载oh-my-zsh，在终端执行命令
 
 uninstall_oh_my_zsh
+
+## mac常用的快捷键
+
+1.查看文件路径
+
+(1)如果只是需要看一个文件的路径，右键 get info （cmd + i）
+
+(2)另一种方便的方法是，打开 terminal，把文件拖进 terminal 窗口，自动显示路径。
+
+(3)如果需要复制路径，在 finder 里，对选中的文件，command+option+c，就复制到剪贴板了。
+
+2.在 finder 中跳转到某个位置
+
+快捷键：command+shift+g 就可以跳转到对应的路径
+
