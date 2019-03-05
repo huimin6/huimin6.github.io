@@ -16,3 +16,11 @@ cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 4.改变默认的Shell
 
 chsh -s /bin/zsh
+
+5.修改oh-my-zsh的themes
+
+终端执行
+
+vi ~/.zshrc
+
+6.修改文件中的ZSH_THEME="miloshadzic"中的名字
