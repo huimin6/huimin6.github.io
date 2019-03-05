@@ -26,3 +26,7 @@ vi ~/.zshrc
 6.修改文件中的ZSH_THEME="miloshadzic"中的名字
 
 主题地址：https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+
+7.卸载oh-my-zsh，在终端执行命令
+
+uninstall_oh_my_zsh
