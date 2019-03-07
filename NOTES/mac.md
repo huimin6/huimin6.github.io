@@ -48,3 +48,7 @@ uninstall_oh_my_zsh
 
 快捷键：command+shift+g 就可以跳转到对应的路径
 
+
+## mac 安装 homebrew
+
+参考博客：https://juejin.im/post/5c738bacf265da2deb6aaf97
