@@ -10,6 +10,7 @@
         * [切入点表达式](#切入点表达式)
     + [bean 的生命周期](#bean-的生命周期)
     + [Spring 中用到的设计模式](#spring-中用到的设计模式)
+    + [Spring 的思维导图](#spring-的思维导图)
 - [SpringMVC](#springmvc)
     + [SpringMVC源码解读](#springmvc源码解读)
 
@@ -306,7 +307,7 @@ http://blog.51cto.com/wenshengzhu/1950146
 
 (1)工厂模式：Spring 中 bean 的创建，Spring 中对象的创建是通过反射创建的，所以在 xml 的配置中要配置 class ，也就是类的全限定名，这样才能正常加载这个类，并创建类对象
 
-## Spirng 的思维导图
+## Spring 的思维导图
 
 我认为最简单的思维导图：https://juejin.im/entry/590c28fc128fe1005839311b
 
