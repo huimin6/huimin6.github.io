@@ -304,7 +304,11 @@ http://blog.51cto.com/wenshengzhu/1950146
 
 ## Spring 中用到的设计模式
 
-(1)工厂模式：Spring 中 bean 的创建
+(1)工厂模式：Spring 中 bean 的创建，Spring 中对象的创建是通过反射创建的，所以在 xml 的配置中要配置 class ，也就是类的全限定名，这样才能正常加载这个类，并创建类对象
+
+## Spirng 的思维导图
+
+我认为最简单的思维导图：https://juejin.im/entry/590c28fc128fe1005839311b
 
 # SpringMVC
 
