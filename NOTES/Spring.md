@@ -375,6 +375,10 @@ http://blog.51cto.com/wenshengzhu/1950146
 
 添加 @ResponseBody 表示将方法的返回结果直接放在响应的方法体中，不然默认是寻找对应的 XXX.jsp 页面，如果方法上面不添加这个注解，而且也没有对应的XXX.jsp 页面，就会出现 404 (页面找不到) 的错误
 
+3.RequestBody 
+
+该注解是将请求正文插入方法中，使用适合的 HttpMessageConverter 将请求体写入对象
+
 ```
 @RequestMapping(value = "person/login")
 @ResponseBody
@@ -382,10 +386,24 @@ public Person login(@RequestBody Person person) {   // 将请求中的 datas 写
     return person;    // 不会被解析为跳转路径，而是直接写入 HTTP 响应正文中
 }
 ```
+4.PathVariable
 
-3.RequestBody 
+这个注解用于动态的获取请求路径 (url) 中的动态参数
 
-该注解是将请求正文插入方法中，使用适合的 HttpMessageConverter 将请求体写入对象
+```
+/**
+* @RequestMapping(value = "/person/profile/{id}/{name}/{status}") 中的 {id}/{name}/{status}
+* 与 @PathVariable int id、@PathVariable String name、@PathVariable boolean status
+* 一一对应，按名匹配。
+*/
+
+@RequestMapping(value = "person/profile/{id}/{name}/{status}")
+@ResponseBody
+public Person porfile(@PathVariable int id, @PathVariable String name, @PathVariable boolean status) {
+    return new Person(id, name, status);
+}
+```
+
 ## SpringMVC源码解读
 
 参考博客：https://www.cnblogs.com/fangjian0423/p/springMVC-directory-summary.html
