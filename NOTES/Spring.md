@@ -365,6 +365,37 @@ http://blog.51cto.com/wenshengzhu/1950146
 
 在 com.taotao.portal.controller 包下面创建带有 Controller 注解的类，在    WEN-INF 包下面创建对于的 jsp 页面作为视图
 
+## Http 中的请求和响应的报文格式
+
+1. Http 请求 (request)
+
+```
+POST /index.html HTTP/1.1
+HOST: www.XXX.com
+User-Agent: Mozilla/5.0(Windows NT 6.1;rv:15.0) Firefox/15.0
+
+Username=admin&password=admin
+```
+
+2. Http 响应 (response)
+
+```
+HTTP/1.1 200 OK
+Content-Encoding: gzip
+Content-Type: text/html;charset=utf-8
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+</head>
+<body>
+    <p>this is http response</p>
+</body>
+</html>
+```
+
 ## SpringMVC 中的注解
 
 1.RequestMapping
