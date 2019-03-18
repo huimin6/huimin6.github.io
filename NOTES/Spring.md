@@ -365,6 +365,14 @@ http://blog.51cto.com/wenshengzhu/1950146
 
 在 com.taotao.portal.controller 包下面创建带有 Controller 注解的类，在    WEN-INF 包下面创建对于的 jsp 页面作为视图
 
+## SpringMVC 中的注解
+
+1.RequestMapping
+这个注解可以添加在方法上，也可以添加在类上。添加在类上表示类中所有响应请求的方法都是以该地址作为父路径，添加在方法上表示该地址将会访问到该方法
+
+2.ResponseBody
+添加 @ResponseBody 表示将方法的返回结果直接放在响应的方法体中，不然默认是寻找对应的 XXX.jsp 页面，如果方法上面不添加这个注解，而且也没有对应的XXX.jsp 页面，就会出现 404 (页面找不到) 的错误
+
 ## SpringMVC源码解读
 
 参考博客：https://www.cnblogs.com/fangjian0423/p/springMVC-directory-summary.html
