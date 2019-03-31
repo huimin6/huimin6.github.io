@@ -1612,6 +1612,12 @@ Java 反射主要提供以下功能：
 
 反射最重要的用途就是开发各种通用框架。很多框架（比如 Spring）都是配置化的（比如通过 XML 文件配置 Bean），为了保证框架的通用性，它们可能需要根据配置文件加载不同的对象或类，调用不同的方法，这个时候就必须用到反射，运行时动态加载需要加载的对象。
 
+Java 注解
+
+Java中的创建注解的方式和创建类的方式一样，只不过创建类是 class XXX，而创建注解是 @interface XXX
+
+注解的详细内容见博客：https://blog.csdn.net/javazejian/article/details/71860633
+
 # 设计模式
 
 参考博客：https://blog.csdn.net/a724888/article/details/72637636
