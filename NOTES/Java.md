@@ -32,6 +32,7 @@
     + [Java 反编译](#java-反编译)
     + [Java 反射](#java-反射)
     + [Java 注解](#java-注解)
+    + [Java 中的元数据 Metadata](#java-中的元数据-Metadata)
 - [设计模式](#设计模式)
     + [单例设计模式](#单例设计模式)
 - [Java虚拟机](#java虚拟机)
@@ -1617,6 +1618,14 @@ Java 反射主要提供以下功能：
 Java中的创建注解的方式和创建类的方式一样，只不过创建类是 class XXX，而创建注解是 @interface XXX
 
 注解的详细内容见博客：https://blog.csdn.net/javazejian/article/details/71860633
+
+## Java 中的元数据 Metadata
+
+元数据就是用来描述数据的数据。在程序中，就是添加到程序元素如类、方法、接口上的额外信息，Java 中的注解 Annotation(JDK1.5 之后加入的特性)就是属于元数据。元数据可以用来创建文档，跟踪代码的依赖性，执行编译时格式检查，**代替已有的配置文件**。
+
+注意：Annotation 能被用来为程序元素（类、方法、成员变量等）设置元素据。Annotaion 不影响程序代码的执行，无论增加、删除 Annotation，代码都始终如一地执行。如果希望让程序中的 Annotation 起一定的作用，只有通过解析工具或编译工具对 Annotation 中的信息进行解析和处理。
+
+详细的内容参照：https://www.jianshu.com/p/596d389282a0
 
 # 设计模式
 
