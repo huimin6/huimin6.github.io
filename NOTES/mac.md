@@ -52,3 +52,10 @@ uninstall_oh_my_zsh
 ## mac 安装 homebrew
 
 参考博客：https://juejin.im/post/5c738bacf265da2deb6aaf97
+
+## IDEA mac版的操作快捷键
+
+|操作|命令|
+|:-|:-|
+
+全文搜索 | Command＋shift＋F 
