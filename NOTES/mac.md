@@ -55,6 +55,8 @@ uninstall_oh_my_zsh
 
 ## IDEA mac版的操作快捷键
 
+掘金的文章：https://juejin.im/post/5b67dc87f265da0f6640489f
+
 |操作|命令|
 |:-|:-|
 全文搜索 | Command＋shift＋F 
