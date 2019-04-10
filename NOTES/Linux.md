@@ -187,6 +187,9 @@ OpenJDK 64-Bit Server VM (build 25.161-b14, mixed mode)
 ```
 就说明，系统中没有安装JDK需要我们自己安装
 
+修改read only 的文件
+:w !sudo tee %
+
 (2)卸载已经安装的JDK
 
 ```
