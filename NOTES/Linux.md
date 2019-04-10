@@ -228,3 +228,6 @@ cp -r jdk1.8.0_172/ /usr/local/java
 ```
 source /etc/profile
 ```
+
+https://blog.csdn.net/xlgen157387/article/details/50268457
+https://www.jianshu.com/p/d168ecdce022
