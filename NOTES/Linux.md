@@ -227,7 +227,11 @@ source /etc/profile
 ```
 
 https://blog.csdn.net/xlgen157387/article/details/50268457
+
 https://www.jianshu.com/p/d168ecdce022
 
 修改read only 的文件
 :w !sudo tee %
+
+
+https://blog.csdn.net/a12345555555/article/details/72770789
