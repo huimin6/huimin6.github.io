@@ -60,3 +60,8 @@ uninstall_oh_my_zsh
 |操作|命令|
 |:-|:-|
 全文搜索 | Command＋shift＋F 
+
+
+chrome 插件
+
+https://chrome.zzzmh.cn/index#index
