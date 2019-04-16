@@ -60,6 +60,7 @@ uninstall_oh_my_zsh
 |操作|命令|
 |:-|:-|
 全文搜索 | Command＋shift＋F 
+Command+B | 显示当前选中接口的各种实现类
 
 
 chrome 插件
