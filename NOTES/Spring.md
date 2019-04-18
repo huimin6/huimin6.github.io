@@ -303,6 +303,30 @@ http://blog.51cto.com/wenshengzhu/1950146
 <div align="center"> <img src="../pictures//beanlifecycle2.png"/> </div> 
 <div align="center"> 图4 ApplicationContext中Bean的生命周期 </div> <br>
 
+## Spring 中的 xml 配置文件
+
+Xml配置文件中导入其他配置文件
+
+在 /WEB-INF/applicationContext.xml 配置应用服务去加载，可以在 applicationContext.xml 中用 import 引入其他的配置文件
+```
+<?xml version="1.0" encod工口g="gb2312"?>  
+<!一指定Spring 配置文件的dtd>  
+<!DOCTYPE beans PUBLIC "-IISPR工NGIIDTD BEANIIEN"  
+''http://www.springframework.org/dtd/spring-beans.dtd''>  
+<!-- Spring 配置文件的根元素->  
+<beans>  
+    <!--导入hibernate的配置文件 -->  
+    <import resource="com/demo/res/hibernate.xml"/>  
+    <!--导入多个bean配置文件 -->  
+    <import resource="com/demo/res/bean1.xml"/>  
+    <import resource="com/demo/res/bean2.xml"/>  
+   
+    <!-- 下面也可以再定义该文件的其他bean --〉  
+    <bean id="bean1" class=". ..">  
+    <bean id="bean2" class="...">  
+</beans>  
+```
+
 ## Spring 中用到的设计模式
 
 (1)工厂模式：Spring 中 bean 的创建，Spring 中对象的创建是通过反射创建的，所以在 xml 的配置中要配置 class ，也就是类的全限定名，这样才能正常加载这个类，并创建类对象
