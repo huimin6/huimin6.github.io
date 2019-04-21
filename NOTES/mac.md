@@ -80,3 +80,11 @@ https://www.zhihu.com/question/46266742
 OnmiGraffle 画流程图
 
 https://www.cnblogs.com/jerryqi/p/10124605.html
+
+使用sublime+platUML快速画流程图
+
+https://www.cnblogs.com/zytrue/p/8496641.html
+
+idea 安装 platuml
+
+https://www.jianshu.com/p/a6bd7e3048ef
