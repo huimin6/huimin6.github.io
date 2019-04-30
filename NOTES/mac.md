@@ -88,3 +88,7 @@ https://www.cnblogs.com/zytrue/p/8496641.html
 idea 安装 platuml
 
 https://www.jianshu.com/p/a6bd7e3048ef
+
+sublime text3 设置在一个窗口打开多个标签
+
+https://www.jianshu.com/p/a703ab17e7ef
