@@ -92,3 +92,7 @@ https://www.jianshu.com/p/a6bd7e3048ef
 sublime text3 设置在一个窗口打开多个标签
 
 https://www.jianshu.com/p/a703ab17e7ef
+
+MavenHelper 排除包冲突
+
+https://blog.csdn.net/sunpeng_sp/article/details/77393348
