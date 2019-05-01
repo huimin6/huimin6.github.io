@@ -60,7 +60,8 @@ uninstall_oh_my_zsh
 |操作|命令|
 |:-|:-|
 全文搜索 | Command＋shift＋F 
-Command+B | 显示当前选中接口的各种实现类
+查看参数的使用者或者方法的实现 | command + B
+查看接口或者方法对应的实现类 | option + command + B
 
 
 chrome 插件
