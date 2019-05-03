@@ -105,6 +105,8 @@ https 首先与安全套接层建立连接，服务端接收到客户端的连�
 
 细节的讲解：https://baijiahao.baidu.com/s?id=1570143475599137&wfr=spider&for=pc
 
+HTTPS 的原理: https://www.cnblogs.com/svan/p/5090201.html
+
 ## HTTP 的长连接和短连接
 
 实际是 TCP 的长连接和短连接
