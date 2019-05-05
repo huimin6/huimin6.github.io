@@ -62,7 +62,7 @@ uninstall_oh_my_zsh
 全文搜索 | Command＋shift＋F 
 查看参数的使用者或者方法的具体实现 | command + B
 查看接口或者方法对应的实现类 | option + command + B
-
+格式化代码 | Command + Option + L
 
 chrome 插件
 
