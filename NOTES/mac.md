@@ -98,3 +98,7 @@ https://www.jianshu.com/p/a703ab17e7ef
 MavenHelper 排除包冲突
 
 https://blog.csdn.net/sunpeng_sp/article/details/77393348
+
+mac 破解软件集合
+
+https://www.waitsun.com/
