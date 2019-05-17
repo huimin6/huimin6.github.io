@@ -4,7 +4,7 @@ https://chrome.google.com/webstore/detail/sourcegraph/dgjhfomjieaadpoljlnidmbgkd
 
 在线photoshop网址
 
-ps.gaoding.com
+https://ps.gaoding.com/#/
 
 一个模仿苹果dock栏的工具
 
