@@ -102,3 +102,7 @@ https://blog.csdn.net/sunpeng_sp/article/details/77393348
 mac 破解软件集合
 
 https://www.waitsun.com/
+
+IDEA 激活教程
+
+https://blog.csdn.net/best_luxi/article/details/81479820
