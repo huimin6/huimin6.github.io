@@ -106,3 +106,7 @@ https://www.waitsun.com/
 IDEA 激活教程
 
 https://blog.csdn.net/best_luxi/article/details/81479820
+
+在线比较两个文本之间的差异
+
+http://www.jq22.com/textDifference
