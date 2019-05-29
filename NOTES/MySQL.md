@@ -80,6 +80,8 @@ HAVING 子句可以让我们筛选分组后的各组数据 |
 
 在线练习网站：http://sqlfiddle.com/ 
 
+在线使用MySQL：https://sqltest.net/
+
 3.机器怎么读取SQL语句？
 
 1.FROM <br>
