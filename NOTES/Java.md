@@ -1916,3 +1916,7 @@ module com.runoob.mymodule {
 
 }
 ```
+
+2.Java中的模块化原理
+
+深入理解Java模块化：https://juejin.im/post/5a7ecfef5188257a76632220
