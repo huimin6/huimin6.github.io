@@ -115,3 +115,11 @@ https://blog.csdn.net/best_luxi/article/details/81479820
 在线比较两个文本之间的差异
 
 http://www.jq22.com/textDifference
+
+mac 下安装多版本jdk
+
+https://www.jianshu.com/p/210975df8fbf
+
+安装完多版本jdk之后使配置生效
+
+在终端输入source ~/.zshrc
