@@ -123,3 +123,5 @@ https://www.jianshu.com/p/210975df8fbf
 安装完多版本jdk之后使配置生效
 
 在终端输入source ~/.zshrc
+
+https://segmentfault.com/a/1190000013131276
