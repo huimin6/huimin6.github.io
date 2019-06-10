@@ -125,3 +125,7 @@ https://www.jianshu.com/p/210975df8fbf
 在终端输入source ~/.zshrc
 
 https://segmentfault.com/a/1190000013131276
+
+解决ssh登录Host key verification failed
+
+https://www.cnblogs.com/zhengah/p/4959682.html
