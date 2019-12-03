@@ -1850,6 +1850,61 @@ G1 垃圾收集器，将堆区域拆分成对个大小相等的 Region (区域)�
 
 4.初始化一个类，要求父类全部初始化完毕，但是父接口不需要，只有在引用父接口中的常量的时候才会初始化
 
+# 日期处理类
+
+Instant - 不可变的类，用来表示时间轴上一个瞬时的点
+
+DateTime - 不可变的类，用来替换JDK的Calendar类, 来源于外界的二方包Joda
+
+LocalDate - 不可变的类，表示一个本地的日期，而不包含时间部分（没有时区信息）
+
+LocalTime - 不可变的类，表示一个本地的时间，而不包含日期部分（没有时区信息）
+
+LocalDateTime - 不可变的类，表示一个本地的日期－时间（没有时区信息）
+
+注意: 不可变的类，表明了正如Java的String类型一样，其对象是不可变的。即，不论对它进行怎样的改变操作，返回的对象都是新对象。
+
+Instant比较适合用来表示一个事件发生的时间戳。不用去关心它使用的日历系统或者是所在的时区。
+
+DateTime的主要目的是替换JDK中的Calendar类，用来处理那些时区信息比较重要的场景。
+
+LocalDate比较适合表示出生日期这样的类型，因为不关心这一天中的时间部分。
+
+LocalTime适合表示一个商店的每天开门/关门时间，因为不用关心日期部分。
+
+```
+public class DateTest {
+    public static void main(String[] args) {
+        Date expires = new Date(1577947349L*1000);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        System.out.println(simpleDateFormat.format(expires));
+        // 本地时间
+        LocalDate localDate = LocalDate.now();
+        System.out.println(localDate);
+        localDate.plusMonths(3);
+        // Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        // Calendar 和 date 转换
+        Date calendarDate = calendar.getTime();
+        calendar.add(Calendar.MONTH, 3);
+        System.out.println(calendar.getTime());
+        // Joda 更好用的时间类
+        DateTime dateTime = new DateTime();
+        // DateTime转date
+        Date jodaDate = dateTime.toDate();
+        // 操作时间
+        // 增加90天
+        dateTime.plusDays(90); 
+        // 增加三个月
+        dateTime.plusMonths(3);
+        System.out.println(jodaDate);
+
+    }
+
+}
+```
+
+
 # Java 8 新特性
 
 1.lambda 表达式 (省去了创建匿名内部类的麻烦)
