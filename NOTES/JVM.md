@@ -23,3 +23,4 @@ kill -3 进程id
 ```
 jmap -histo:live 进程id
 ```
+注意:谨慎使用jmap, jmap命令执行会直接触发一次fullGC
