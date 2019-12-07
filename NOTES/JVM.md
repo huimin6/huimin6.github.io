@@ -8,7 +8,7 @@ jps
 ps -ef | grep java
 ```
 
-3.通过jstack制作线程的dump信息
+3.通过jstack制作线程的dump信息, 可以用来查看线程的阻塞或者死锁等问题
 ```
 jstack 进程id >> 文件名
 ```
