@@ -1688,7 +1688,9 @@ public class DateTest {
 正则表达式是一个很方便的匹配符号, 但要实现这么复杂, 功能如此强大的匹配语法, 就必须要有一套算法来实现，而实现这套算法的东西就叫做正则表达式引擎。简单地说, 实现正则表达式引擎的有两种方式: DFA 自动机(Deterministic Final Automata 确定型有穷自动机)和 NFA 自动机(Non deterministic Finite Automaton 不确定型有穷自动机)。
 
 1.Java中的正则匹配使用的是NFA自动机(Non deterministic Finite Automaton 不确定型有穷自动机）
+
 2.该自动机在字符的过程中要注意"回溯"引发的匹配次数过大，造成CPU的使用率达到100%
+
 3.字符匹配的方式有贪婪模式, 懒惰模式和独占模式, 分别对应下面三种不同表达式
 
 |贪婪模式|懒惰模式|独占模式|
@@ -1697,6 +1699,10 @@ public class DateTest {
 |X*|X*?|X*+|
 |X+|X+?|X++|
 |X{m,m}|X{m,n}?|X{m,n}+|
+
+4.正则表达式匹配步骤调试和检测: https://regex101.com/
+
+5.实际案例: https://cloud.tencent.com/developer/article/1148472
 
 
 # 设计模式
