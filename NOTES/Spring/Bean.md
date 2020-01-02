@@ -17,3 +17,9 @@ ReflectionUtil: 用于根据配置文件中的配置进行反射实例化
 2.通过DocumentLoader对Resource文件进行转换，将Resource文件转换为Document文件
 
 3.通过实现BeanDefinitionDocumentReader接口的DefaultBeanDefinitionDocumentReader类对Document进行解析，并使用BeanDefinitionParseDelegate对Element进行解析
+
+XML配置
+
+1.xml配置中id, name, alias的区别
+
+https://blog.csdn.net/aitangyong/article/details/50629525
