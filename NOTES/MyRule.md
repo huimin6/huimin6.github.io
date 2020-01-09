@@ -12,3 +12,5 @@
   isBlank()会对空白字符进行判断, 比isEmpty()更准确
   
 7.使用CollectionUtils.isEmpty对集合的判空  
+
+8.如何避免在业务代码中插入太多的if else 逻辑:https://softwareengineering.stackexchange.com/questions/343534/what-is-the-better-way-to-escape-from-too-many-if-else-if-from-the-following-cod
