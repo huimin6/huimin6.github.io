@@ -1,9 +1,9 @@
 
-#JVM
+# JVM
 
-##问题排查命令
+## 问题排查命令
 
-### Dump命令
+### 1.Dump命令
 
 1.通过java -version查看虚拟机版本
 
@@ -19,7 +19,7 @@ jstack 进程id >> 文件名
 ```
 
 Linux环境下制作线程dump
-`
+```
 kill -quit 进程id
 kill -3 进程id
 ```
