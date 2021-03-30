@@ -98,6 +98,25 @@ d.计数（视频点击次数）
 
 5.有序集合（zset）
 
+## Redis中的基本数据结构
+
+1.sds(simple dynamic string)
+
+len-字符串的长度 4字节
+
+alloc-分配空间的总的长度 4字节
+
+unsigned char flags-类型 除sdshdr5使用前3位表示flags+5位表示字符串的长度, 其余的都是使用只使用了前3位flags
+
+char[] buff-存储字符串的内容
+
+二进制安全的字符串, 因为有长度len所有读取字符串的时候, 不依赖\0作为结尾
+
+特点: 惰性空间释放, len=0就可以等新的数据覆盖
+
+扩容策略: 如果当前字符串 < 1MB, 那么就会就行扩展 (len+add)+1MB
+         如果当前字符串 > 1MB, 那么扩容后大小为 (len+add)*2
+
 # Redis集群中 leader 的选举算法
 
 参考博客：[Raft 协议实战之 Redis Sentinel 的选举 Leader 源码解析](http://weizijun.cn/2015/04/30/Raft%E5%8D%8F%E8%AE%AE%E5%AE%9E%E6%88%98%E4%B9%8BRedis%20Sentinel%E7%9A%84%E9%80%89%E4%B8%BELeader%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/)
@@ -170,10 +189,6 @@ Redis 中的事务和我们所理解的 MySQL 中的事务不太一样，它是�
 更新数据先更新 db，再失效 cache
 
 读数据，先读 cache，未命中读 db，写入 cache
-
-RabbitMQ 的面试问题
-
-1.
 
 
 # Redis 与 Memcached
