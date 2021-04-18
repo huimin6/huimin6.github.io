@@ -18,5 +18,18 @@ RocketMq的架构如下
 
 ![ProcessQueue类图]http://www.plantuml.com/plantuml/png/SoWkIImgAStDuU8AoIp9ILLG2YZAJqujBWuiJIrDVRvnzzFP-vIuk99p4ekB5P2bi8bLS-ag51HbbYMMf2e4fIQcX1TbbgJwv2TdA-G0YP2Yr5JVn085MuMyr7AWV6fUIL5YNWcAGWrD92EW6cnyylFITHHyWROafgUwLfJOAUGMfqCbkMgv75BpKe0U0000
 
+<details>
+@startuml
+Title "ProcessQueue类图"
+
+class ProcessQueue
+
+class ProcessQueue{
+- private ReadWriteLock lockTreeMap = new ReentrantReadWriteLock()
+- private TreeMap<Long, MessageExt> msgTreeMap
+}
+@enduml
+<details>
+
 8.Producer和Consumer的底层实现是MQClientInstance 
 
