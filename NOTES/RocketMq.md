@@ -14,5 +14,9 @@ RocketMq的架构如下
 
   push这种方式的消息消费, 其负载均衡的策略由broker完成, pull这种消息消费者, 其负载均衡策略由使用者自己定义
   
-7.
+7.ProcessQueue是messageQueue的快照, 目的是为了统计当前消息的消费情况, 消息的消费都是通过线程池异步处理的, 提交给线程池后就不好跟踪消息的消费和统计.
+
+![ProcessQueue类图]http://www.plantuml.com/plantuml/png/SoWkIImgAStDuU8AoIp9ILLG2YZAJqujBWuiJIrDVRvnzzFP-vIuk99p4ekB5P2bi8bLS-ag51HbbYMMf2e4fIQcX1TbbgJwv2TdA-G0YP2Yr5JVn085MuMyr7AWV6fUIL5YNWcAGWrD92EW6cnyylFITHHyWROafgUwLfJOAUGMfqCbkMgv75BpKe0U0000
+
+8.Producer和Consumer的底层实现是MQClientInstance 
 
