@@ -2,28 +2,7 @@ RocketMq的架构如下
 
 1.NameServer的作用主要用来管理路由信息
 
-![NamesrvController](http://www.plantuml.com/plantuml/png/ZPBDRi8m48JlVWgBOzI81oYAw8-gLeLABQZt9Ta4YusDrkjSghvxWzrKb0Z1SMT6tqwycNi1bj2IMXiXr9CtQD5pz-2ii2D2dYXL4dYlHywNocjZWVJhPo_Mfbc2XGPPxxf_yn3xS47mnTPkoF69eBw7NQVHVfLEa6VmsoNiPojXOvjffiNjJQcpwOrU62-pzu017q6WA98LXJLi2CypDknso8SFZA3xE4R8htLNLNo1KLBmSWHPePnPK1H3-0zxUw5RJ1vrMvWkFa_gb-O8kfeJ7okPHUy-6HBalZHto8UEkevA4XAwlyxe7z1PpgRPIZuwcPgZhK9BFm00)
 
-<details>
-@startuml
-Title "NamesrvController"
-
-class NamesrvController{
--final KVConfigManager kvConfigManager
--final RouteInfoManager routeInfoManager
-}
-
-class RouteInfoManager{
-- final HashMap<String/* topic */, List<QueueData>> topicQueueTable
-- final HashMap<String/* brokerName */, BrokerData> brokerAddrTable
-- final HashMap<String/* clusterName */, Set<String/* brokerName */>> clusterAddrTable;
-- final HashMap<String/* brokerAddr */, BrokerLiveInfo> brokerLiveTable
-- final HashMap<String/* brokerAddr */, List<String>/* Filter Server */> filterServerTable
-}
-
-NamesrvController *-right- RouteInfoManager
-@enduml
-<details>
 
 
 2.RocketMq的消息的consumer有有两种, pull和push
