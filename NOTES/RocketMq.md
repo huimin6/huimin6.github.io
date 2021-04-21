@@ -32,7 +32,7 @@ class ProcessQueue{
 - private TreeMap<Long, MessageExt> msgTreeMap
 }
 @enduml
-<details>
+</details>
 
 8.Producer和Consumer的底层实现是MQClientInstance 
 
