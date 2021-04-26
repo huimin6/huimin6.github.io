@@ -4,9 +4,6 @@ RocketMq的架构如下
 
 ![NamesrvController](http://www.plantuml.com/plantuml/png/ZPBDRi8m48JlVWgBOzI81oYAw8-gLeLABQZt9Ta4YusDrkjSghvxWzrKb0Z1SMT6tqwycNi1bj2IMXiXr9CtQD5pz-2ii2D2dYXL4dYlHywNocjZWVJhPo_Mfbc2XGPPxxf_yn3xS47mnTPkoF69eBw7NQVHVfLEa6VmsoNiPojXOvjffiNjJQcpwOrU62-pzu017q6WA98LXJLi2CypDknso8SFZA3xE4R8htLNLNo1KLBmSWHPePnPK1H3-0zxUw5RJ1vrMvWkFa_gb-O8kfeJ7okPHUy-6HBalZHto8UEkevA4XAwlyxe7z1PpgRPIZuwcPgZhK9BFm00)
 
-RouteInfoManager中的方法 scanNotActiveBroker() 用来扫描删除不活跃的broker信息, 默认超过2分钟没有心跳就删除
-![RouteInfoManager](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLWZABor9zSnBo_TDp4jFBLAevj8koyzCKIXEJippooznJ2x9B4jrAihFJYtIqBJcgkLoICrB0Me70000)
-
 <details>
 @startuml
 Title "NamesrvController"
@@ -25,6 +22,16 @@ class RouteInfoManager{
 }
 
 NamesrvController *-right- RouteInfoManager
+@enduml
+</details>
+
+RouteInfoManager中的方法 scanNotActiveBroker() 用来扫描删除不活跃的broker信息, 默认超过2分钟没有心跳就删除
+![RouteInfoManager](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLWZABor9zSnBo_TDp4jFBLAevj8koyzCKIXEJippooznJ2x9B4jrAihFJYtIqBJcgkLoICrB0Me70000)
+<details>
+@startuml
+class RouteInfoManger {
++void scanNotActiveBroker()
+}
 @enduml
 </details>
 
