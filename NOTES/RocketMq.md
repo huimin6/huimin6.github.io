@@ -31,12 +31,14 @@ NameServer和Broker之间保持长连接, Broker的状态通过brokerLiveTable�
 路由信息的发现不是实时的, 是客户端定期拉取最新的路由信息, 通过RouteInfoManager中的方法 pickupTopicRouteData()来获取
 
 RouteInfoManager中的方法 scanNotActiveBroker() 用来扫描删除不活跃的broker信息, 默认超过2分钟没有心跳就删除
+
 ![RouteInfoManager](http://www.plantuml.com/plantuml/png/LOqn3i8m34Ltdy9ZgrwY81O6680BMAbRMGrsvJXT47Sdi37-__JqnXBaKPyPKgPIy6Or-AopNKWNTdp1i9jCM1BfrUAGGdO-kgtiNG_3mpP9F-T4GTZ6MhV_ivj5AUCzN7J1-B8UtZ2oJYtx0G00)
+
 <details>
 @startuml
 class RouteInfoManger {
 +void scanNotActiveBroker()
-+TopicRouteData pickupTopicRouteData()
++TopicRouteData pickupTopicRouteData(final String topic)
 }
 @enduml
 </details>
