@@ -1,3 +1,5 @@
+# RocketMQ
+
 RocketMq的架构如下
 
 1.NameServer的作用主要用来管理路由信息, 为消息消费者和生产者提供路由信息
@@ -43,6 +45,8 @@ class RouteInfoManger {
 }
 @enduml
 </details>
+
+## 消息消费
 
 2.RocketMq的消息的consumer有有两种, pull和push
 
