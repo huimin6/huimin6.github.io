@@ -27,7 +27,7 @@ NamesrvController *-right- RouteInfoManager
 
 NameServer和Broker之间保持长连接, Broker的状态通过brokerLiveTable保存. NameServer收到Broker发来的心跳包更新brokerLiveTable, 和路由信息(topicQueueTable, brokerAddrTable, clusterAddrTable和filterServerTable). 在更新
 
-##路由
+## 路由
 
 路由信息的发现不是实时的, 是客户端定期拉取最新的路由信息, 通过RouteInfoManager中的方法 pickupTopicRouteData()来获取
 
