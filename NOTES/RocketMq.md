@@ -31,7 +31,7 @@ NameServer和Broker之间保持长连接, Broker的状态通过brokerLiveTable�
 
 ![NameServer和Broker之间的交互](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuT9mAihFJYtILD1DoI_FqxLJqF1Bp4qDJYqg0mbQAJnRtsziKFnqtQndqxSzxP_uig7nwVxc5zitSt5f11JbfvGcuzCxV-cBzOjUR5__VCh69_iNFcjSpyMLbr-Igf2JcbQYa9-6efuBQDEpDGkVJTdsj6C3n8uNongvditUycpQXfp4ufBGWfJ4ajIGpDnKeEDp2tGKk9vFMV5ixjBdkxSywrgI1FQ6JsPPQaXYKaugLsfUYWB8BYu780leKG00)
 
-<detail>
+<details>
 @startuml
 (Broker) -down-> (NameServer) : 每30s定时发送心跳
 
@@ -43,7 +43,7 @@ note left of (NameServer)
 用来维护brokerLiveTable
 end note
 @enduml
-</detail>
+</details>
 
 ## 路由
 
