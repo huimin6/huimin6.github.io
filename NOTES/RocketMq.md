@@ -62,6 +62,12 @@ class RouteInfoManger {
 @enduml
 </details>
 
+## 消息发送
+
+1.消息发送方式: 同步(sync), 异步(async), 单向(Oneway)
+
+
+
 ## 消息消费
 
 2.RocketMq的消息的consumer有有两种, pull和push
