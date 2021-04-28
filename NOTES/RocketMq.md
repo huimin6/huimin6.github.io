@@ -29,6 +29,22 @@ NamesrvController *-right- RouteInfoManager
 
 NameServer和Broker之间保持长连接, Broker的状态通过brokerLiveTable保存. NameServer收到Broker发来的心跳包更新brokerLiveTable, 和路由信息(topicQueueTable, brokerAddrTable, clusterAddrTable和filterServerTable). 在更新
 
+![NameServer和Broker之间的交互](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuT9mAihFJYtILD1DoI_FqxLJqF1Bp4qDJYqg0mbQAJnRtsziKFnqtQndqxSzxP_uig7nwVxc5zitSt5f11JbfvGcuzCxV-cBzOjUR5__VCh69_iNFcjSpyMLbr-Igf2JcbQYa9-6efuBQDEpDGkVJTdsj6C3n8uNongvditUycpQXfp4ufBGWfJ4ajIGpDnKeEDp2tGKk9vFMV5ixjBdkxSywrgI1FQ6JsPPQaXYKaugLsfUYWB8BYu780leKG00)
+
+<detail>
+@startuml
+(Broker) -down-> (NameServer) : 每30s定时发送心跳
+
+(Producer) -down-> (NameServer) : 查询路由信息
+
+note left of (NameServer)
+每次收到心跳要
+更新lastUpdateTimestamp, 
+用来维护brokerLiveTable
+end note
+@enduml
+</detail>
+
 ## 路由
 
 路由信息的发现不是实时的, 是客户端定期拉取最新的路由信息, 通过RouteInfoManager中的方法 pickupTopicRouteData()来获取
