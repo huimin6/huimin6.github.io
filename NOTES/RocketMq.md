@@ -76,8 +76,8 @@ class RouteInfoManger {
 * 消息体(msgBody)-不能为空,长度不能为0,大小不能超过4M
 
 3.在发送消息之前需要找到对应的broker, 通过调用方法 tryToFindTopicPublishInfo(final String topic) 来查找路由信息, 
-如果producer中缓存了路由信息则直接从缓存中取. 在 selectOneMessageQueue 选择某个消息队列发送消息时, 消息队列选择中的
-算法通过比较lastBrokerName的值避开上次发送失败的broker队列, 可以减少消息发送失败的概率.
+如果producer中缓存了路由信息则直接从缓存中取. 在 selectOneMessageQueue 选择某个消息队列发送消息时, 消息队列选择算法,
+通过比较lastBrokerName的值避开上次发送失败的broker队列, 可以减少消息发送失败的概率.
 
 
 
