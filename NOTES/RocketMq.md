@@ -65,11 +65,20 @@ class RouteInfoManger {
 ## 消息发送
 
 1.消息发送方式: 
-* 同步(sync), 
-* 异步(async), 
-* 单向(Oneway)
+* 同步(sync): 消息发送后需要等broker的响应结果
+* 异步(async): 消息发送后, 等broker进行回调
+* 单向(Oneway): 只管消息发送, 不等待响应, 也不需要回调
 
-2
+2.消息发送默认使用同步从方式发送, 在消息发送之前会验证
+* 消息内容-不能为空
+* topic的长度-必须小于127
+* topic是否允许发送(系统中有些topic是不允许发送消息的)
+* 消息体(msgBody)-不能为空,长度不能为0,大小不能超过4M
+
+3.在发送消息之前需要找到对应的broker, 通过调用方法 tryToFindTopicPublishInfo(final String topic) 来查找路由信息, 
+如果producer中缓存了路由信息则直接从缓存中取. 在 selectOneMessageQueue 选择某个消息队列发送消息时, 消息队列选择中的
+算法通过比较lastBrokerName的值避开上次发送失败的broker队列, 可以减少消息发送失败的概率.
+
 
 
 
