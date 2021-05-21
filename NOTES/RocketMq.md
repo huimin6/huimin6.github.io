@@ -118,9 +118,10 @@ class ProcessQueue{
 ## 消息存储
 
 1.RocketMq消息存储在CommitLog文件中, 文件的命名通过存储的第一个消息的偏移量来命名(如: 第一个文件命名为00000000000000000000). 文件存储的目录为 {appname}/store/commitlog/,
-  每个文件的大小固定为1G, 存储达到1G就创建一个新的文件
+  每个文件的大小固定为1G, 存储达到1G就创建一个新的文件. 文件对应的类为org.apache.rocketmq.store.MappedFile, 所有的commitLog 对应MappedFileQueue
 
-2.消息写入的核心逻辑是
+2.消息写入的核心逻辑在org.apache.rocketmq.store.DefaultMessageStore#putMessage
+  在消息内容写入之前会先获取锁, 可以是PutMessageSpinLock或者PutMessageReentrantLock, 取决于配置
   
   
 
