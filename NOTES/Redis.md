@@ -4,6 +4,7 @@
 - [Redis安装](#redis安装)
 - [Redis介绍](#redis介绍)
     + [Redis中的五种数据类型](#redis中的五种数据类型)
+    + [Redis中的基本数据结构](#Redis中的基本数据结构)
 - [Redis集群中 leader 的选举算法](#redis集群中-leader-的选举算法)
 - [Redis压力测试](#redis压力测试)
 - [Redis 中的事务](#redis-中的事务)
@@ -102,20 +103,31 @@ d.计数（视频点击次数）
 
 1.sds(simple dynamic string)
 
-len-字符串的长度 4字节
+(1)基本属性
 
-alloc-分配空间的总的长度 4字节
+* len-字符串的长度 4字节
 
-unsigned char flags-类型 除sdshdr5使用前3位表示flags+5位表示字符串的长度, 其余的都是使用只使用了前3位flags
+* alloc-分配空间的总的长度 4字节
 
-char[] buff-存储字符串的内容
+* unsigned char flags-类型 除sdshdr5使用前3位表示flags+5位表示字符串的长度, 其余的都是使用只使用了前3位flags
+
+* char[] buff-存储字符串的内容
 
 二进制安全的字符串, 因为有长度len所有读取字符串的时候, 不依赖\0作为结尾
 
-特点: 惰性空间释放, len=0就可以等新的数据覆盖
+(2)特点: 惰性空间释放, len=0就可以等新的数据覆盖
 
-扩容策略: 如果当前字符串 < 1MB, 那么就会就行扩展 (len+add)+1MB
+(3)扩容策略: 如果当前字符串 < 1MB, 那么就会就行扩展 (len+add)+1MB
          如果当前字符串 > 1MB, 那么扩容后大小为 (len+add)*2
+         
+2.ziplist-压缩列表
+
+| :-----| ----: | :----: |
+| 单元格 | 单元格 | 单元格 |
+
+(1)当列表中存储的数据较少, 且每个元素的内容较少时就
+
+(2)压缩列表的本质就是字节数组(unsigned char \*zl), 因为C语言中char本身就占用一个字节
 
 # Redis集群中 leader 的选举算法
 
