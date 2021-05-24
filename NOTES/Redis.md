@@ -122,9 +122,7 @@ d.计数（视频点击次数）
          
 2.ziplist-压缩列表
 
-<table>
-    <td>zlbytes</td>
-</table>
+<div align="center"> <img src="../pictures//ziplist-structure.png"/> </div> 
 
 (1)当列表中存储的数据较少, 且每个元素的内容较少时就
 
