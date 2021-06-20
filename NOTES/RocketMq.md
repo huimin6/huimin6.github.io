@@ -123,5 +123,11 @@ class ProcessQueue{
 2.消息写入的核心逻辑在org.apache.rocketmq.store.DefaultMessageStore#putMessage
   在消息内容写入之前会先获取锁, 可以是PutMessageSpinLock或者PutMessageReentrantLock, 取决于配置
   
+3.消息消费队列-ConsumeQueue
+  mq消息的存储是乱序存储在commitlog中的, 如果遍历所有commitlog文件查找一条消息将会非常耗时, 所以就按照topic生成了对应的ComsumeQueue文件, 该文件可以看做是消息的索引文件
+  
+4.消息索引文件IndexFile
+ 
+  
   
 
