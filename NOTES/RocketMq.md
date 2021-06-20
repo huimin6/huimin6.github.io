@@ -125,8 +125,9 @@ class ProcessQueue{
   
 3.消息消费队列-ConsumeQueue
   mq消息的存储是乱序存储在commitlog中的, 如果遍历所有commitlog文件查找一条消息将会非常耗时, 所以就按照topic生成了对应的ComsumeQueue文件, 该文件可以看做是消息的索引文件
-  
+  ![ConsumeQueue](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLd3EpoikpKqDB4qjJQtcKW22dFoyT8Nqr1B_jBJYr1BFFB2KKsL8PcwgHbfcNc8EH4K9a0yqAxT0qrfVN-5bmwmN-zkVRUjurhZ-wTePJvjMF9k-xUNqBS_cBuK8FkzS-Nn2szF6_kVBTxzix-UgvN98pKi1kWC0)
 4.消息索引文件IndexFile
+  ![IndexFile](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLl3CIqcjSClCIQtcKW22fFpydDJ4F8M2qXBlr4gDjCoyn1o5u9AYpBnqXUpKIXq5Y4XEFf1Va57fdvPMd5g28bfSab-K6fAPcmgqABT0qrfV_rd_fAUjIvzlMVHqpzGNwpOytJiLR1MOAClFJ54eJir9JIu9W1a7jTKdixZ4nWTef1t2fc8T1LnEoimhKSXDhF0hpTNXKe00P6SbfQPdvg4uD3KlHGVcNw18SZR8hIyRPhtOtmvnAz1m3TkI_8BCPELdspgUDQu72cW-cx_qMUS-29-hbii1Q0emC040)
  
   
   
