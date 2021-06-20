@@ -139,6 +139,8 @@ class IndexFile{
 </details>
 
 4.消息索引文件IndexFile
+
+通过过索引查询消息,只要查询到消息的物理偏移量即可, 通过ConsumeQueue查询消息也是同样的道理  
   
 ![IndexFile](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLl3CIqcjSClCIQtcKW22fFpydDJ4F8M2qXBlr4gDjCoyn1o5u9AYpBnqXUpKIXq5Y4XEFf1Va57fdvPMd5g28bfSab-K6fAPcmgqABT0qrfV_rd_fAUjIvzlMVHqpzGNwpOytJiLR1MOAClFJ54eJir9JIu9W1a7jTKdixZ4nWTef1t2fc8T1LnEoimhKSXDhF0hpTNXKe00P6SbfQPdvg4uD3KlHGVcNw18SZR8hIyRPhtOtmvnAz1m3TkI_8BCPELdspgUDQu72cW-cx_qMUS-29-hbii1Q0emC040)
  
