@@ -145,6 +145,13 @@ D，Durability，持久性，就是事务提交完毕，操作记录会被持久
 | REPEATABLE_READ | &times; | &times; | &radic; | &times; |  &times; |
 | SERIALIZABLE | &times; | &times; | &times; | &times; | &times; |
 
+# 锁
+MySQL中的锁可以分为latch和lock两个概念, 都用于控制资源的串行访问
+区别是:
+| latch | lock |
+|:-|:-:|
+| 轻量级锁, 用于控制内存中的 | |
+
 # 索引
 
 1.索引是啥？
