@@ -115,6 +115,12 @@ class ProcessQueue{
 
 7.Producer和Consumer的底层实现是MQClientInstance 
   
+8.消息过滤-FilterServer
+  (1) borker所在的机器会启动多个FilterServer进程
+  (2) consumer启动后, 会向filterServer上传一个过滤的java类
+  (3) consumer从filterServer拉消息, FilterServer将请求转发给Broker, FilterServer从Broker收到消息后, 按照consumer上传的java过滤程序过滤消息, 
+  过滤后返回给consumer
+  
 ## 消息存储
 
 1.RocketMq消息存储在CommitLog文件中, 文件的命名通过存储的第一个消息的偏移量来命名(如: 第一个文件命名为00000000000000000000). 文件存储的目录为 {appname}/store/commitlog/,
