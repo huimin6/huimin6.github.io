@@ -146,7 +146,7 @@ class IndexFile{
 
 4.消息索引文件IndexFile
 
-通过过索引查询消息,只要查询到消息的物理偏移量即可, 通过ConsumeQueue查询消息也是同样的道理  
+通过索引查询消息,只要查询到消息的物理偏移量即可, 通过ConsumeQueue查询消息也是同样的道理  
   
 ![IndexFile](http://www.plantuml.com/plantuml/png/SoWkIImgAStDuKhEIImkLl3CIqcjSClCIQtcKW22fFpydDJ4F8M2qXBlr4gDjCoyn1o5u9AYpBnqXUpKIXq5Y4XEFf1Va57fdvPMd5g28bfSab-K6fAPcmgqABT0qrfV_rd_fAUjIvzlMVHqpzGNwpOytJiLR1MOAClFJ54eJir9JIu9W1a7jTKdixZ4nWTef1t2fc8T1LnEoimhKSXDhF0hpTNXKe00P6SbfQPdvg4uD3KlHGVcNw18SZR8hIyRPhtOtmvnAz1m3TkI_8BCPELdspgUDQu72cW-cx_qMUS-29-hbii1Q0emC040)
  
@@ -157,5 +157,9 @@ class ConsumeQueue{
 }
 @enduml
 </details>  
-  
 
+## 事务消息
+  
+事务消息通过sendMessageInTransaction()方法发送, 事务消息发送之后, 消息属于Half Message, 该消息不能被consumer消费, 存储在RMQ_SYS_TRANS_HALF_TOPIC主题下. 
+
+当Poducer对该消息就行二次确认之后, 即commit之后, consumer才可以消费到. 如果Rollback, 该消息会被删除, 永远不会被消费到.
