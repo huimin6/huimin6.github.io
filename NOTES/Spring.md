@@ -9,7 +9,7 @@
     + [AOP](#aop)
         * [切入点表达式](#切入点表达式)
     + [bean 的生命周期](#bean-的生命周期)
-    + [spring 三级缓存](#spring三级缓存)
+    + [spring 三级缓存](#spring-三级缓存)
     + [事务](#事务)
     + [Spring 中用到的设计模式](#spring-中用到的设计模式)
     + [Spring 的思维导图](#spring-的思维导图)
