@@ -9,6 +9,7 @@
     + [AOP](#aop)
         * [切入点表达式](#切入点表达式)
     + [bean 的生命周期](#bean-的生命周期)
+    + [spring 三级缓存](#spring三级缓存)
     + [事务](#事务)
     + [Spring 中用到的设计模式](#spring-中用到的设计模式)
     + [Spring 的思维导图](#spring-的思维导图)
@@ -327,6 +328,25 @@ Xml配置文件中导入其他配置文件
     <bean id="bean2" class="...">  
 </beans>  
 ```
+
+## spring 三级缓存
+
+为什么Sping不选择二级缓存方式，而是要额外加一层缓存？
+
+如果要使用二级缓存解决循环依赖，意味着Bean在构造完后就创建代理对象，这样违背了Spring设计原则。Spring结合AOP跟Bean的生命周期，是在Bean创建完全之后通过
+
+AnnotationAwareAspectJAutoProxyCreator这个后置处理器来完成的，在这个后置处理的postProcessAfterInitialization方法中对初始化后的Bean完成AOP代理。
+
+如果出现了循环依赖，那没有办法，只有给Bean先创建代理，但是没有出现循环依赖的情况下，设计之初就是让Bean在生命周期的最后一步完成代理而不是在实例化后就立马完成
+
+代理那为什么Sping不选择二级缓存方式，而是要额外加一层缓存？
+
+如果要使用二级缓存解决循环依赖，意味着Bean在构造完后就创建代理对象，这样违背了Spring设计原则。Spring结合AOP跟Bean的生命周期，是在Bean创建完全之后通过
+
+AnnotationAwareAspectJAutoProxyCreator这个后置处理器来完成的，在这个后置处理的postProcessAfterInitialization方法中对初始化后的Bean完成AOP代理。
+
+如果出现了循环依赖，那没有办法，只有给Bean先创建代理，但是没有出现循环依赖的情况下，设计之初就是让Bean在生命周期的最后一步完成代理而不是在实例化后就立马完成代理
+
 
 ## 事务
 
