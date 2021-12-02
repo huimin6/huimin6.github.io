@@ -146,6 +146,12 @@ D，Durability，持久性，就是事务提交完毕，操作记录会被持久
 | REPEATABLE_READ | &times; | &times; | &radic; | &times; |  &times; |
 | SERIALIZABLE | &times; | &times; | &times; | &times; | &times; |
 
+6.在InnoDB引擎中, 默认是auto commit是1, 那么select也会开启事务吗?
+
+会开启事务, set autocommit=0，这个命令会将这个线程的自动提交关掉。意味着如果你只执行一个select语句，这个事务就启动了，而且并不会自动提交。
+
+这个事务持续存在直到你主动执行commit 或 rollback 语句，或者断开连接
+
 # 锁
 MySQL中的锁可以分为latch和lock两个概念, 都用于控制资源的串行访问
 区别是:
