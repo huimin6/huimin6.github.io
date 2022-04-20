@@ -334,3 +334,6 @@ https://blog.csdn.net/v_july_v/article/details/6451990
 https://blog.csdn.net/v_july_v/article/details/6279498
 
 https://blog.csdn.net/u010983881/article/details/75097358
+
+# LRU和LFU
+博客: https://halfrost.com/lru_lfu_interview/
