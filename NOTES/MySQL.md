@@ -466,7 +466,7 @@ https://learnku.com/articles/38615
 
 # 死锁问题
 1.死锁日志查询
-show engine innodb status 是 MySQL 提供的一个用于查看 innodb 引擎系统信息的工具, 它会输出大量的内部信息，内容分为很多小段，每一段对应 innodb 存储引擎不同部分的信息，其中 LATEST DETECTED DEADLOCK 部分显示的最近一次的死锁信息。
+show engine innodb status 是 MySQL 提供的一个用于查看 innodb 引擎系统信息的工具, 它会在status字段输出大量的内部信息，内容分为很多小段，每一段对应 innodb 存储引擎不同部分的信息，其中 LATEST DETECTED DEADLOCK 部分显示的最近一次的死锁信息。
 
 2.分析死锁日志查看死锁发生的事务和表
 
