@@ -323,6 +323,10 @@ commit;
 
 以上内容参考博客：https://blog.csdn.net/whoamiyang/article/details/51901888
 
+MVCC实际的实现方式: https://www.zhihu.com/question/279538775
+
+
+
 Mysql的自增主键会用尽吗?
 
 
