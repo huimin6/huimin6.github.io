@@ -235,3 +235,7 @@ https://www.jianshu.com/p/d168ecdce022
 
 
 https://blog.csdn.net/a12345555555/article/details/72770789
+
+# Linux工具
+
+https://www.brendangregg.com/Slides/Velocity2015_LinuxPerfTools.pdf
