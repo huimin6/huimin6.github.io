@@ -1062,6 +1062,27 @@ public final int incrementAndGet() {
     }
 }
 ```
+
+JDK 1.8 通过Unsafe类实现
+```
+//当前值加1，返回新值，底层CAS操作
+public final int incrementAndGet() {
+     return unsafe.getAndAddInt(this, valueOffset, 1) + 1;
+ }
+ 
+ //1.8新增，给定对象o，根据获取内存偏移量指向的字段，将其增加delta，
+ //这是一个CAS操作过程，直到设置成功方能退出循环，返回旧值
+ public final int getAndAddInt(Object o, long offset, int delta) {
+     int v;
+     do {
+         //获取内存中最新值
+         v = getIntVolatile(o, offset);
+       //通过CAS操作
+     } while (!compareAndSwapInt(o, offset, v, v + delta));
+     return v;
+ }
+```
+
 在这里采用了 CAS 操作，每次从内存中读取数据然后将此数据和 +1 后的结果进行 CAS 操作，如果成功就返回结果，否则重试直到成功为止。而 compareAndSet 利用 JNI 来完成 CPU 指令的操作。
 ```
 public final boolean compareAndSet(int expect, int update) {   
