@@ -15,7 +15,7 @@
 	+ [快速排序](#快速排序)
 	+ [归并排序](#归并排序)
 - [Top K 问题](#top-k-问题)
-- [LeetCodew](#leetCode)
+- [LeetCode](#LeetCode)
 
 <!-- /MarkdownTOC -->
 
@@ -340,7 +340,7 @@ https://blog.csdn.net/u010983881/article/details/75097358
 # LRU和LFU
 博客: https://halfrost.com/lru_lfu_interview/
 
-# leetcode
+# LeetCode
 
 |题号|名称|思路|
 |:-:|-|-|
