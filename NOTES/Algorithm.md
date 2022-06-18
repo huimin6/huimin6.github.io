@@ -117,6 +117,7 @@ public ListNode reverse(ListNode head) {
 
 非递归求解，用栈来模拟层序遍历，每次栈中的元素个数就是要遍历的这一层的节点数
 
+
 # 排序算法
 
 ## 排序算法的复杂度
@@ -337,3 +338,9 @@ https://blog.csdn.net/u010983881/article/details/75097358
 
 # LRU和LFU
 博客: https://halfrost.com/lru_lfu_interview/
+
+# leetcode
+
+|:-:|:|:|
+|题号｜名称|思路|
+|442 448| 数组中重复的数据 找到所有数组中消失的数字 | 将数组本身作为hash数组, 配合swap解决|
