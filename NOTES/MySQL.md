@@ -483,3 +483,22 @@ show engine innodb status 是 MySQL 提供的一个用于查看 innodb 引擎系
 2.分析死锁日志查看死锁发生的事务和表
 
 
+# MYSQL中单表最大记录数
+ 
+1.单表按照1000万条数据去评估, Java开发规约要求单表不超过500万条数据(这个是综合场景下的评估)
+
+参考的博客文章: https://blog.csdn.net/wzmde007/article/details/124061933
+
+# MYSQL单行热点问题处理
+
+常见的场景: 库存
+
+1.通过应用层的缓存扣减, 可能出现超卖和数据不一致等问题
+
+2.应用层对数据进行排队, 受限于
+
+3.优化MySQL, sever层排队和Innodb组提交的方式
+ 
+可以参考: https://blog.csdn.net/wzmde007/article/details/124061933
+
+4.MYSQL单行数据的最大并发数500QPS, 通过上述DB的优化可以达到10万QPS
