@@ -499,6 +499,6 @@ show engine innodb status 是 MySQL 提供的一个用于查看 innodb 引擎系
 
 3.优化MySQL, sever层排队和Innodb组提交的方式
  
-可以参考: https://blog.csdn.net/wzmde007/article/details/124061933
+原理参考: http://mysql.taobao.org/monthly/2020/02/03/#
 
 4.MYSQL单行数据的最大并发数500QPS, 通过上述DB的优化可以达到10万QPS
