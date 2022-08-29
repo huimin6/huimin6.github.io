@@ -542,6 +542,24 @@ b.Lock + Condition
 
 (4)利用 BlockingQueue
 
+4.保证线程顺序的8种方式:
+
+(1)使用线程的join()方法
+
+(2)使用线程的wait()方法
+
+(3)使用线程的线程池方法
+
+(4)使用线程的Condition(条件变量)方法
+
+(5)使用线程的CountDownLatch(倒计数)方法
+
+(6)使用线程的CyclicBarrier(回环栅栏)方法
+
+(7)使用线程的Semaphore(信号量)方法
+
+
+
 ## 死锁
 
 1.产生死锁的四个必要条件：
