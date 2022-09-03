@@ -129,3 +129,6 @@ https://segmentfault.com/a/1190000013131276
 解决ssh登录Host key verification failed
 
 https://www.cnblogs.com/zhengah/p/4959682.html
+
+如何删除mac系统安转包
+https://discussionschinese.apple.com/thread/253058925
