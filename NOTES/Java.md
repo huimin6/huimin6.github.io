@@ -1010,7 +1010,7 @@ AQS (Abstract Queue Synchronizer) 队列同步器由一个 Valotaile 变量标�
 
 ## volatile 关键字
 
-这篇博客讲的非常好：http://www.importnew.com/24082.html
+这篇博客讲的非常好：https://juejin.cn/post/6844903520760496141
 
 volatile 是怎么实现修改后可见的？
 
