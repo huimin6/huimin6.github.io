@@ -19,3 +19,6 @@
 三角形图标表示新出现或位置发生过显著变化的条目
 
 圆形表示没有变化的条目
+
+产品思维
+https://blog.usejournal.com/product-interview-tips-5784f743b0ab
