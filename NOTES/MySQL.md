@@ -17,6 +17,7 @@
 - [红黑树](#红黑树)
 - [多表关联](#多表关联)
 - [死锁问题](#死锁问题)
+- [学习资料汇总](#学习资料汇总)
 
 <!-- /MarkdownTOC -->
 
@@ -502,3 +503,6 @@ show engine innodb status 是 MySQL 提供的一个用于查看 innodb 引擎系
 原理参考: http://mysql.taobao.org/monthly/2020/02/03/#
 
 4.MYSQL单行数据的最大并发数500QPS, 通过上述DB的优化可以达到10万QPS
+
+# 学习资料汇总
+https://learnku.com/articles/40174
