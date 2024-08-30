@@ -16,3 +16,6 @@ https://www.cnblogs.com/morehair/p/15824321.html
 
 es的官方文档怎么查
 https://blog.csdn.net/laoyang360/article/details/121738408
+
+es聚合控制台操作
+https://www.knowledgedict.com/tutorial/elasticsearch-aggregations.html#Sum%20Aggregation
