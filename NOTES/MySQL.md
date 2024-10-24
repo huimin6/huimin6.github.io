@@ -402,6 +402,8 @@ B 树就是一个满足如下要求的 m 叉树：
 
 B+ 树与 B 树的区别是，B+ 树的非叶子节点中不保存磁盘数据的 pointer 信息，所有的信息都保存在叶子节点中。B 树中的一个节点除了要保存孩子节点的 pointer 之外，还需要保存当前节点的 key 所对应的数据库中的某一条记录的 pointer
 
+从B树到R树: https://blog.csdn.net/v_JULY_v/article/details/6530142/
+
 ## MyISAM与InnoDB存储引擎
 
 | MyISAM | InnoDB |
